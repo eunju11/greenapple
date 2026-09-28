@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}VIBE-FASHION | 트렌디한 패션 쇼핑몰{% endblock %}</title>
+
+    <!-- Bootstrap 5.3 CDN (CSS) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons CDN -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <!-- 커스텀 스타일시트 -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="bg-light d-flex flex-column min-vh-100">
+
+    <!-- 네비게이션 바 -->
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-sky sticky-top shadow-sm">
+        <div class="container">
+            <!-- 브랜드 로고 및 이름 -->
+            <a class="navbar-brand fw-bold fs-3 tracking-wide d-flex align-items-center gap-2" href="{{ url_for('main.index') }}">
+                <span class="fs-4">🐵</span>
+                <span><span class="text-white">MONCHHICHI</span><span class="text-info-emphasis fw-light"> x VIBE</span></span>
+            </a>
+            <!-- 모바일 토글 버튼 -->
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="메뉴 열기">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <!-- 네비게이션 메뉴 목록 -->
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4 fw-semibold">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="{{ url_for('main.index') }}">홈</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#products">신상품</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#products">베스트셀러</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#products">기획전</a>
+                    </li>
+                </ul>
+                <!-- 우측 사용자 아이콘 및 장바구니 -->
+                <div class="d-flex align-items-center gap-2">
+                    <button class="btn btn-outline-light btn-sm rounded-pill px-3 fw-medium" type="button">
+                        <i class="bi bi-cart3 me-1"></i> 장바구니 <span class="badge badge-sky ms-1">0</span>
+                    </button>
+                    <button class="btn btn-light btn-sm rounded-pill px-3 text-primary-emphasis fw-bold shadow-sm" type="button">
+                        로그인
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 메인 본문 콘텐츠 영역 -->
+    <main class="flex-grow-1">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- 푸터 영역 -->
+    <footer class="footer-sky text-white-50 py-5 mt-5">
+        <div class="container text-center">
+            <h5 class="text-white fw-bold mb-3"><span class="text-info">VIBE</span>-FASHION</h5>
+            <p class="small mb-2 text-light opacity-75">당신만의 감각적인 스타일을 완성하는 트렌디 패션 쇼핑몰 VIBE-FASHION</p>
+            <p class="small mb-4 text-white-50">
+                대표: 홍길동 | 사업자등록번호: 123-45-67890 | 통신판매업신고: 제2026-서울강남-0000호<br>
+                주소: 서울특별시 강남구 테헤란로 123 | 고객센터: 1588-0000 (평일 09:00 ~ 18:00)
+            </p>
+            <div class="d-flex justify-content-center gap-3 mb-3">
+                <a href="#" class="text-white-50 text-decoration-none small">이용약관</a>
+                <span class="text-secondary">|</span>
+                <a href="#" class="text-white-50 text-decoration-none small fw-bold">개인정보처리방침</a>
+                <span class="text-secondary">|</span>
+                <a href="#" class="text-white-50 text-decoration-none small">고객문의</a>
+            </div>
+            <p class="small text-white-50 mb-0">&copy; 2026 VIBE-FASHION. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5.3 CDN (JavaScript 번들) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

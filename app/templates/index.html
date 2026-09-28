@@ -1,0 +1,185 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- ==============================================
+     1. 히어로 섹션 (Hero Section) - 몬치치 에디션
+=============================================== -->
+<section class="hero-section py-5 text-white d-flex align-items-center position-relative shadow-sm overflow-hidden">
+    <div class="container py-lg-5 position-relative z-1">
+        <div class="row align-items-center">
+            <div class="col-lg-7 text-center text-lg-start">
+                <div class="d-inline-flex align-items-center gap-2 badge bg-white text-primary px-3 py-2 rounded-pill fw-bold mb-3 shadow-sm fs-6">
+                    <span>🐵 2026 MONCHHICHI x VIBE EXCLUSIVE</span>
+                </div>
+                <h1 class="display-3 fw-bold mb-3 tracking-tight">
+                    사랑스러운 <span class="text-warning">몬치치</span>와<br>
+                    하늘빛 패션의 만남!
+                </h1>
+                <p class="lead mb-4 text-light opacity-95">
+                    전 세계인의 사랑을 받는 귀여운 요정 <strong>몬치치(Monchhichi)</strong>가<br class="d-none d-sm-inline">
+                    VIBE-FASHION의 감각적인 하늘색 데일리 에디션으로 찾아왔습니다.
+                </p>
+                <div class="d-flex flex-wrap gap-3 justify-content-center justify-content-lg-start">
+                    <a href="#products" class="btn btn-light btn-lg px-4 fw-bold rounded-pill shadow text-primary">
+                        몬치치 에디션 보기 <i class="bi bi-arrow-right ms-1"></i>
+                    </a>
+                    <a href="#special-offer" class="btn btn-outline-light btn-lg px-4 rounded-pill">
+                        콜라보 기념 혜택
+                    </a>
+                </div>
+            </div>
+            <!-- 히어로 우측 몬치치 메인 캐릭터 일러스트 배너 -->
+            <div class="col-lg-5 mt-4 mt-lg-0 text-center">
+                <div class="position-relative d-inline-block">
+                    <!-- 몬치치 캐릭터 메인 카드/일러스트 -->
+                    <div class="monchhichi-hero-card p-3 rounded-5 bg-white bg-opacity-25 border border-2 border-white shadow-lg backdrop-blur">
+                        <svg class="img-fluid rounded-4 monchhichi-art" viewBox="0 0 400 400" width="360" height="360" xmlns="http://www.w3.org/2000/svg">
+                            <!-- 배경 하늘색 원 -->
+                            <defs>
+                                <radialGradient id="skyGlow" cx="50%" cy="50%" r="50%">
+                                    <stop offset="0%" stop-color="#bae6fd"/>
+                                    <stop offset="100%" stop-color="#38bdf8"/>
+                                </radialGradient>
+                            </defs>
+                            <circle cx="200" cy="200" r="190" fill="url(#skyGlow)"/>
+                            
+                            <!-- 몬치치 큰 귀 -->
+                            <ellipse cx="90" cy="190" rx="36" ry="46" fill="#6d4c41"/>
+                            <ellipse cx="90" cy="190" rx="22" ry="30" fill="#ffccbc"/>
+                            <ellipse cx="310" cy="190" rx="36" ry="46" fill="#6d4c41"/>
+                            <ellipse cx="310" cy="190" rx="22" ry="30" fill="#ffccbc"/>
+
+                            <!-- 몬치치 복슬복슬 머리/얼굴 외곽 털 -->
+                            <circle cx="200" cy="180" r="115" fill="#5d4037"/>
+
+                            <!-- 뽀송한 얼굴 피부 -->
+                            <ellipse cx="200" cy="195" rx="85" ry="75" fill="#ffdfba"/>
+
+                            <!-- 몬치치 시그니처 앞머리 털 뭉치 -->
+                            <circle cx="170" cy="115" r="24" fill="#5d4037"/>
+                            <circle cx="200" cy="108" r="28" fill="#5d4037"/>
+                            <circle cx="230" cy="115" r="24" fill="#5d4037"/>
+
+                            <!-- 주근깨 (몬치치의 핵심 매력포인트) -->
+                            <circle cx="155" cy="205" r="3" fill="#bcaaa4"/>
+                            <circle cx="147" cy="212" r="3" fill="#bcaaa4"/>
+                            <circle cx="163" cy="213" r="3" fill="#bcaaa4"/>
+                            <circle cx="245" cy="205" r="3" fill="#bcaaa4"/>
+                            <circle cx="253" cy="212" r="3" fill="#bcaaa4"/>
+                            <circle cx="237" cy="213" r="3" fill="#bcaaa4"/>
+
+                            <!-- 핑크 볼터치 -->
+                            <ellipse cx="145" cy="218" rx="16" ry="10" fill="#ff80ab" opacity="0.6"/>
+                            <ellipse cx="255" cy="218" rx="16" ry="10" fill="#ff80ab" opacity="0.6"/>
+
+                            <!-- 크고 초롱초롱한 눈 -->
+                            <ellipse cx="168" cy="182" rx="13" ry="17" fill="#3e2723"/>
+                            <ellipse cx="232" cy="182" rx="13" ry="17" fill="#3e2723"/>
+                            <!-- 눈 하이라이트 -->
+                            <circle cx="172" cy="177" r="5" fill="#ffffff"/>
+                            <circle cx="165" cy="187" r="2.5" fill="#ffffff"/>
+                            <circle cx="236" cy="177" r="5" fill="#ffffff"/>
+                            <circle cx="229" cy="187" r="2.5" fill="#ffffff"/>
+
+                            <!-- 앙증맞은 코 -->
+                            <ellipse cx="200" cy="202" rx="6" ry="4.5" fill="#3e2723"/>
+
+                            <!-- 활짝 웃는 귀여운 입 -->
+                            <path d="M 188 222 Q 200 238 212 222" stroke="#d81b60" stroke-width="4" stroke-linecap="round" fill="#ff4081"/>
+
+                            <!-- 시그니처 턱받이 (하늘색 콜라보 에디션) -->
+                            <path d="M 130 255 Q 200 320 270 255 C 275 300 260 330 200 335 C 140 330 125 300 130 255 Z" fill="#ffffff" stroke="#0284c7" stroke-width="3"/>
+                            <path d="M 150 270 Q 200 310 250 270" fill="none" stroke="#38bdf8" stroke-width="2" stroke-dasharray="4,4"/>
+                            <text x="200" y="300" font-family="'Segoe UI', sans-serif" font-size="14" font-weight="bold" fill="#0284c7" text-anchor="middle">Monchhichi</text>
+
+                            <!-- 쪽쪽이/손 장식 -->
+                            <circle cx="230" cy="245" r="14" fill="#ffdfba" stroke="#bcaaa4" stroke-width="1.5"/>
+                            <circle cx="230" cy="245" r="7" fill="#ffeb3b"/>
+                        </svg>
+                    </div>
+
+                    <div class="position-absolute bottom-0 start-0 translate-middle-y bg-primary bg-opacity-90 p-3 rounded-4 text-start ms-2 text-white border border-light shadow">
+                        <span class="badge bg-warning text-dark fw-bold mb-1">OFFICIAL COLLAB</span>
+                        <p class="mb-0 fw-bold fs-6">VIBE x 몬치치(Monchhichi)</p>
+                        <small class="text-light opacity-90">한정판 스카이블루 컬렉션 오픈</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ==============================================
+     2. 상품 목록 섹션 (Product Cards Section)
+     - 몬치치 한정 에디션 상품 4종 카드
+=============================================== -->
+<section id="products" class="container py-5">
+    <div class="text-center mb-5">
+        <span class="badge bg-info-subtle text-primary border border-primary-subtle px-3 py-1 rounded-pill fw-bold small tracking-wide mb-2">
+            MONCHHICHI EDITION
+        </span>
+        <h2 class="fw-bold mt-1 text-dark">몬치치 x VIBE 공식 캡슐 컬렉션</h2>
+        <div class="mx-auto mt-2 rounded" style="width: 50px; height: 3px; background-color: var(--primary-sky-dark);"></div>
+        <p class="text-muted mt-2">소장 가치 100%! 이번 시즌에만 만날 수 있는 몬치치 한정 굿즈 &amp; 어패럴 4선을 만나보세요.</p>
+    </div>
+
+    <!-- 4개 상품 그리드 레이아웃 (Bootstrap Row & Col) -->
+    <div class="row g-4">
+        {% for product in products %}
+        <div class="col-12 col-sm-6 col-lg-3">
+            <div class="card h-100 product-card rounded-4 overflow-hidden shadow-sm">
+                <!-- 상품 이미지 컨테이너 -->
+                <div class="position-relative overflow-hidden product-image-wrapper">
+                    <!-- 뱃지 표시 (BEST, NEW, HOT, SALE 등) -->
+                    <span class="badge bg-{{ product.badge_color }} position-absolute top-0 start-0 m-3 px-2 py-1 rounded-pill fw-bold z-2">
+                        {{ product.badge }}
+                    </span>
+                    <!-- 카테고리 태그 -->
+                    <span class="badge bg-dark bg-opacity-50 position-absolute top-0 end-0 m-3 px-2 py-1 rounded-pill small z-2">
+                        {{ product.category }}
+                    </span>
+                    <!-- picsum.photos 더미 이미지 -->
+                    <img src="{{ product.image }}" 
+                         class="card-img-top product-img" 
+                         alt="{{ product.name }}"
+                         loading="lazy">
+                </div>
+
+                <!-- 상품 정보 본문 -->
+                <div class="card-body d-flex flex-column p-4">
+                    <h5 class="card-title fw-bold fs-6 mb-2 text-dark">{{ product.name }}</h5>
+                    <p class="card-text text-muted small flex-grow-1 line-clamp-2">
+                        {{ product.description }}
+                    </p>
+
+                    <!-- 가격 정보 -->
+                    <div class="d-flex align-items-baseline gap-2 mb-3">
+                        <span class="fs-5 fw-bold text-primary">{{ product.price }}원</span>
+                        <span class="text-muted text-decoration-line-through small">{{ product.original_price }}원</span>
+                    </div>
+
+                    <!-- 액션 버튼 (장바구니 담기) -->
+                    <button type="button" class="btn btn-outline-primary w-100 rounded-pill btn-hover-cart fw-semibold">
+                        <i class="bi bi-bag-plus me-1"></i> 담기
+                    </button>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<!-- ==============================================
+     3. 추가 프로모션 배너 섹션 (Special Offer)
+=============================================== -->
+<section id="special-offer" class="container my-5">
+    <div class="p-4 p-md-5 rounded-4 shadow-sm border border-info-subtle text-center" style="background: linear-gradient(135deg, #e0f2fe 0%, #ffffff 100%);">
+        <span class="badge bg-info text-dark px-3 py-1 rounded-pill fw-bold mb-2">LIMITED EVENT</span>
+        <h3 class="fw-bold mb-2 text-dark">무료 배송 &amp; 무료 교환 혜택</h3>
+        <p class="text-muted mb-4">VIBE-FASHION 회원이라면 전 상품 무료 배송과 7일 이내 안심 무료 반품 서비스를 누려보세요.</p>
+        <div class="d-inline-flex gap-2">
+            <button class="btn btn-sky px-4 py-2 rounded-pill fw-bold shadow-sm">혜택 받기</button>
+        </div>
+    </div>
+</section>
+{% endblock %}

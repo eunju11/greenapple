@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %}서버 오류 | VIBE-FASHION{% endblock %}
+
+{% block content %}
+<div class="container py-5 text-center my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card border-0 shadow-sm rounded-4 p-4 p-md-5" style="background-color: #ffffff;">
+                <div class="display-1 fw-bold text-danger mb-3">500</div>
+                <h2 class="fw-bold mb-3">서버 내부 오류가 발생했습니다</h2>
+                <p class="text-muted mb-4">
+                    일시적인 서버 문제로 요청을 처리할 수 없습니다.<br>
+                    잠시 후 다시 시도해 주시기 바랍니다.
+                </p>
+                <div>
+                    <a href="{{ url_for('main.index') }}" class="btn btn-sky rounded-pill px-4 py-2 fw-semibold">
+                        <i class="bi bi-house-door me-1"></i> 메인 홈으로 돌아가기
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
