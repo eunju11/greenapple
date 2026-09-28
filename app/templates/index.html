@@ -52,22 +52,22 @@
 
 <!-- ==============================================
      2. 상품 목록 섹션 (Product Cards Section)
-     - 몬치치 & 치무탄 공식 에디션 상품 8종 카드
+     - 몬치치 & 치무탄 공식 실물 에디션 상품 카드
 =============================================== -->
 <section id="products" class="container py-5">
     <div class="text-center mb-5">
         <span class="badge bg-info-subtle text-primary border border-primary-subtle px-3 py-1 rounded-pill fw-bold small tracking-wide mb-2">
             OFFICIAL COLLECTION
         </span>
-        <h2 class="fw-bold mt-1 text-dark">치무탄 &amp; 몬치치 페이스 파우치 &amp; 굿즈 라인업</h2>
+        <h2 class="fw-bold mt-1 text-dark">치무탄 &amp; 몬치치 페이스 파우치 &amp; 키링 라인업</h2>
         <div class="mx-auto mt-2 rounded" style="width: 50px; height: 3px; background-color: var(--primary-sky-dark);"></div>
-        <p class="text-muted mt-2">소장 가치 100%! 핑크 토끼 치무탄부터 브라운 별 자수, 사과머리 윙크, 크림 곰돌이까지 실물 디자인 4종 파우치 &amp; 한정 굿즈를 만나보세요.</p>
+        <p class="text-muted mt-2">소장 가치 100%! 핑크 토끼 치무탄부터 스트로베리 레드 토끼, 가방 베어 키링까지 실물 화보 상품을 만나보세요.</p>
     </div>
 
-    <!-- 6개 상품 그리드 레이아웃 (Bootstrap Row & Col: 3열씩 반응형 배치) -->
+    <!-- 상품 그리드 레이아웃 (Bootstrap Row & Col: 반응형 2열/4열 배치) -->
     <div class="row g-4">
         {% for product in products %}
-        <div class="col-12 col-sm-6 col-lg-4">
+        <div class="col-12 col-sm-6 col-lg-3">
             <div class="card h-100 product-card rounded-4 overflow-hidden shadow-sm">
                 <!-- 상품 이미지 컨테이너 -->
                 <div class="position-relative overflow-hidden product-image-wrapper">
@@ -107,13 +107,13 @@
 
                     <!-- 가격 정보 -->
                     <div class="d-flex align-items-baseline gap-2 mb-3">
-                        <span class="fs-5 fw-bold text-primary">{{ product.price }}원</span>
+                        <span class="fs-5 fw-bold text-danger">{{ product.price }}원</span>
                         <span class="text-muted text-decoration-line-through small">{{ product.original_price }}원</span>
                     </div>
 
                     <!-- 액션 버튼 (장바구니 담기) -->
-                    <button type="button" class="btn btn-outline-primary w-100 rounded-pill btn-hover-cart fw-semibold">
-                        <i class="bi bi-bag-plus me-1"></i> 담기
+                    <button type="button" class="btn btn-danger w-100 rounded-pill btn-hover-cart fw-semibold shadow-sm" onclick="addToCart('{{ product.id }}')">
+                        <i class="bi bi-bag-plus me-1"></i> 장바구니 담기 🍓
                     </button>
                 </div>
             </div>
@@ -126,30 +126,30 @@
      3. 추가 프로모션 배너 섹션 (Special Offer)
 =============================================== -->
 <section id="special-offer" class="container my-5">
-    <div class="p-4 p-md-5 rounded-4 shadow-sm border border-info-subtle text-center" style="background: linear-gradient(135deg, #e0f2fe 0%, #ffffff 100%);">
-        <span class="badge bg-info text-dark px-3 py-1 rounded-pill fw-bold mb-2">LIMITED EVENT</span>
-        <h3 class="fw-bold mb-2 text-dark">무료 배송 &amp; 무료 교환 혜택</h3>
-        <p class="text-muted mb-4">VIBE-FASHION 회원이라면 전 상품 무료 배송과 7일 이내 안심 무료 반품 서비스를 누려보세요.</p>
+    <div class="p-4 p-md-5 rounded-4 shadow-sm border border-danger-subtle text-center" style="background: linear-gradient(135deg, #fff0f3 0%, #ffffff 100%);">
+        <span class="badge bg-danger text-white px-3 py-1 rounded-pill fw-bold mb-2">LIMITED EVENT 🍓</span>
+        <h3 class="fw-bold mb-2 text-dark">전 상품 무료 배송 &amp; 안심 무료 교환</h3>
+        <p class="text-muted mb-4">치무탄 &amp; 몬치치 스토어 회원이라면 주문 금액 상관없이 전 상품 무료 배송 혜택을 드립니다.</p>
         <div class="d-inline-flex gap-2">
-            <a href="#reviews" class="btn btn-sky px-4 py-2 rounded-pill fw-bold shadow-sm">
-                <i class="bi bi-star-fill text-warning me-1"></i> 고객 실구매 후기 보러가기
+            <a href="#reviews" class="btn btn-danger px-4 py-2 rounded-pill fw-bold shadow-sm">
+                🍓 고객 실구매 딸기 평점 보러가기
             </a>
         </div>
     </div>
 </section>
 
 <!-- ==============================================
-     4. 구매자 리뷰 및 별점 게시판 섹션 (Reviews & Ratings)
+     4. 구매자 리뷰 및 딸기 평점 게시판 섹션 (Reviews & Ratings)
 =============================================== -->
 <section id="reviews" class="container py-5">
     <!-- 섹션 헤더 -->
     <div class="text-center mb-5">
-        <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-1 rounded-pill fw-bold small tracking-wide mb-2">
-            CUSTOMER REVIEWS
+        <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-3 py-1 rounded-pill fw-bold small tracking-wide mb-2">
+            CUSTOMER REVIEWS 🍓
         </span>
-        <h2 class="fw-bold mt-1 text-dark">몬치치 컬렉션 구매자 실시간 리뷰 &amp; 평점</h2>
-        <div class="mx-auto mt-2 rounded" style="width: 50px; height: 3px; background-color: var(--primary-sky-dark);"></div>
-        <p class="text-muted mt-2">실제 구매 고객님들이 남겨주신 솔직한 별점과 생생한 후기를 확인해보세요.</p>
+        <h2 class="fw-bold mt-1 text-dark">치무탄 &amp; 몬치치 구매자 실시간 리뷰 &amp; 딸기 평점</h2>
+        <div class="mx-auto mt-2 rounded" style="width: 50px; height: 3px; background-color: var(--primary-berry-dark);"></div>
+        <p class="text-muted mt-2">실제 구매 고객님들이 남겨주신 달콤한 딸기 평점과 생생한 후기를 확인해보세요.</p>
     </div>
 
     <!-- 플래시 알림 메시지 (리뷰 작성 완료/경고) -->
@@ -164,21 +164,21 @@
         {% endif %}
     {% endwith %}
 
-    <!-- 상단: 별점 종합 대시보드 카드 -->
+    <!-- 상단: 딸기 평점 종합 대시보드 카드 -->
     <div class="row g-4 mb-5 align-items-stretch">
         <!-- 1) 종합 만족도 평점 -->
         <div class="col-lg-4">
             <div class="card h-100 review-stats-card rounded-4 p-4 text-center d-flex flex-column justify-content-center shadow-sm">
-                <span class="text-muted small fw-bold">전체 구매자 평균 만족도</span>
+                <span class="text-muted small fw-bold">전체 구매자 평균 딸기 만족도</span>
                 <div class="display-3 fw-bold text-dark my-2">{{ review_stats.avg }} <span class="fs-4 text-muted fw-normal">/ 5.0</span></div>
-                <div class="rating-stars-lg mb-2">
+                <div class="rating-berries-lg mb-2">
                     {% for i in range(1, 6) %}
                         {% if i <= review_stats.avg|round(0, 'floor')|int %}
-                            <i class="bi bi-star-fill"></i>
+                            <span class="berry-icon">🍓</span>
                         {% elif i - review_stats.avg < 0.8 %}
-                            <i class="bi bi-star-half"></i>
+                            <span class="berry-icon" style="opacity: 0.65;">🍓</span>
                         {% else %}
-                            <i class="bi bi-star"></i>
+                            <span class="berry-icon berry-empty">🍓</span>
                         {% endif %}
                     {% endfor %}
                 </div>
@@ -186,13 +186,18 @@
             </div>
         </div>
 
-        <!-- 2) 별점 비율 프로그레스 바 -->
+        <!-- 2) 딸기 평점 비율 프로그레스 바 -->
         <div class="col-lg-5">
             <div class="card h-100 review-stats-card rounded-4 p-4 shadow-sm justify-content-center">
-                <h6 class="fw-bold mb-3 text-dark"><i class="bi bi-bar-chart-line text-primary me-2"></i>별점별 분포</h6>
+                <h6 class="fw-bold mb-3 text-dark d-flex align-items-center gap-2">
+                    <img src="{{ url_for('static', filename='images/strawberry_icon.svg') }}" width="20" height="20" alt="딸기">
+                    <span>딸기 평점별 분포</span>
+                </h6>
                 {% for score in [5, 4, 3, 2, 1] %}
                 <div class="d-flex align-items-center gap-2 mb-2">
-                    <span class="small fw-semibold text-secondary" style="width: 32px;">{{ score }}점</span>
+                    <span class="small fw-semibold text-danger d-flex align-items-center" style="width: 48px;">
+                        <span>🍓</span> <span class="ms-1">{{ score }}</span>
+                    </span>
                     <div class="progress flex-grow-1 rating-bar-progress">
                         <div class="progress-bar rating-bar-fill" role="progressbar" 
                              style="width: {{ review_stats.percents[score] }}%;" 
@@ -208,12 +213,12 @@
 
         <!-- 3) 리뷰 작성 유도 배너 -->
         <div class="col-lg-3">
-            <div class="card h-100 rounded-4 p-4 text-center d-flex flex-column justify-content-center border-0 text-white shadow-sm" style="background: linear-gradient(135deg, #0284c7 0%, #38bdf8 100%);">
-                <i class="bi bi-pencil-square display-5 mb-2 text-warning"></i>
-                <h5 class="fw-bold mb-1">리뷰 작성 혜택</h5>
+            <div class="card h-100 rounded-4 p-4 text-center d-flex flex-column justify-content-center border-0 text-white shadow-sm" style="background: linear-gradient(135deg, #e60039 0%, #ff4d6d 100%);">
+                <div class="display-5 mb-2">🍓</div>
+                <h5 class="fw-bold mb-1">딸기 리뷰 작성 혜택</h5>
                 <p class="small text-light opacity-90 mb-3">소중한 후기를 남겨주시면 적립금 <strong>최대 2,000P</strong> 지급!</p>
-                <button type="button" class="btn btn-light rounded-pill fw-bold text-primary shadow-sm" data-bs-toggle="modal" data-bs-target="#writeReviewModal">
-                    <i class="bi bi-pen me-1"></i> 리뷰 작성하기
+                <button type="button" class="btn btn-light rounded-pill fw-bold text-danger shadow-sm" data-bs-toggle="modal" data-bs-target="#writeReviewModal">
+                    <i class="bi bi-pen me-1"></i> 딸기 리뷰 작성하기
                 </button>
             </div>
         </div>
@@ -234,7 +239,7 @@
                             <div class="d-flex align-items-center gap-2">
                                 <span class="fw-bold text-dark">{{ review.author }}</span>
                                 {% if review.verified %}
-                                <span class="badge bg-success-subtle text-success small rounded-pill px-2">
+                                <span class="badge bg-danger-subtle text-danger small rounded-pill px-2">
                                     <i class="bi bi-patch-check-fill me-1"></i>구매인증
                                 </span>
                                 {% endif %}
@@ -242,26 +247,26 @@
                             <small class="text-muted">{{ review.date }}</small>
                         </div>
                     </div>
-                    <!-- 별점 표시 -->
-                    <div class="rating-stars text-end">
+                    <!-- 딸기 평점 표시 -->
+                    <div class="rating-berries text-end">
                         {% for i in range(1, 6) %}
                             {% if i <= review.rating %}
-                                <i class="bi bi-star-fill"></i>
+                                <span class="berry-icon">🍓</span>
                             {% else %}
-                                <i class="bi bi-star text-black-50 opacity-25"></i>
+                                <span class="berry-icon berry-empty">🍓</span>
                             {% endif %}
                         {% endfor %}
-                        <span class="small fw-bold text-dark ms-1">{{ review.rating }}.0</span>
+                        <span class="small fw-bold text-danger ms-1">{{ review.rating }}.0</span>
                     </div>
                 </div>
 
                 <!-- 구매 상품명 태그 -->
                 <div class="mb-2">
                     <span class="badge bg-light text-secondary border small text-truncate" style="max-width: 100%;">
-                        <i class="bi bi-bag-check me-1 text-primary"></i>구매 상품: {{ review.product_name }}
+                        <i class="bi bi-bag-check me-1 text-danger"></i>구매 상품: {{ review.product_name }}
                     </span>
                     {% if review.badge %}
-                    <span class="badge bg-info-subtle text-primary border border-info-subtle small ms-1">
+                    <span class="badge bg-danger-subtle text-danger border border-danger-subtle small ms-1">
                         {{ review.badge }}
                     </span>
                     {% endif %}
@@ -284,14 +289,15 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content rounded-4 border-0 shadow-lg">
             <div class="modal-header border-bottom-0 pb-0">
-                <h5 class="modal-title fw-bold text-dark" id="writeReviewModalLabel">
-                    <i class="bi bi-star-fill text-warning me-2"></i>구매 후기 작성
+                <h5 class="modal-title fw-bold text-danger d-flex align-items-center gap-2" id="writeReviewModalLabel">
+                    <img src="{{ url_for('static', filename='images/strawberry_icon.svg') }}" width="24" height="24" alt="딸기">
+                    <span>구매 후기 &amp; 딸기 평점 작성</span>
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <form action="{{ url_for('main.create_review') }}" method="POST">
                 <div class="modal-body pt-3">
-                    <p class="text-muted small mb-4">구매하신 몬치치 에디션에 대한 만족도와 솔직한 리뷰를 남겨주세요.</p>
+                    <p class="text-muted small mb-4">구매하신 치무탄 &amp; 몬치치 에디션에 대한 만족도와 솔직한 딸기 평점을 남겨주세요.</p>
 
                     <!-- 1. 구매 상품 선택 -->
                     <div class="mb-3">
@@ -303,18 +309,18 @@
                         </select>
                     </div>
 
-                    <!-- 2. 별점 선택 -->
+                    <!-- 2. 딸기 평점 선택 -->
                     <div class="mb-3">
-                        <label class="form-label fw-semibold small text-dark d-block">별점 선택</label>
+                        <label class="form-label fw-semibold small text-dark d-block">딸기 평점 선택</label>
                         <div class="btn-group w-100" role="group">
                             <input type="radio" class="btn-check" name="rating" id="star5" value="5" checked>
-                            <label class="btn btn-outline-warning text-dark fw-bold" for="star5">⭐⭐⭐⭐⭐ 5점</label>
+                            <label class="btn btn-outline-danger fw-bold text-nowrap" for="star5">🍓 5점 (최고예요!)</label>
 
                             <input type="radio" class="btn-check" name="rating" id="star4" value="4">
-                            <label class="btn btn-outline-warning text-dark fw-bold" for="star4">⭐⭐⭐⭐ 4점</label>
+                            <label class="btn btn-outline-danger fw-bold text-nowrap" for="star4">🍓 4점 (좋아요)</label>
 
                             <input type="radio" class="btn-check" name="rating" id="star3" value="3">
-                            <label class="btn btn-outline-warning text-dark fw-bold" for="star3">⭐⭐⭐ 3점</label>
+                            <label class="btn btn-outline-danger fw-bold text-nowrap" for="star3">🍓 3점 (보통)</label>
                         </div>
                     </div>
 

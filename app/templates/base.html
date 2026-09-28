@@ -9,18 +9,23 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons CDN -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <!-- 동글동글 깔끔한 나눔스퀘어 라운드 & 고운 돋움 웹폰트 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/moonspam/NanumSquareRound@master/nanumsquareround.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap" rel="stylesheet">
     <!-- 커스텀 스타일시트 -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body class="bg-light d-flex flex-column min-vh-100">
 
-    <!-- 네비게이션 바 -->
-    <nav class="navbar navbar-expand-lg navbar-dark navbar-sky sticky-top shadow-sm">
+    <!-- 네비게이션 바 (분홍 & 레드 스트로베리 테마) -->
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-berry sticky-top shadow-sm">
         <div class="container">
             <!-- 브랜드 로고 및 이름 -->
             <a class="navbar-brand fw-bold fs-3 tracking-wide d-flex align-items-center gap-2" href="{{ url_for('main.index') }}">
-                <span class="fs-4">🐵</span>
-                <span><span class="text-white">MONCHHICHI</span><span class="text-info-emphasis fw-light"> x VIBE</span></span>
+                <img src="{{ url_for('static', filename='images/strawberry_icon.svg') }}" alt="딸기 아이콘" width="32" height="32" class="me-1">
+                <span><span class="text-white">CHIMUTAN</span><span class="text-warning fw-light"> x STRAWBERRY</span></span>
             </a>
             <!-- 모바일 토글 버튼 -->
             <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="메뉴 열기">
@@ -33,7 +38,7 @@
                         <a class="nav-link active" aria-current="page" href="{{ url_for('main.index') }}">홈</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#products">신상품</a>
+                        <a class="nav-link" href="#products">딸기 컬렉션</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#products">베스트셀러</a>
@@ -42,15 +47,16 @@
                         <a class="nav-link" href="#products">기획전</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-warning-emphasis fw-bold" href="#reviews"><i class="bi bi-star-fill text-warning me-1"></i>구매 후기</a>
+                        <a class="nav-link text-white fw-bold" href="#reviews">🍓 구매 후기</a>
                     </li>
                 </ul>
                 <!-- 우측 사용자 아이콘 및 장바구니 -->
                 <div class="d-flex align-items-center gap-2">
-                    <button class="btn btn-outline-light btn-sm rounded-pill px-3 fw-medium" type="button">
-                        <i class="bi bi-cart3 me-1"></i> 장바구니 <span class="badge badge-sky ms-1">0</span>
+                    <button class="btn btn-outline-light btn-sm rounded-pill px-3 fw-medium position-relative" type="button" data-bs-toggle="offcanvas" data-bs-target="#cartOffcanvas" aria-controls="cartOffcanvas">
+                        <i class="bi bi-cart3 me-1"></i> 장바구니 
+                        <span id="navCartBadge" class="badge badge-berry ms-1">{{ cart.total_count if cart else 0 }}</span>
                     </button>
-                    <button class="btn btn-light btn-sm rounded-pill px-3 text-primary-emphasis fw-bold shadow-sm" type="button">
+                    <button class="btn btn-light btn-sm rounded-pill px-3 text-danger fw-bold shadow-sm" type="button">
                         로그인
                     </button>
                 </div>
@@ -63,11 +69,89 @@
         {% block content %}{% endblock %}
     </main>
 
-    <!-- 푸터 영역 -->
-    <footer class="footer-sky text-white-50 py-5 mt-5">
+    <!-- 오프캔버스 장바구니 서랍 (Cart Offcanvas Drawer) -->
+    <div class="offcanvas offcanvas-end rounded-start-4 shadow-lg border-0" tabindex="-1" id="cartOffcanvas" aria-labelledby="cartOffcanvasLabel">
+        <div class="offcanvas-header border-bottom py-3" style="background: linear-gradient(90deg, #fff0f3 0%, #ffffff 100%);">
+            <h5 class="offcanvas-title fw-bold text-danger d-flex align-items-center gap-2" id="cartOffcanvasLabel">
+                <img src="{{ url_for('static', filename='images/strawberry_icon.svg') }}" width="24" height="24" alt="딸기">
+                <span>장바구니</span>
+                <span id="offcanvasCartBadge" class="badge bg-danger rounded-pill fs-6">{{ cart.total_count if cart else 0 }}</span>
+            </h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        
+        <div class="offcanvas-body d-flex flex-column p-3">
+            <!-- 장바구니 아이템 컨테이너 -->
+            <div id="cartItemsContainer" class="flex-grow-1 overflow-auto pe-1">
+                {% if cart and cart['item_list'] %}
+                    {% for item in cart['item_list'] %}
+                    <div class="card border-0 mb-3 rounded-4 p-2 shadow-sm cart-item-row" data-id="{{ item.id }}" style="background-color: #fff9fa; border: 1px solid #ffe3e8 !important;">
+                        <div class="d-flex align-items-center gap-3">
+                            <img src="{{ item.image }}" alt="{{ item.name }}" class="rounded-3" style="width: 64px; height: 64px; object-fit: contain; background-color: #ffffff; padding: 4px;">
+                            <div class="flex-grow-1">
+                                <h6 class="fw-bold mb-1 fs-6 text-dark text-truncate" style="max-width: 170px;">{{ item.name }}</h6>
+                                <div class="text-danger fw-bold small mb-2">{{ item.price }}원</div>
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="btn-group btn-group-sm rounded-pill border border-danger-subtle overflow-hidden" role="group">
+                                        <button type="button" class="btn btn-light px-2 text-danger fw-bold" onclick="updateCartItem('{{ item.id }}', 'decrease')">-</button>
+                                        <span class="btn btn-white px-3 fw-bold small text-dark bg-white border-0">{{ item.quantity }}</span>
+                                        <button type="button" class="btn btn-light px-2 text-danger fw-bold" onclick="updateCartItem('{{ item.id }}', 'increase')">+</button>
+                                    </div>
+                                    <button type="button" class="btn btn-link text-muted p-0 ms-auto" title="삭제" onclick="updateCartItem('{{ item.id }}', 'delete')">
+                                        <i class="bi bi-trash3 text-secondary"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div id="emptyCartNotice" class="text-center py-5 my-auto">
+                        <img src="{{ url_for('static', filename='images/strawberry_icon.svg') }}" width="64" height="64" alt="딸기" class="mb-3 opacity-75">
+                        <h6 class="fw-bold text-secondary">장바구니가 비어 있습니다</h6>
+                        <p class="small text-muted mb-4">사랑스러운 치무탄 &amp; 몬치치 컬렉션을 담아보세요! 🍓</p>
+                        <a href="#products" class="btn btn-outline-danger btn-sm rounded-pill px-4 fw-bold" data-bs-dismiss="offcanvas">
+                            상품 보러가기
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- 하단 결제 정보 및 버튼 -->
+            <div id="cartFooterSection" class="border-top pt-3 mt-2 {% if not cart or not cart['item_list'] %}d-none{% endif %}">
+                <div class="d-flex justify-content-between small text-muted mb-2">
+                    <span>주문 상품 수량</span>
+                    <span id="cartFooterCount" class="fw-bold text-dark">{{ cart.total_count if cart else 0 }}개</span>
+                </div>
+                <div class="d-flex justify-content-between small text-muted mb-2">
+                    <span>배송비</span>
+                    <span class="badge bg-success-subtle text-success fw-bold">전 상품 무료 배송 0원</span>
+                </div>
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <span class="fw-bold text-dark fs-6">총 결제 예정 금액</span>
+                    <span id="cartFooterTotal" class="fw-bold text-danger fs-5">{{ cart.total_price_formatted if cart else 0 }}원</span>
+                </div>
+
+                <div class="d-grid gap-2">
+                    <button type="button" class="btn btn-danger btn-lg rounded-pill fw-bold shadow-sm" onclick="checkoutCart()">
+                        <i class="bi bi-check2-circle me-1"></i> 주문하기
+                    </button>
+                    <button type="button" class="btn btn-light btn-sm text-muted rounded-pill" onclick="clearAllCart()">
+                        장바구니 전체 비우기
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 푸터 영역 (스트로베리 딥레드 테마) -->
+    <footer class="footer-berry text-white-50 py-5 mt-5">
         <div class="container text-center">
-            <h5 class="text-white fw-bold mb-3"><span class="text-info">VIBE</span>-FASHION</h5>
-            <p class="small mb-2 text-light opacity-75">당신만의 감각적인 스타일을 완성하는 트렌디 패션 쇼핑몰 VIBE-FASHION</p>
+            <h5 class="text-white fw-bold mb-3 d-flex align-items-center justify-content-center gap-2">
+                <img src="{{ url_for('static', filename='images/strawberry_icon.svg') }}" alt="딸기" width="24" height="24">
+                <span><span class="text-white">CHIMUTAN</span> &amp; <span class="text-danger-emphasis">MONCHHICHI</span></span>
+            </h5>
+            <p class="small mb-2 text-light opacity-75">사랑스러운 핑크 치무탄 &amp; 레드 스트로베리 공식 에디션 스토어</p>
             <p class="small mb-4 text-white-50">
                 대표: 홍길동 | 사업자등록번호: 123-45-67890 | 통신판매업신고: 제2026-서울강남-0000호<br>
                 주소: 서울특별시 강남구 테헤란로 123 | 고객센터: 1588-0000 (평일 09:00 ~ 18:00)
@@ -79,11 +163,153 @@
                 <span class="text-secondary">|</span>
                 <a href="#" class="text-white-50 text-decoration-none small">고객문의</a>
             </div>
-            <p class="small text-white-50 mb-0">&copy; 2026 VIBE-FASHION. All Rights Reserved.</p>
+            <p class="small text-white-50 mb-0">&copy; 2026 CHIMUTAN &amp; MONCHHICHI. All Rights Reserved.</p>
         </div>
     </footer>
 
     <!-- Bootstrap 5.3 CDN (JavaScript 번들) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- 실시간 장바구니 스크립트 -->
+    <script>
+        // 장바구니 UI 렌더링 함수
+        function renderCartUI(cart) {
+            const navBadge = document.getElementById('navCartBadge');
+            const offcanvasBadge = document.getElementById('offcanvasCartBadge');
+            const container = document.getElementById('cartItemsContainer');
+            const footer = document.getElementById('cartFooterSection');
+            const footerCount = document.getElementById('cartFooterCount');
+            const footerTotal = document.getElementById('cartFooterTotal');
+
+            const count = cart.total_count || 0;
+            if (navBadge) navBadge.textContent = count;
+            if (offcanvasBadge) offcanvasBadge.textContent = count;
+            if (footerCount) footerCount.textContent = count + '개';
+            if (footerTotal) footerTotal.textContent = (cart.total_price_formatted || '0') + '원';
+
+            if (!cart.items || cart.items.length === 0) {
+                if (footer) footer.classList.add('d-none');
+                if (container) {
+                    container.innerHTML = `
+                        <div id="emptyCartNotice" class="text-center py-5 my-auto">
+                            <img src="{{ url_for('static', filename='images/strawberry_icon.svg') }}" width="64" height="64" alt="딸기" class="mb-3 opacity-75">
+                            <h6 class="fw-bold text-secondary">장바구니가 비어 있습니다</h6>
+                            <p class="small text-muted mb-4">사랑스러운 치무탄 &amp; 몬치치 컬렉션을 담아보세요! 🍓</p>
+                            <a href="#products" class="btn btn-outline-danger btn-sm rounded-pill px-4 fw-bold" data-bs-dismiss="offcanvas">
+                                상품 보러가기
+                            </a>
+                        </div>
+                    `;
+                }
+            } else {
+                if (footer) footer.classList.remove('d-none');
+                if (container) {
+                    let html = '';
+                    cart.items.forEach(item => {
+                        html += `
+                        <div class="card border-0 mb-3 rounded-4 p-2 shadow-sm cart-item-row" data-id="${item.id}" style="background-color: #fff9fa; border: 1px solid #ffe3e8 !important;">
+                            <div class="d-flex align-items-center gap-3">
+                                <img src="${item.image}" alt="${item.name}" class="rounded-3" style="width: 64px; height: 64px; object-fit: contain; background-color: #ffffff; padding: 4px;">
+                                <div class="flex-grow-1">
+                                    <h6 class="fw-bold mb-1 fs-6 text-dark text-truncate" style="max-width: 170px;">${item.name}</h6>
+                                    <div class="text-danger fw-bold small mb-2">${item.price}원</div>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div class="btn-group btn-group-sm rounded-pill border border-danger-subtle overflow-hidden" role="group">
+                                            <button type="button" class="btn btn-light px-2 text-danger fw-bold" onclick="updateCartItem('${item.id}', 'decrease')">-</button>
+                                            <span class="btn btn-white px-3 fw-bold small text-dark bg-white border-0">${item.quantity}</span>
+                                            <button type="button" class="btn btn-light px-2 text-danger fw-bold" onclick="updateCartItem('${item.id}', 'increase')">+</button>
+                                        </div>
+                                        <button type="button" class="btn btn-link text-muted p-0 ms-auto" title="삭제" onclick="updateCartItem('${item.id}', 'delete')">
+                                            <i class="bi bi-trash3 text-secondary"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        `;
+                    });
+                    container.innerHTML = html;
+                }
+            }
+        }
+
+        // 장바구니 담기 요청
+        function addToCart(productId) {
+            fetch("{{ url_for('main.add_to_cart') }}", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ product_id: productId })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    renderCartUI(data.cart);
+                    // 오프캔버스 장바구니 열기
+                    const cartElement = document.getElementById('cartOffcanvas');
+                    const bsOffcanvas = bootstrap.Offcanvas.getOrCreateInstance(cartElement);
+                    bsOffcanvas.show();
+                } else {
+                    alert(data.message || '장바구니 담기에 실패했습니다.');
+                }
+            })
+            .catch(err => {
+                console.error("장바구니 담기 오류:", err);
+                alert("장바구니에 담는 중 문제가 발생했습니다.");
+            });
+        }
+
+        // 장바구니 수량 변경 및 삭제
+        function updateCartItem(productId, action) {
+            fetch("{{ url_for('main.update_cart') }}", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ product_id: productId, action: action })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    renderCartUI(data.cart);
+                }
+            })
+            .catch(err => console.error("장바구니 업데이트 오류:", err));
+        }
+
+        // 장바구니 전체 비우기
+        function clearAllCart() {
+            if (!confirm("장바구니의 모든 상품을 비우시겠습니까?")) return;
+            fetch("{{ url_for('main.clear_cart') }}", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" }
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    renderCartUI(data.cart);
+                }
+            })
+            .catch(err => console.error("장바구니 비우기 오류:", err));
+        }
+
+        // 주문하기
+        function checkoutCart() {
+            fetch("{{ url_for('main.checkout') }}", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" }
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    alert(data.message);
+                    renderCartUI(data.cart);
+                    const cartElement = document.getElementById('cartOffcanvas');
+                    const bsOffcanvas = bootstrap.Offcanvas.getInstance(cartElement);
+                    if (bsOffcanvas) bsOffcanvas.hide();
+                } else {
+                    alert(data.message || '주문 처리에 실패했습니다.');
+                }
+            })
+            .catch(err => console.error("주문 처리 오류:", err));
+        }
+    </script>
 </body>
 </html>

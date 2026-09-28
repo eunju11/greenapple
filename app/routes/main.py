@@ -3,7 +3,7 @@
 쇼핑몰 메인 페이지 및 상품 목록 조회를 담당합니다.
 """
 
-from flask import Blueprint, render_template, request, redirect, url_for, flash
+from flask import Blueprint, render_template, request, redirect, url_for, flash, session, jsonify
 from app.supabase_client import get_supabase_client
 from datetime import datetime
 
@@ -26,8 +26,8 @@ INITIAL_REVIEWS = [
         "id": 2,
         "author": "이*연",
         "rating": 5,
-        "product_name": "[스페셜 기획전] 몬치치 & 치무탄 4종 파우치 풀 컬렉션",
-        "content": "4종 다 실물 깡패예요 ㅠㅠ 브라운 별자수랑 윙크 사과머리, 치무탄, 크림 곰돌이까지 친구들이랑 하나씩 맞춰 가졌는데 다들 대만족입니다!",
+        "product_name": "[스페셜 화보] 몬치치 & 치무탄 3종 룩북 에디션",
+        "content": "스트로베리 토끼랑 핑크 치무탄, 가방 베어 키링 3종 실물 깡패예요 ㅠㅠ 친구들이랑 하나씩 나눠가졌는데 다들 너무 좋아해요!",
         "date": "2026-09-27",
         "verified": True,
         "badge": "포토 리뷰",
@@ -36,8 +36,8 @@ INITIAL_REVIEWS = [
         "id": 3,
         "author": "박*준",
         "rating": 5,
-        "product_name": "[몬치치 클래식] 골드 별 자수 브라운 페이스 파우치",
-        "content": "보아퍼 질감 짱짱하고 동전이나 에어팟 넣기 딱 좋은 사이즈입니다. 골드 별 자수가 고급스러워요.",
+        "product_name": "[치무탄 스트로베리] 레드 딸기 토끼 페이스 파우치",
+        "content": "딸기 디테일이랑 초록색 꼭지 부분이 진짜 귀여워요! 가방에 포인트 주기에 이만한 게 없네요.",
         "date": "2026-09-26",
         "verified": True,
         "badge": "일반 리뷰",
@@ -46,8 +46,8 @@ INITIAL_REVIEWS = [
         "id": 4,
         "author": "최*희",
         "rating": 5,
-        "product_name": "[몬치치 러블리] 핑크 리본 사과머리 윙크 파우치",
-        "content": "사과머리 꽁지에 핑크 리본 달려있는 게 실물 심쿵 포인트입니다... 윙크하고 있는 표정도 너무 깜찍해요 💕",
+        "product_name": "[몬치치 백참] 아이보리 베어 토트백 키링 (가방 걸이용)",
+        "content": "토트백 손잡이에 바로 걸 수 있어서 편하고 털도 몽글몽글 부드러워요. 보는 사람마다 어디서 샀냐고 물어봐요 💕",
         "date": "2026-09-25",
         "verified": True,
         "badge": "포토 리뷰",
@@ -83,39 +83,17 @@ PRODUCTS = [
     },
     {
         "id": 3,
-        "name": "[몬치치 클래식] 골드 별 자수 브라운 페이스 파우치",
-        "category": "POUCH",
-        "price": "24,000",
-        "original_price": "29,000",
-        "badge": "HIT",
-        "badge_color": "warning",
-        "image": "/static/images/real_brown_star.png",
-        "description": "뽀글뽀글 브라운 보아퍼에 이마 옆 골드 별 자수가 포인트인 몬치치 시그니처 원형 파우치입니다.",
+        "name": "[몬치치 클래식] 오리지널 레드 레더 체인 지갑",
+        "category": "WALLET",
+        "price": "22,000",
+        "original_price": "28,000",
+        "badge": "HOT",
+        "badge_color": "danger",
+        "image": "/static/images/real_monchhichi_red_wallet.png",
+        "description": "빈티지한 레드 가죽 질감에 귀여운 몬치치 오리지널 캐릭터와 볼체인 키링이 달린 지퍼형 동전 지갑입니다.",
     },
     {
         "id": 4,
-        "name": "[몬치치 러블리] 핑크 리본 사과머리 윙크 파우치",
-        "category": "POUCH",
-        "price": "25,000",
-        "original_price": "30,000",
-        "badge": "POPULAR",
-        "badge_color": "primary",
-        "image": "/static/images/real_ribbon_wink.png",
-        "description": "앙증맞은 사과머리 꽁지와 핑크 리본, 귀엽게 윙크하는 표정이 매력적인 하트 자수 파우치입니다.",
-    },
-    {
-        "id": 5,
-        "name": "[몬치치 크림] 아이보리 베어 곰돌이 페이스 파우치",
-        "category": "POUCH",
-        "price": "24,000",
-        "original_price": "29,000",
-        "badge": "WARM",
-        "badge_color": "info",
-        "image": "/static/images/real_cream_bear.png",
-        "description": "부드럽고 포근한 아이보리 크림 털과 동글동글 곰돌이 귀가 돋보이는 윈터 에디션 파우치입니다.",
-    },
-    {
-        "id": 6,
         "name": "[몬치치 백참] 아이보리 베어 토트백 키링 (가방 걸이용)",
         "category": "KEYRING",
         "price": "23,000",
@@ -126,7 +104,18 @@ PRODUCTS = [
         "description": "토트백이나 에코백 손잡이에 바로 걸 수 있는 실버 체인이 달린 보송보송 아이보리 베어 키링입니다.",
     },
     {
-        "id": 7,
+        "id": 5,
+        "name": "[치무탄 홈웨어] 포근한 핑크 체크 딸기 수면양말",
+        "category": "LOUNGE",
+        "price": "14,000",
+        "original_price": "18,000",
+        "badge": "COZY",
+        "badge_color": "warning",
+        "image": "/static/images/real_strawberry_sleep_socks.png",
+        "description": "보들보들한 핑크 깅엄체크 극세사 퍼에 발목의 입체 딸기 니팅 자수와 화이트 보아퍼 밴딩이 더해진 보온 수면양말입니다.",
+    },
+    {
+        "id": 6,
         "name": "[스페셜 화보] 몬치치 & 치무탄 3종 룩북 에디션",
         "category": "SET",
         "price": "75,000",
@@ -136,17 +125,6 @@ PRODUCTS = [
         "image": "/static/images/real_monchhichi_group.png",
         "description": "스트로베리 토끼, 핑크 치무탄, 가방 베어 키링 3종이 담긴 실물 촬영 공식 룩북 세트입니다.",
     },
-    {
-        "id": 8,
-        "name": "[전체 세트] 몬치치 & 치무탄 페이스 파우치 4종 풀컬렉션",
-        "category": "FULL SET",
-        "price": "89,000",
-        "original_price": "115,000",
-        "badge": "ALL-IN-ONE",
-        "badge_color": "primary",
-        "image": "/static/images/real_monchhichi_4set.png",
-        "description": "브라운 별, 사과머리 윙크, 핑크 토끼 치무탄, 크림 곰돌이까지 4종을 한 번에 소장하는 풀세트 패키지입니다.",
-    },
 ]
 
 
@@ -154,7 +132,7 @@ PRODUCTS = [
 def index():
     """
     쇼핑몰 메인 페이지 뷰 함수
-    - 몬치치 x VIBE 공식 캡슐 컬렉션 8종 및 실시간 구매자 리뷰/별점 통계를 표시합니다.
+    - 몬치치 x VIBE 공식 캡슐 컬렉션 및 실시간 구매자 리뷰/별점 통계를 표시합니다.
     """
     display_products = PRODUCTS
 
@@ -214,12 +192,142 @@ def index():
         "percents": rating_percents,
     }
 
+    cart_summary = get_cart_summary()
+
     return render_template(
         "index.html", 
         products=display_products,
         reviews=REVIEWS_STORAGE,
-        review_stats=review_stats
+        review_stats=review_stats,
+        cart=cart_summary
     )
+
+
+def get_cart():
+    """세션 내 장바구니 딕셔너리를 반환합니다."""
+    if "cart" not in session or not isinstance(session["cart"], dict):
+        session["cart"] = {}
+    return session["cart"]
+
+
+def get_cart_summary():
+    """장바구니 아이템 목록, 총 수량, 총 금액을 계산합니다."""
+    cart = get_cart()
+    item_list = list(cart.values())
+    total_count = sum(item.get("quantity", 1) for item in item_list)
+    total_price = sum(item.get("raw_price", 0) * item.get("quantity", 1) for item in item_list)
+    return {
+        "items": item_list,
+        "item_list": item_list,
+        "total_count": total_count,
+        "total_price": total_price,
+        "total_price_formatted": f"{total_price:,}",
+        "shipping_fee": 0,
+    }
+
+
+@main_bp.route("/cart/add", methods=["POST"])
+def add_to_cart():
+    """
+    장바구니 상품 추가 핸들러
+    - JSON 또는 일반 Form 요청 모두 지원
+    """
+    data = request.get_json(silent=True) or request.form
+    product_id = str(data.get("product_id", "")).strip()
+
+    # 등록된 상품 목록에서 대상 상품 검색
+    target_product = next((p for p in PRODUCTS if str(p["id"]) == product_id), None)
+    if not target_product:
+        return jsonify({"success": False, "message": "해당 상품을 찾을 수 없습니다."}), 404
+
+    cart = get_cart()
+    raw_price = int(str(target_product["price"]).replace(",", "").replace("원", ""))
+
+    if product_id in cart:
+        cart[product_id]["quantity"] += 1
+    else:
+        cart[product_id] = {
+            "id": target_product["id"],
+            "name": target_product["name"],
+            "price": target_product["price"],
+            "raw_price": raw_price,
+            "image": target_product["image"],
+            "category": target_product.get("category", "POUCH"),
+            "quantity": 1,
+        }
+
+    session.modified = True
+    summary = get_cart_summary()
+
+    if request.is_json:
+        return jsonify({
+            "success": True,
+            "message": f"'{target_product['name']}' 상품이 장바구니에 담겼습니다! 🍓",
+            "cart": summary
+        })
+
+    flash(f"'{target_product['name']}' 상품이 장바구니에 담겼습니다! 🍓", "success")
+    return redirect(url_for("main.index"))
+
+
+@main_bp.route("/cart/update", methods=["POST"])
+def update_cart():
+    """
+    장바구니 수량 증가/감소/삭제 핸들러
+    """
+    data = request.get_json(silent=True) or request.form
+    product_id = str(data.get("product_id", "")).strip()
+    action = data.get("action", "").strip()  # 'increase', 'decrease', 'delete'
+
+    cart = get_cart()
+    if product_id in cart:
+        if action == "increase":
+            cart[product_id]["quantity"] += 1
+        elif action == "decrease":
+            cart[product_id]["quantity"] -= 1
+            if cart[product_id]["quantity"] <= 0:
+                del cart[product_id]
+        elif action == "delete":
+            del cart[product_id]
+
+        session.modified = True
+
+    summary = get_cart_summary()
+    return jsonify({
+        "success": True,
+        "cart": summary,
+        "message": "장바구니가 업데이트되었습니다."
+    })
+
+
+@main_bp.route("/cart/clear", methods=["POST"])
+def clear_cart():
+    """장바구니 전체 비우기"""
+    session["cart"] = {}
+    session.modified = True
+    return jsonify({
+        "success": True,
+        "cart": get_cart_summary(),
+        "message": "장바구니를 모두 비웠습니다."
+    })
+
+
+@main_bp.route("/cart/checkout", methods=["POST"])
+def checkout():
+    """주문 완료 시뮬레이션"""
+    cart = get_cart()
+    if not cart:
+        return jsonify({"success": False, "message": "장바구니가 비어 있습니다."}), 400
+
+    summary = get_cart_summary()
+    session["cart"] = {}
+    session.modified = True
+
+    return jsonify({
+        "success": True,
+        "message": f"총 {summary['total_count']}개 상품({summary['total_price_formatted']}원)의 주문이 성공적으로 완료되었습니다! 🍓",
+        "cart": get_cart_summary()
+    })
 
 
 @main_bp.route("/reviews/create", methods=["POST"])

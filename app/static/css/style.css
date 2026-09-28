@@ -1,41 +1,69 @@
 /* ========================================================
    VIBE-FASHION 메인 스타일시트
-   하늘색(Sky Blue) 테마 적용
+   스트로베리 핑크 & 레드 (Strawberry Pink & Red) 테마 적용
 ======================================================== */
 
 :root {
-    --primary-sky: #38bdf8;        /* 밝고 청량한 스카이블루 */
-    --primary-sky-dark: #0284c7;   /* 깊은 스카이블루 */
-    --primary-sky-light: #e0f2fe;  /* 아주 연한 하늘색 배경용 */
-    --primary-sky-hover: #0ea5e9;  /* 호버 상태 색상 */
+    --primary-berry: #ff4d6d;        /* 화사하고 사랑스러운 딸기 핑크 */
+    --primary-berry-dark: #e60039;   /* 선명하고 딥한 레드 */
+    --primary-berry-light: #fff0f3;  /* 아주 부드러운 딸기우유 핑크 배경 */
+    --primary-berry-hover: #c9002b;  /* 호버 상태 레드 */
+    --secondary-berry: #ff85a1;      /* 소프트 핑크 */
+    --berry-green: #65a30d;          /* 딸기 꼭지 그린 */
 }
 
-/* 전역 폰트 및 스타일 */
+/* 전역 폰트 및 스타일 (동글동글하고 깔끔한 라운드 폰트 적용) */
+@import url('https://cdn.jsdelivr.net/gh/moonspam/NanumSquareRound@master/nanumsquareround.min.css');
+
 body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-family: 'NanumSquareRound', 'Gowun Dodum', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     color: #1e293b;
-    background-color: #f0f9ff !important; /* 부드러운 하늘빛 배경 */
+    background-color: #fff5f7 !important; /* 포근하고 달콤한 딸기 핑크빛 배경 */
+    letter-spacing: -0.3px;
+    word-break: keep-all;
+}
+
+h1, h2, h3, h4, h5, h6, .btn, .badge, .navbar, .card-title {
+    font-family: 'NanumSquareRound', 'Gowun Dodum', sans-serif;
+    letter-spacing: -0.4px;
 }
 
 /* 1. 네비게이션 바 커스텀 */
-.navbar-sky {
-    background: linear-gradient(90deg, #0284c7 0%, #0ea5e9 100%) !important;
+.navbar-berry {
+    background: linear-gradient(90deg, #e60039 0%, #ff4d6d 50%, #ff758f 100%) !important;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.2);
 }
 
 .brand-accent {
     color: #ffffff;
-    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
 }
 
-.badge-sky {
-    background-color: #bae6fd;
-    color: #0369a1;
+.badge-berry {
+    background-color: #ffe3e8;
+    color: #c9002b;
+    font-weight: 700;
 }
 
-/* 2. 히어로 섹션 스타일 (하늘색 그라데이션) */
+/* 2. 히어로 섹션 스타일 (딸기 핑크 & 레드 그라데이션) */
 .hero-section {
-    background: linear-gradient(135deg, #0284c7 0%, #38bdf8 50%, #7dd3fc 100%);
+    background: linear-gradient(135deg, #c9002b 0%, #e60039 35%, #ff4d6d 70%, #ff85a1 100%);
     min-height: 480px;
+}
+
+/* 딸기 둥둥 떠다니는 장식 효과 */
+.strawberry-deco {
+    filter: drop-shadow(0 8px 16px rgba(158, 0, 34, 0.35));
+    animation: floatBerry 4s ease-in-out infinite;
+}
+
+@keyframes floatBerry {
+    0%, 100% {
+        transform: translateY(0) rotate(-6deg);
+    }
+    50% {
+        transform: translateY(-10px) rotate(6deg);
+    }
 }
 
 /* 몬치치 히어로 카드 & 애니메이션 */
@@ -46,11 +74,11 @@ body {
 
 .monchhichi-hero-card:hover {
     transform: translateY(-8px) scale(1.02);
-    box-shadow: 0 20px 35px rgba(2, 132, 199, 0.35) !important;
+    box-shadow: 0 20px 35px rgba(230, 0, 57, 0.35) !important;
 }
 
 .monchhichi-art {
-    filter: drop-shadow(0 10px 15px rgba(2, 132, 199, 0.25));
+    filter: drop-shadow(0 10px 15px rgba(230, 0, 57, 0.25));
     transition: transform 0.5s ease;
 }
 
@@ -74,18 +102,18 @@ body {
 .product-card {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     background-color: #ffffff;
-    border: 1px solid #e0f2fe !important;
+    border: 1px solid #ffe3e8 !important;
 }
 
 .product-card:hover {
     transform: translateY(-6px);
-    box-shadow: 0 14px 28px rgba(14, 165, 233, 0.18) !important;
-    border-color: #7dd3fc !important;
+    box-shadow: 0 14px 28px rgba(255, 77, 109, 0.2) !important;
+    border-color: #ff85a1 !important;
 }
 
 .product-image-wrapper {
     height: 320px;
-    background-color: #f8fafc;
+    background-color: #fff9fa;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -112,80 +140,93 @@ body {
     overflow: hidden;
 }
 
-/* 하늘색 커스텀 버튼 */
-.btn-sky {
-    background-color: var(--primary-sky-dark);
+/* 딸기 레드 & 핑크 커스텀 버튼 */
+.btn-berry {
+    background: linear-gradient(135deg, #e60039 0%, #ff4d6d 100%);
     color: #ffffff;
-    border: 1px solid var(--primary-sky-dark);
+    border: none;
     transition: all 0.2s ease-in-out;
 }
 
-.btn-sky:hover {
-    background-color: var(--primary-sky-hover);
+.btn-berry:hover {
+    background: linear-gradient(135deg, #c9002b 0%, #e60039 100%);
     color: #ffffff;
-    border-color: var(--primary-sky-hover);
+    box-shadow: 0 6px 16px rgba(230, 0, 57, 0.3);
 }
 
 /* 장바구니 버튼 호버 효과 */
 .btn-hover-cart {
-    border-color: #0284c7;
-    color: #0284c7;
+    border-color: #ff4d6d;
+    color: #e60039;
+    font-weight: 600;
 }
 
 .btn-hover-cart:hover {
-    background-color: #0284c7;
+    background-color: #e60039;
     color: #ffffff;
-    border-color: #0284c7;
+    border-color: #e60039;
 }
 
 /* ========================================================
-   4. 리뷰 및 별점 게시판 스타일
+   4. 리뷰 및 딸기 평점 게시판 스타일
 ======================================================== */
 .review-stats-card {
     background: #ffffff;
-    border: 1px solid #e0f2fe;
+    border: 1px solid #ffe3e8;
 }
 
-.rating-stars {
-    color: #f59e0b;
-    font-size: 1.15rem;
+.rating-berries {
+    font-size: 1.05rem;
     letter-spacing: 2px;
+    display: inline-flex;
+    align-items: center;
 }
 
-.rating-stars-lg {
-    color: #f59e0b;
+.rating-berries-lg {
     font-size: 1.6rem;
-    letter-spacing: 3px;
+    letter-spacing: 4px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.berry-icon {
+    display: inline-block;
+    transition: transform 0.2s ease;
+}
+
+.berry-empty {
+    filter: grayscale(1) opacity(0.28);
 }
 
 .rating-bar-progress {
     height: 9px;
     border-radius: 6px;
-    background-color: #e2e8f0;
+    background-color: #fce7ec;
 }
 
 .rating-bar-fill {
-    background: linear-gradient(90deg, #38bdf8 0%, #0284c7 100%);
+    background: linear-gradient(90deg, #ff85a1 0%, #e60039 100%);
     border-radius: 6px;
 }
 
 .review-item-card {
     background-color: #ffffff;
-    border: 1px solid #e0f2fe;
+    border: 1px solid #ffe3e8;
     transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
 .review-item-card:hover {
     transform: translateY(-3px);
-    box-shadow: 0 10px 22px rgba(14, 165, 233, 0.12) !important;
-    border-color: #bae6fd;
+    box-shadow: 0 10px 22px rgba(255, 77, 109, 0.15) !important;
+    border-color: #ffb3c1;
 }
 
 .review-author-avatar {
     width: 44px;
     height: 44px;
-    background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
-    color: #0284c7;
+    background: linear-gradient(135deg, #ffe3e8 0%, #ff85a1 100%);
+    color: #c9002b;
     font-weight: 700;
     display: inline-flex;
     align-items: center;
@@ -193,8 +234,17 @@ body {
     border-radius: 50%;
 }
 
-/* 푸터 하늘색 테마 */
-.footer-sky {
-    background: #0c4a6e;
-    border-top: 3px solid #38bdf8;
+/* 5. 오프캔버스 장바구니 서랍 스타일 */
+.cart-item-row {
+    transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.cart-item-row:hover {
+    background-color: #fff0f3 !important;
+}
+
+/* 푸터 딸기 레드 테마 */
+.footer-berry {
+    background: linear-gradient(135deg, #47000f 0%, #680016 100%);
+    border-top: 3px solid #ff4d6d;
 }
