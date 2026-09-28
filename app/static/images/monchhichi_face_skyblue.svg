@@ -1,0 +1,252 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000" width="800" height="1000">
+  <defs>
+    <!-- 배경 하늘색 소프트 파스텔 그라데이션 -->
+    <linearGradient id="bgSkyStudio" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F0F9FF" />
+      <stop offset="50%" stop-color="#E0F2FE" />
+      <stop offset="100%" stop-color="#BAE6FD" />
+    </linearGradient>
+
+    <!-- 배경 부드러운 원형 빛번짐 -->
+    <radialGradient id="lightHalo" cx="50%" cy="45%" r="55%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.9" />
+      <stop offset="60%" stop-color="#E0F2FE" stop-opacity="0.5" />
+      <stop offset="100%" stop-color="#BAE6FD" stop-opacity="0" />
+    </radialGradient>
+
+    <!-- 바닥 접지 소프트 그림자 -->
+    <radialGradient id="faceFloorShadow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="rgba(3, 105, 161, 0.35)" />
+      <stop offset="60%" stop-color="rgba(3, 105, 161, 0.12)" />
+      <stop offset="100%" stop-color="rgba(3, 105, 161, 0)" />
+    </radialGradient>
+
+    <!-- 몬치치 복실복실 털(하늘색) 그라데이션 -->
+    <linearGradient id="furSkyDeep" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#38BDF8" />
+      <stop offset="100%" stop-color="#0284C7" />
+    </linearGradient>
+
+    <radialGradient id="furSkyVolume" cx="45%" cy="40%" r="60%">
+      <stop offset="0%" stop-color="#E0F2FE" />
+      <stop offset="30%" stop-color="#BAE6FD" />
+      <stop offset="70%" stop-color="#38BDF8" />
+      <stop offset="100%" stop-color="#0284C7" />
+    </radialGradient>
+
+    <linearGradient id="furSkyHighlight" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="50%" stop-color="#E0F2FE" />
+      <stop offset="100%" stop-color="#7DD3FC" />
+    </linearGradient>
+
+    <!-- 얼굴 스킨톤 그라데이션 -->
+    <linearGradient id="faceSkin" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFF5EC" />
+      <stop offset="100%" stop-color="#FEDCBD" />
+    </linearGradient>
+
+    <!-- 귀 안쪽 핑크 살구 -->
+    <linearGradient id="earInner" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FEDCBD" />
+      <stop offset="100%" stop-color="#FDBA74" />
+    </linearGradient>
+
+    <!-- 볼터치 블러 필터 -->
+    <filter id="blushBlur" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="9" />
+    </filter>
+
+    <!-- 전체 얼굴 드롭 섀도우 -->
+    <filter id="faceDropShadow" x="-15%" y="-15%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="18" stdDeviation="22" flood-color="#0369A1" flood-opacity="0.25" />
+    </filter>
+  </defs>
+
+  <!-- 1. 배경 -->
+  <rect width="800" height="1000" fill="url(#bgSkyStudio)" />
+  <circle cx="400" cy="460" r="360" fill="url(#lightHalo)" />
+
+  <!-- 2. 얼굴 하단 부드러운 그림자 -->
+  <ellipse cx="400" cy="830" rx="270" ry="45" fill="url(#faceFloorShadow)" />
+
+  <!-- 3. 메인 몬치치 얼굴 클로즈업 그룹 (Face Close-Up) -->
+  <g id="monchhichi-face-closeup" filter="url(#faceDropShadow)">
+
+    <!-- [귀 좌/우] 커다랗고 쫑긋한 귀 -->
+    <!-- 왼쪽 귀 -->
+    <g id="left-ear">
+      <!-- 털 외곽 -->
+      <ellipse cx="140" cy="430" rx="90" ry="110" fill="url(#furSkyDeep)" />
+      <ellipse cx="140" cy="430" rx="80" ry="100" fill="url(#furSkyVolume)" />
+      <!-- 귀 털 몽글몽글 돌기 -->
+      <circle cx="70" cy="400" r="28" fill="url(#furSkyVolume)" />
+      <circle cx="65" cy="445" r="28" fill="url(#furSkyVolume)" />
+      <circle cx="75" cy="490" r="26" fill="url(#furSkyDeep)" />
+      <!-- 살구빛 귀 안쪽 -->
+      <ellipse cx="150" cy="435" rx="46" ry="62" fill="url(#earInner)" />
+      <ellipse cx="155" cy="438" rx="28" ry="40" fill="#FFCBB0" opacity="0.8" />
+    </g>
+
+    <!-- 오른쪽 귀 -->
+    <g id="right-ear">
+      <!-- 털 외곽 -->
+      <ellipse cx="660" cy="430" rx="90" ry="110" fill="url(#furSkyDeep)" />
+      <ellipse cx="660" cy="430" rx="80" ry="100" fill="url(#furSkyVolume)" />
+      <!-- 귀 털 몽글몽글 돌기 -->
+      <circle cx="730" cy="400" r="28" fill="url(#furSkyVolume)" />
+      <circle cx="735" cy="445" r="28" fill="url(#furSkyVolume)" />
+      <circle cx="725" cy="490" r="26" fill="url(#furSkyDeep)" />
+      <!-- 살구빛 귀 안쪽 -->
+      <ellipse cx="650" cy="435" rx="46" ry="62" fill="url(#earInner)" />
+      <ellipse cx="645" cy="438" rx="28" ry="40" fill="#FFCBB0" opacity="0.8" />
+    </g>
+
+    <!-- [복실복실 털 외곽 프레임] 하늘색 구름 같은 풍성한 털 뭉치 레이어 -->
+    <g id="fluffy-fur-silhouette" fill="url(#furSkyDeep)">
+      <!-- 원형 털 뭉치들이 둥글게 둘러싼 입체 실루엣 -->
+      <circle cx="210" cy="240" r="70" />
+      <circle cx="300" cy="190" r="75" />
+      <circle cx="400" cy="170" r="80" />
+      <circle cx="500" cy="190" r="75" />
+      <circle cx="590" cy="240" r="70" />
+
+      <circle cx="650" cy="330" r="68" />
+      <circle cx="675" cy="440" r="68" />
+      <circle cx="660" cy="550" r="68" />
+      <circle cx="610" cy="650" r="70" />
+      <circle cx="530" cy="730" r="75" />
+
+      <circle cx="400" cy="760" r="82" />
+      <circle cx="270" cy="730" r="75" />
+      <circle cx="190" cy="650" r="70" />
+      <circle cx="140" cy="550" r="68" />
+      <circle cx="125" cy="440" r="68" />
+      <circle cx="150" cy="330" r="68" />
+    </g>
+
+    <!-- 메인 머리 털 베이스 볼륨 -->
+    <circle cx="400" cy="460" r="275" fill="url(#furSkyVolume)" />
+
+    <!-- 털 볼륨감 하이라이트 뭉치 (입체적인 뽀송한 질감) -->
+    <g fill="url(#furSkyHighlight)" opacity="0.85">
+      <circle cx="240" cy="270" r="45" />
+      <circle cx="330" cy="225" r="48" />
+      <circle cx="400" cy="210" r="50" />
+      <circle cx="470" cy="225" r="48" />
+      <circle cx="560" cy="270" r="45" />
+      
+      <circle cx="620" cy="380" r="46" />
+      <circle cx="630" cy="490" r="46" />
+      <circle cx="590" cy="600" r="48" />
+      <circle cx="500" cy="680" r="50" />
+      <circle cx="400" cy="710" r="52" />
+      <circle cx="300" cy="680" r="50" />
+      <circle cx="210" cy="600" r="48" />
+      <circle cx="170" cy="490" r="46" />
+      <circle cx="180" cy="380" r="46" />
+    </g>
+
+    <!-- [정수리 쫑긋한 몬치치 시그니처 3가닥 털] 하늘색 -->
+    <ellipse cx="360" cy="140" rx="20" ry="46" fill="url(#furSkyDeep)" transform="rotate(-15 360 140)" />
+    <ellipse cx="400" cy="120" rx="24" ry="56" fill="url(#furSkyVolume)" />
+    <ellipse cx="400" cy="120" rx="15" ry="42" fill="url(#furSkyHighlight)" />
+    <ellipse cx="440" cy="140" rx="20" ry="46" fill="url(#furSkyDeep)" transform="rotate(15 440 140)" />
+
+    <!-- [몬치치 얼굴 페이스] 둥글넓적하고 뽀송한 살구빛 얼굴 -->
+    <ellipse cx="400" cy="485" rx="195" ry="168" fill="url(#faceSkin)" stroke="#FBBF97" stroke-width="2" />
+
+    <!-- [시그니처 이마 뱅 헤어] 동글동글 뽀글머리 앞머리 털 (하늘색) -->
+    <g fill="url(#furSkyVolume)">
+      <circle cx="265" cy="365" r="38" />
+      <circle cx="320" cy="340" r="42" />
+      <circle cx="380" cy="330" r="46" />
+      <circle cx="435" cy="335" r="44" />
+      <circle cx="495" cy="350" r="42" />
+      <circle cx="540" cy="375" r="36" />
+    </g>
+    <!-- 앞머리 하이라이트 -->
+    <g fill="url(#furSkyHighlight)" opacity="0.9">
+      <circle cx="325" cy="345" r="22" />
+      <circle cx="385" cy="335" r="24" />
+      <circle cx="440" cy="340" r="23" />
+      <circle cx="495" cy="355" r="20" />
+    </g>
+
+    <!-- [크고 맑은 눈망울] 몬치치 특유의 초롱초롱한 눈 -->
+    <!-- 왼쪽 눈 -->
+    <g id="left-eye">
+      <!-- 눈썹 곡선 -->
+      <path d="M 275 425 Q 315 400 355 425" stroke="#0369A1" stroke-width="5" stroke-linecap="round" fill="none" />
+      <!-- 눈알 본체 (딥 네이비 브라운) -->
+      <ellipse cx="315" cy="465" rx="30" ry="40" fill="#0C4A6E" />
+      <!-- 홍채 하늘빛 반사광 -->
+      <ellipse cx="315" cy="485" rx="22" ry="14" fill="#0284C7" opacity="0.6" />
+      <!-- 눈망울 메인 화이트 하이라이트 -->
+      <circle cx="303" cy="450" r="13" fill="#FFFFFF" />
+      <circle cx="328" cy="478" r="6" fill="#FFFFFF" />
+    </g>
+
+    <!-- 오른쪽 눈 -->
+    <g id="right-eye">
+      <!-- 눈썹 곡선 -->
+      <path d="M 445 425 Q 485 400 525 425" stroke="#0369A1" stroke-width="5" stroke-linecap="round" fill="none" />
+      <!-- 눈알 본체 (딥 네이비 브라운) -->
+      <ellipse cx="485" cy="465" rx="30" ry="40" fill="#0C4A6E" />
+      <!-- 홍채 하늘빛 반사광 -->
+      <ellipse cx="485" cy="485" rx="22" ry="14" fill="#0284C7" opacity="0.6" />
+      <!-- 눈망울 메인 화이트 하이라이트 -->
+      <circle cx="473" cy="450" r="13" fill="#FFFFFF" />
+      <circle cx="498" cy="478" r="6" fill="#FFFFFF" />
+    </g>
+
+    <!-- [몬치치 시그니처 3개 주근깨] 양쪽 볼 -->
+    <g fill="#0284C7">
+      <!-- 왼쪽 볼 주근깨 -->
+      <circle cx="280" cy="525" r="4.5" />
+      <circle cx="305" cy="538" r="4.5" />
+      <circle cx="290" cy="552" r="4.5" />
+      <!-- 오른쪽 볼 주근깨 -->
+      <circle cx="520" cy="525" r="4.5" />
+      <circle cx="495" cy="538" r="4.5" />
+      <circle cx="510" cy="552" r="4.5" />
+    </g>
+
+    <!-- [사랑스러운 핑크빛 볼터치] 뽀샤시 블러 -->
+    <ellipse cx="285" cy="525" rx="48" ry="32" fill="#FF6B8B" opacity="0.5" filter="url(#blushBlur)" />
+    <ellipse cx="515" cy="525" rx="48" ry="32" fill="#FF6B8B" opacity="0.5" filter="url(#blushBlur)" />
+
+    <!-- [앙증맞은 코] -->
+    <ellipse cx="400" cy="510" rx="16" ry="11" fill="#0C4A6E" />
+    <ellipse cx="396" cy="507" rx="5" ry="3" fill="#FFFFFF" opacity="0.6" />
+
+    <!-- [미소 짓는 입] 귀엽게 살짝 벌린 입 -->
+    <path d="M 378 548 Q 400 580 422 548" stroke="#9A3C2A" stroke-width="6" fill="#E11D48" stroke-linecap="round" />
+    <!-- 핑크빛 혀 -->
+    <path d="M 386 560 Q 400 575 414 560" fill="#FDA4AF" />
+
+    <!-- [턱 밑 미니 턱받이 프레임] 하늘색 레이스 카라 살짝 노출되어 인형 느낌 완성 -->
+    <path d="M 290 615 Q 400 660 510 615 C 500 655, 300 655, 290 615 Z" fill="#FFFFFF" stroke="#38BDF8" stroke-width="2.5" />
+    <path d="M 310 622 Q 400 655 490 622" stroke="#BAE6FD" stroke-width="2" stroke-dasharray="5,4" fill="none" />
+    <!-- 턱받이 중앙 미니 블루 하트 -->
+    <circle cx="400" cy="632" r="5" fill="#38BDF8" />
+
+  </g>
+
+  <!-- 4. 쇼핑몰 룩북 뱃지 & 오버레이 타이포그래피 -->
+  <!-- 좌상단 공식 에디션 뱃지 -->
+  <g transform="translate(60, 60)">
+    <rect width="145" height="36" rx="18" fill="#FFFFFF" opacity="0.95" />
+    <text x="72" y="23" font-family="'Montserrat', sans-serif" font-size="12" font-weight="800" fill="#0284C7" text-anchor="middle" letter-spacing="2">OFFICIAL PLUSH</text>
+  </g>
+
+  <!-- 우상단 위시리스트 아이콘 -->
+  <g transform="translate(690, 60)">
+    <circle cx="25" cy="25" r="25" fill="#FFFFFF" opacity="0.95" />
+    <path d="M 25 33 C 16 24, 8 13, 17 6 C 22 2, 25 6, 25 7 C 25 6, 28 2, 33 6 C 42 13, 34 24, 25 33 Z" fill="#38BDF8" />
+  </g>
+
+  <!-- 하단 상품명 안내 텍스트 -->
+  <text x="400" y="920" font-family="'Pretendard', 'Noto Sans KR', sans-serif" font-size="22" font-weight="700" fill="#0C4A6E" text-anchor="middle" letter-spacing="2">SKY BLUE MONCHHICHI FACE DOLL</text>
+  <text x="400" y="955" font-family="'Pretendard', sans-serif" font-size="14" font-weight="500" fill="#0284C7" text-anchor="middle" letter-spacing="1">몽글몽글 복실한 하늘색 몬치치 오리지널 페이스 인형</text>
+</svg>

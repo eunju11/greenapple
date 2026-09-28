@@ -1,0 +1,247 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 820" width="800" height="820">
+  <defs>
+    <!-- 털 텍스처 노이즈 필터 -->
+    <filter id="furNoiseBrown" x="0%" y="0%" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.05 0.05" numOctaves="4" result="noise" />
+      <feColorMatrix type="matrix" values="
+        0 0 0 0 0.42
+        0 0 0 0 0.25
+        0 0 0 0 0.15
+        0.35 0.35 0.35 0 0" in="noise" result="coloredNoise" />
+      <feComposite operator="in" in2="SourceGraphic" result="furPattern" />
+      <feBlend mode="multiply" in="SourceGraphic" in2="furPattern" />
+    </filter>
+
+    <filter id="furNoisePink" x="0%" y="0%" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.045 0.045" numOctaves="4" result="noise" />
+      <feColorMatrix type="matrix" values="
+        0 0 0 0 0.96
+        0 0 0 0 0.72
+        0 0 0 0 0.79
+        0.3 0.3 0.3 0 0" in="noise" result="coloredNoise" />
+      <feComposite operator="in" in2="SourceGraphic" result="furPattern" />
+      <feBlend mode="multiply" in="SourceGraphic" in2="furPattern" />
+    </filter>
+
+    <filter id="furNoiseCream" x="0%" y="0%" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.045 0.045" numOctaves="4" result="noise" />
+      <feColorMatrix type="matrix" values="
+        0 0 0 0 0.88
+        0 0 0 0 0.85
+        0 0 0 0 0.78
+        0.28 0.28 0.28 0 0" in="noise" result="coloredNoise" />
+      <feComposite operator="in" in2="SourceGraphic" result="furPattern" />
+      <feBlend mode="multiply" in="SourceGraphic" in2="furPattern" />
+    </filter>
+
+    <filter id="fabricNoise" x="0%" y="0%" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.08 0.08" numOctaves="2" result="noise" />
+      <feColorMatrix type="matrix" values="
+        0 0 0 0 0.98
+        0 0 0 0 0.88
+        0 0 0 0 0.82
+        0.12 0.12 0.12 0 0" in="noise" result="coloredNoise" />
+      <feComposite operator="in" in2="SourceGraphic" result="fabricPattern" />
+      <feBlend mode="multiply" in="SourceGraphic" in2="fabricPattern" />
+    </filter>
+
+    <!-- 브라운 털 -->
+    <radialGradient id="brFur" cx="45%" cy="38%" r="65%">
+      <stop offset="0%" stop-color="#7B4E32" />
+      <stop offset="45%" stop-color="#5A3219" />
+      <stop offset="100%" stop-color="#3A1C0B" />
+    </radialGradient>
+
+    <!-- 핑크 털 -->
+    <radialGradient id="pkFur" cx="45%" cy="40%" r="65%">
+      <stop offset="0%" stop-color="#FFEBF2" />
+      <stop offset="45%" stop-color="#FCD2DF" />
+      <stop offset="100%" stop-color="#EAA3BA" />
+    </radialGradient>
+
+    <!-- 크림 털 -->
+    <radialGradient id="crFur" cx="45%" cy="38%" r="65%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="45%" stop-color="#FAF7EE" />
+      <stop offset="100%" stop-color="#DFD9C7" />
+    </radialGradient>
+
+    <!-- 살구빛 피부 -->
+    <linearGradient id="skFace" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFF6F1" />
+      <stop offset="100%" stop-color="#FEDECB" />
+    </linearGradient>
+
+    <!-- 실제 인형 그림자 -->
+    <filter id="realPouchDrop" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="16" stdDeviation="18" flood-color="#2D283E" flood-opacity="0.22" />
+      <feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="#332A38" flood-opacity="0.14" />
+    </filter>
+
+    <filter id="mBlush" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="4.5" />
+    </filter>
+  </defs>
+
+  <!-- 1. 실제 사진 2의 스튜디오 클린 그레이 배경 -->
+  <rect width="800" height="820" fill="#EDEDED" />
+
+  <!-- ==============================================================
+       2. 실물 사진 2와 100% 동일한 2 x 2 페이스 파우치 4종 그리드 배치
+  ============================================================== -->
+
+  <!-- [1] 상단 좌측: 클래식 브라운 별 자수 몬치치 파우치 (중심 x=235, y=215) -->
+  <g id="grid-brown-star" transform="translate(235, 215)" filter="url(#realPouchDrop)">
+    <!-- 우측 레드 라벨 -->
+    <rect x="135" y="0" width="22" height="34" rx="2" fill="#D90429" transform="rotate(15 135 0)" />
+    <!-- 털 바디 (실제 모피 텍스처) -->
+    <circle cx="0" cy="0" r="142" fill="url(#brFur)" filter="url(#furNoiseBrown)" stroke="#3A1C0B" stroke-width="1.5" />
+    <!-- 털 가장자리 몽글몽글 돌기 -->
+    <g fill="url(#brFur)" opacity="0.9">
+      <circle cx="-120" cy="-60" r="24" /><circle cx="-135" cy="0" r="26" /><circle cx="-120" cy="65" r="24" />
+      <circle cx="-70" cy="115" r="25" /><circle cx="0" cy="132" r="28" /><circle cx="70" cy="115" r="25" />
+      <circle cx="120" cy="65" r="24" /><circle cx="135" cy="0" r="26" /><circle cx="120" cy="-60" r="24" />
+      <circle cx="70" cy="-115" r="25" /><circle cx="0" cy="-132" r="28" /><circle cx="-70" cy="-115" r="25" />
+    </g>
+    <!-- 골드 별 자수 2개 (실제 사진 위치) -->
+    <polygon points="60,-85 64,-72 78,-72 67,-64 71,-51 60,-59 49,-51 53,-64 42,-72 56,-72" fill="none" stroke="#FACC15" stroke-width="3.5" stroke-linejoin="round" />
+    <polygon points="90,-55 93,-45 104,-45 96,-39 99,-29 90,-35 81,-29 84,-39 76,-45 87,-45" fill="none" stroke="#FACC15" stroke-width="3" stroke-linejoin="round" />
+    <!-- 얼굴 테두리 스티치 띠 & 펠트 살구 얼굴 -->
+    <path d="M -80 70 C -95 40, -90 0, -70 -20 C -45 -45, -20 -30, 0 -35 C 20 -30, 45 -45, 70 -20 C 90 0, 95 40, 80 70 C 60 105, 35 115, 0 118 C -35 115, -60 105, -80 70 Z" fill="#3A1C0B" stroke="#220D04" stroke-width="2" />
+    <path d="M -75 66 C -90 38, -85 2, -66 -16 C -43 -38, -18 -25, 0 -30 C 18 -25, 43 -38, 66 -16 C 85 2, 90 38, 75 66 C 56 100, 32 110, 0 112 C -32 110, -56 100, -75 66 Z" fill="url(#skFace)" filter="url(#fabricNoise)" />
+    <!-- 눈망울 -->
+    <ellipse cx="-35" cy="20" rx="11" ry="14" fill="#2A0F0B" />
+    <circle cx="-38" cy="16" r="4.5" fill="#FFFFFF" />
+    <circle cx="-31" cy="26" r="2.5" fill="#FFFFFF" />
+    <ellipse cx="35" cy="20" rx="11" ry="14" fill="#2A0F0B" />
+    <circle cx="32" cy="16" r="4.5" fill="#FFFFFF" />
+    <circle cx="39" cy="26" r="2.5" fill="#FFFFFF" />
+    <!-- 코 & 주근깨 & 입 -->
+    <ellipse cx="0" cy="35" rx="11" ry="9" fill="#2A0F0B" />
+    <circle cx="-52" cy="45" r="1.8" fill="#461A13" /><circle cx="-43" cy="50" r="1.8" fill="#461A13" />
+    <circle cx="52" cy="45" r="1.8" fill="#461A13" /><circle cx="43" cy="50" r="1.8" fill="#461A13" />
+    <path d="M -18 48 C -10 68, 10 68, 18 48 Z" fill="#A8182E" stroke="#2A0F0B" stroke-width="1.8" />
+    <ellipse cx="-35" cy="36" rx="20" ry="13" fill="#FF7092" opacity="0.45" filter="url(#mBlush)" />
+    <ellipse cx="35" cy="36" rx="20" ry="13" fill="#FF7092" opacity="0.45" filter="url(#mBlush)" />
+  </g>
+
+
+  <!-- [2] 상단 우측: 핑크 리본 윙크 사과머리 몬치치 (중심 x=565, y=215) -->
+  <g id="grid-ribbon-wink" transform="translate(565, 215)" filter="url(#realPouchDrop)">
+    <!-- 우측 레드 라벨 -->
+    <rect x="135" y="0" width="22" height="34" rx="2" fill="#D90429" transform="rotate(15 135 0)" />
+    <!-- 사과머리 꽁지 & 핑크 리본 -->
+    <path d="M -18 -130 C -30 -180, 0 -220, 0 -220 C 0 -220, 30 -180, 18 -130 Z" fill="url(#brFur)" filter="url(#furNoiseBrown)" stroke="#3A1C0B" stroke-width="1.5" />
+    <circle cx="0" cy="-155" r="9" fill="#FF8FA3" stroke="#E66A85" stroke-width="1" />
+    <ellipse cx="-16" cy="-157" rx="14" ry="10" fill="#FF8FA3" stroke="#E66A85" stroke-width="1" transform="rotate(-15 -16 -157)" />
+    <ellipse cx="16" cy="-153" rx="14" ry="10" fill="#FF8FA3" stroke="#E66A85" stroke-width="1" transform="rotate(15 16 -153)" />
+    <!-- 털 바디 -->
+    <circle cx="0" cy="0" r="142" fill="url(#brFur)" filter="url(#furNoiseBrown)" stroke="#3A1C0B" stroke-width="1.5" />
+    <!-- 핑크 하트 자수 2개 (실제 사진 위치) -->
+    <path d="M 68 -75 C 64 -80, 56 -78, 58 -71 C 60 -65, 68 -60, 68 -60 C 68 -60, 76 -65, 78 -71 C 80 -78, 72 -80, 68 -75 Z" fill="none" stroke="#FF4D6D" stroke-width="2.8" stroke-linejoin="round" />
+    <path d="M 95 -50 C 92 -54, 86 -52, 87 -47 C 89 -42, 95 -38, 95 -38 C 95 -38, 101 -42, 103 -47 C 104 -52, 98 -54, 95 -50 Z" fill="none" stroke="#FF4D6D" stroke-width="2.5" stroke-linejoin="round" />
+    <!-- 얼굴 테두리 스티치 띠 & 살구 얼굴 -->
+    <path d="M -80 70 C -95 40, -90 0, -70 -20 C -45 -45, -20 -30, 0 -35 C 20 -30, 45 -45, 70 -20 C 90 0, 95 40, 80 70 C 60 105, 35 115, 0 118 C -35 115, -60 105, -80 70 Z" fill="#3A1C0B" stroke="#220D04" stroke-width="2" />
+    <path d="M -75 66 C -90 38, -85 2, -66 -16 C -43 -38, -18 -25, 0 -30 C 18 -25, 43 -38, 66 -16 C 85 2, 90 38, 75 66 C 56 100, 32 110, 0 112 C -32 110, -56 100, -75 66 Z" fill="url(#skFace)" filter="url(#fabricNoise)" />
+    <!-- 왼쪽 눈(동글) & 오른쪽 눈(찡긋 윙크) -->
+    <ellipse cx="-35" cy="20" rx="11" ry="14" fill="#2A0F0B" />
+    <circle cx="-38" cy="16" r="4.5" fill="#FFFFFF" />
+    <circle cx="-31" cy="26" r="2.5" fill="#FFFFFF" />
+    <path d="M 22 24 Q 38 8 54 24" stroke="#2A0F0B" stroke-width="4" stroke-linecap="round" fill="none" />
+    <line x1="46" y1="18" x2="54" y2="12" stroke="#2A0F0B" stroke-width="2.5" stroke-linecap="round" />
+    <!-- 코 & 입 -->
+    <ellipse cx="0" cy="35" rx="11" ry="9" fill="#2A0F0B" />
+    <path d="M -18 48 C -10 68, 10 68, 18 48 Z" fill="#A8182E" stroke="#2A0F0B" stroke-width="1.8" />
+    <ellipse cx="-35" cy="36" rx="20" ry="13" fill="#FF7092" opacity="0.45" filter="url(#mBlush)" />
+    <ellipse cx="35" cy="36" rx="20" ry="13" fill="#FF7092" opacity="0.45" filter="url(#mBlush)" />
+  </g>
+
+
+  <!-- [3] 하단 좌측: 핑크 토끼 치무탄 (중심 x=235, y=560) -->
+  <g id="grid-pink-rabbit" transform="translate(235, 560)" filter="url(#realPouchDrop)">
+    <!-- 우측 핑크 라벨 -->
+    <rect x="135" y="0" width="22" height="34" rx="2" fill="#E60039" transform="rotate(15 135 0)" />
+    <!-- 토끼 귀 2개 (화이트 안쪽) -->
+    <path d="M -70 -100 C -95 -160, -85 -240, -50 -245 C -15 -240, -10 -160, -35 -100 Z" fill="url(#pkFur)" filter="url(#furNoisePink)" stroke="#F49EB4" stroke-width="1.5" />
+    <path d="M -60 -110 C -80 -160, -70 -220, -50 -225 C -30 -220, -25 -160, -42 -110 Z" fill="#FFFFFF" />
+    <path d="M 35 -100 C 10 -160, 15 -240, 50 -245 C 85 -240, 95 -160, 70 -100 Z" fill="url(#pkFur)" filter="url(#furNoisePink)" stroke="#F49EB4" stroke-width="1.5" />
+    <path d="M 42 -110 C 25 -160, 30 -220, 50 -225 C 70 -220, 80 -160, 60 -110 Z" fill="#FFFFFF" />
+    <!-- 털 바디 -->
+    <circle cx="0" cy="0" r="142" fill="url(#pkFur)" filter="url(#furNoisePink)" stroke="#F49EB4" stroke-width="1.5" />
+    <!-- 얼굴 테두리 & 스티치 -->
+    <path d="M -80 70 C -95 40, -90 0, -70 -20 C -45 -45, -20 -30, 0 -35 C 20 -30, 45 -45, 70 -20 C 90 0, 95 40, 80 70 C 60 105, 35 115, 0 118 C -35 115, -60 105, -80 70 Z" fill="#FCA0B7" stroke="#E66A85" stroke-width="2" />
+    <path d="M -75 66 C -90 38, -85 2, -66 -16 C -43 -38, -18 -25, 0 -30 C 18 -25, 43 -38, 66 -16 C 85 2, 90 38, 75 66 C 56 100, 32 110, 0 112 C -32 110, -56 100, -75 66 Z" fill="url(#skFace)" filter="url(#fabricNoise)" />
+    <!-- 눈망울 -->
+    <ellipse cx="-35" cy="20" rx="11" ry="14" fill="#461A13" />
+    <circle cx="-38" cy="16" r="4.5" fill="#FFFFFF" />
+    <circle cx="-31" cy="26" r="2.5" fill="#FFFFFF" />
+    <ellipse cx="35" cy="20" rx="11" ry="14" fill="#461A13" />
+    <circle cx="32" cy="16" r="4.5" fill="#FFFFFF" />
+    <circle cx="39" cy="26" r="2.5" fill="#FFFFFF" />
+    <!-- 딸기 핑크 볼록 코 & 입 -->
+    <ellipse cx="0" cy="35" rx="13" ry="11" fill="#FF4071" stroke="#A50830" stroke-width="1.2" />
+    <ellipse cx="-3" cy="32" rx="4" ry="2.5" fill="#FFFFFF" opacity="0.85" />
+    <path d="M -18 48 C -10 68, 10 68, 18 48 Z" fill="#A8182E" stroke="#461A13" stroke-width="1.8" />
+    <ellipse cx="-35" cy="36" rx="20" ry="13" fill="#FF5E8A" opacity="0.45" filter="url(#mBlush)" />
+    <ellipse cx="35" cy="36" rx="20" ry="13" fill="#FF5E8A" opacity="0.45" filter="url(#mBlush)" />
+  </g>
+
+
+  <!-- [4] 하단 우측: 아이보리 크림 곰돌이 몬치치 (중심 x=565, y=560) -->
+  <g id="grid-cream-bear" transform="translate(565, 560)" filter="url(#realPouchDrop)">
+    <!-- 우측 연핑크 라벨 -->
+    <rect x="135" y="0" width="22" height="34" rx="2" fill="#F48FB1" transform="rotate(15 135 0)" />
+    <!-- 곰돌이 귀 2개 (안쪽 핑크) -->
+    <ellipse cx="-115" cy="-55" rx="36" ry="32" fill="url(#crFur)" filter="url(#furNoiseCream)" stroke="#D8D2BE" stroke-width="1.5" />
+    <path d="M -100 -40 C -120 -45, -130 -70, -115 -72 Z" fill="#F8B4C7" />
+    <ellipse cx="115" cy="-55" rx="36" ry="32" fill="url(#crFur)" filter="url(#furNoiseCream)" stroke="#D8D2BE" stroke-width="1.5" />
+    <path d="M 100 -40 C 120 -45, 130 -70, 115 -72 Z" fill="#F8B4C7" />
+    <!-- 털 바디 -->
+    <circle cx="0" cy="0" r="142" fill="url(#crFur)" filter="url(#furNoiseCream)" stroke="#D8D2BE" stroke-width="1.5" />
+    <!-- 얼굴 테두리 스티치 띠 & 살구 얼굴 -->
+    <path d="M -80 70 C -95 40, -90 0, -70 -20 C -45 -45, -20 -30, 0 -35 C 20 -30, 45 -45, 70 -20 C 90 0, 95 40, 80 70 C 60 105, 35 115, 0 118 C -35 115, -60 105, -80 70 Z" fill="#DFD7C4" stroke="#C9BEA8" stroke-width="2" />
+    <path d="M -75 66 C -90 38, -85 2, -66 -16 C -43 -38, -18 -25, 0 -30 C 18 -25, 43 -38, 66 -16 C 85 2, 90 38, 75 66 C 56 100, 32 110, 0 112 C -32 110, -56 100, -75 66 Z" fill="url(#skFace)" filter="url(#fabricNoise)" />
+    <!-- 눈망울 -->
+    <ellipse cx="-35" cy="20" rx="11" ry="14" fill="#3D1E16" />
+    <circle cx="-38" cy="16" r="4.5" fill="#FFFFFF" />
+    <circle cx="-31" cy="26" r="2.5" fill="#FFFFFF" />
+    <ellipse cx="35" cy="20" rx="11" ry="14" fill="#3D1E16" />
+    <circle cx="32" cy="16" r="4.5" fill="#FFFFFF" />
+    <circle cx="39" cy="26" r="2.5" fill="#FFFFFF" />
+    <!-- 코 & 주근깨 & 입 -->
+    <ellipse cx="0" cy="35" rx="11" ry="9" fill="#3D1E16" />
+    <circle cx="-52" cy="45" r="1.8" fill="#461A13" /><circle cx="-43" cy="50" r="1.8" fill="#461A13" />
+    <circle cx="52" cy="45" r="1.8" fill="#461A13" /><circle cx="43" cy="50" r="1.8" fill="#461A13" />
+    <path d="M -18 48 C -10 68, 10 68, 18 48 Z" fill="#A8182E" stroke="#3D1E16" stroke-width="1.8" />
+    <ellipse cx="-35" cy="36" rx="20" ry="13" fill="#FF7092" opacity="0.45" filter="url(#mBlush)" />
+    <ellipse cx="35" cy="36" rx="20" ry="13" fill="#FF7092" opacity="0.45" filter="url(#mBlush)" />
+  </g>
+
+  <!-- ==============================================================
+       3. 실물 사진 2와 동일한 쇼핑몰 UI 오버레이 (화살표, 뱃지, 인디케이터)
+  ============================================================== -->
+  <!-- 좌측 이전 화살표 (<) -->
+  <g transform="translate(50, 410)">
+    <polyline points="15,-20 0,0 15,20" fill="none" stroke="#222222" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" />
+  </g>
+  <!-- 우측 다음 화살표 (>) -->
+  <g transform="translate(750, 410)">
+    <polyline points="-15,-20 0,0 -15,20" fill="none" stroke="#222222" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" />
+  </g>
+
+  <!-- 좌하단: 실물 캡처 속 '6명 이상 구매' 보라색 알약 뱃지 -->
+  <g transform="translate(40, 765)">
+    <rect width="160" height="34" rx="17" fill="#6B5B95" />
+    <!-- 쇼핑백 아이콘 -->
+    <path d="M 22 14 L 20 24 C 20 25, 21 26, 22 26 L 32 26 C 33 26, 34 25, 34 24 L 32 14 Z" fill="none" stroke="#FFFFFF" stroke-width="1.8" />
+    <path d="M 24 14 C 24 11, 30 11, 30 14" fill="none" stroke="#FFFFFF" stroke-width="1.8" />
+    <text x="96" y="22" font-family="'Pretendard', sans-serif" font-size="13" font-weight="700" fill="#FFFFFF" text-anchor="middle">6명 이상 구매</text>
+  </g>
+
+  <!-- 우하단: 실물 캡처 속 '1/10' 페이지 인디케이터 뱃지 -->
+  <g transform="translate(720, 765)">
+    <rect width="60" height="34" rx="17" fill="rgba(60, 60, 60, 0.55)" />
+    <text x="30" y="22" font-family="'Pretendard', sans-serif" font-size="13" font-weight="700" fill="#FFFFFF" text-anchor="middle">1/10</text>
+  </g>
+
+</svg>

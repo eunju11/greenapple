@@ -1,0 +1,194 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000" width="800" height="1000">
+  <defs>
+    <!-- 배경 부드러운 스튜디오 그라데이션 -->
+    <linearGradient id="bgLight" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F8FAFC" />
+      <stop offset="50%" stop-color="#F1F5F9" />
+      <stop offset="100%" stop-color="#E2E8F0" />
+    </linearGradient>
+
+    <!-- 바닥 그림자 -->
+    <radialGradient id="floorShadow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="rgba(100, 116, 139, 0.35)" />
+      <stop offset="60%" stop-color="rgba(100, 116, 139, 0.12)" />
+      <stop offset="100%" stop-color="rgba(100, 116, 139, 0)" />
+    </radialGradient>
+
+    <!-- 멜란지 그레이 후드 원단 그라데이션 -->
+    <linearGradient id="hoodieGray" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#E2E8F0" />
+      <stop offset="35%" stop-color="#CBD5E1" />
+      <stop offset="70%" stop-color="#94A3B8" />
+      <stop offset="100%" stop-color="#64748B" />
+    </linearGradient>
+
+    <!-- 후드 안감 딥 그레이 음영 -->
+    <linearGradient id="hoodInnerGray" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#475569" />
+      <stop offset="100%" stop-color="#334155" />
+    </linearGradient>
+
+    <!-- 후드 밑단/소매 시보리 그레이 -->
+    <linearGradient id="ribbedGray" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#94A3B8" />
+      <stop offset="50%" stop-color="#CBD5E1" />
+      <stop offset="100%" stop-color="#94A3B8" />
+    </linearGradient>
+
+    <!-- 몬치치 미니 자수용 하늘색 그라데이션 -->
+    <linearGradient id="embroiderySky" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#BAE6FD" />
+      <stop offset="50%" stop-color="#38BDF8" />
+      <stop offset="100%" stop-color="#0284C7" />
+    </linearGradient>
+
+    <!-- 부드러운 입체 그림자 -->
+    <filter id="softShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="16" stdDeviation="18" flood-color="#334155" flood-opacity="0.22" />
+    </filter>
+
+    <!-- 미세 자수 입체감 필터 -->
+    <filter id="embroideryFilter" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="1" dy="1.5" stdDeviation="1" flood-color="#0F172A" flood-opacity="0.2" />
+    </filter>
+  </defs>
+
+  <!-- 1. 스튜디오 배경 -->
+  <rect width="800" height="1000" fill="url(#bgLight)" />
+  
+  <!-- 배경 은은한 조명 -->
+  <circle cx="200" cy="200" r="180" fill="#FFFFFF" opacity="0.6" />
+  <circle cx="650" cy="250" r="140" fill="#E0F2FE" opacity="0.5" />
+
+  <!-- 바닥 그림자 (짧아진 기장에 맞춘 중심 배치) -->
+  <ellipse cx="400" cy="740" rx="280" ry="38" fill="url(#floorShadow)" />
+
+  <!-- 2. 회색 후드티 본체 (세미 크롭 / 숏 박시 실루엣) -->
+  <g id="gray-hoodie" filter="url(#softShadow)">
+
+    <!-- 양쪽 소매 (드롭 숄더 & 자연스러운 소매 라인) -->
+    <!-- 왼소매 -->
+    <path d="M 275 290 L 115 510 C 105 525, 120 550, 140 550 L 205 515 L 255 420 Z" 
+          fill="url(#hoodieGray)" stroke="#64748B" stroke-width="1.5" />
+    <!-- 왼소매 시보리 -->
+    <polygon points="115,510 140,550 160,535 135,498" fill="url(#ribbedGray)" stroke="#475569" stroke-width="1" />
+
+    <!-- 오른소매 -->
+    <path d="M 525 290 L 685 510 C 695 525, 680 550, 660 550 L 595 515 L 545 420 Z" 
+          fill="url(#hoodieGray)" stroke="#64748B" stroke-width="1.5" />
+    <!-- 오른소매 시보리 -->
+    <polygon points="685,510 660,550 640,535 665,498" fill="url(#ribbedGray)" stroke="#475569" stroke-width="1" />
+
+    <!-- 후드 모자 (뒤/안쪽 레이어) -->
+    <path d="M 310 240 C 300 130, 500 130, 490 240 C 470 280, 330 280, 310 240 Z" 
+          fill="url(#hoodInnerGray)" />
+
+    <!-- 후드 모자 (바깥쪽 볼륨감) -->
+    <path d="M 320 250 C 310 110, 490 110, 480 250 C 450 220, 350 220, 320 250 Z" 
+          fill="url(#hoodieGray)" stroke="#64748B" stroke-width="2" />
+
+    <!-- 후드티 몸통 (기장을 줄인 세미 크롭 / 박시 숏 핏) -->
+    <path d="M 270 280 C 265 320, 255 480, 250 610 L 550 610 C 545 480, 535 320, 530 280 C 470 320, 330 320, 270 280 Z" 
+          fill="url(#hoodieGray)" stroke="#64748B" stroke-width="1.5" />
+
+    <!-- 넥라인 겹침 디테일 -->
+    <path d="M 345 270 Q 400 310 455 270" stroke="#475569" stroke-width="3" fill="none" />
+    <path d="M 335 260 Q 400 320 465 260" stroke="#94A3B8" stroke-width="2" fill="none" />
+
+    <!-- 후드 스트링(끈) 좌/우 화이트-라이트그레이 -->
+    <!-- 왼쪽 끈 -->
+    <path d="M 360 295 Q 355 380 370 435" stroke="#F1F5F9" stroke-width="4.5" stroke-linecap="round" fill="none" />
+    <rect x="367" y="432" width="6" height="14" rx="2.5" fill="#94A3B8" />
+
+    <!-- 오른쪽 끈 -->
+    <path d="M 440 295 Q 445 370 430 425" stroke="#F1F5F9" stroke-width="4.5" stroke-linecap="round" fill="none" />
+    <rect x="427" y="422" width="6" height="14" rx="2.5" fill="#94A3B8" />
+
+    <!-- 캥거루 주머니 (숏 기장에 맞게 조화로운 크기) -->
+    <path d="M 285 490 L 325 455 L 475 455 L 515 490 L 525 605 L 275 605 Z" 
+          fill="#94A3B8" opacity="0.6" stroke="#475569" stroke-width="1.5" />
+    <path d="M 325 455 L 285 490" stroke="#334155" stroke-width="2.5" />
+    <path d="M 475 455 L 515 490" stroke="#334155" stroke-width="2.5" />
+
+    <!-- 밑단 밴딩(시보리) - 짧아진 세미크롭 실루엣 (y=610~660) -->
+    <rect x="245" y="610" width="310" height="50" rx="4" fill="url(#ribbedGray)" stroke="#475569" stroke-width="1.5" />
+    <!-- 시보리 세로 골지 스티치 라인들 -->
+    <line x1="265" y1="610" x2="265" y2="660" stroke="#64748B" stroke-width="1.5" opacity="0.5" />
+    <line x1="295" y1="610" x2="295" y2="660" stroke="#64748B" stroke-width="1.5" opacity="0.5" />
+    <line x1="325" y1="610" x2="325" y2="660" stroke="#64748B" stroke-width="1.5" opacity="0.5" />
+    <line x1="355" y1="610" x2="355" y2="660" stroke="#64748B" stroke-width="1.5" opacity="0.5" />
+    <line x1="385" y1="610" x2="385" y2="660" stroke="#64748B" stroke-width="1.5" opacity="0.5" />
+    <line x1="415" y1="610" x2="415" y2="660" stroke="#64748B" stroke-width="1.5" opacity="0.5" />
+    <line x1="445" y1="610" x2="445" y2="660" stroke="#64748B" stroke-width="1.5" opacity="0.5" />
+    <line x1="475" y1="610" x2="475" y2="660" stroke="#64748B" stroke-width="1.5" opacity="0.5" />
+    <line x1="505" y1="610" x2="505" y2="660" stroke="#64748B" stroke-width="1.5" opacity="0.5" />
+    <line x1="535" y1="610" x2="535" y2="660" stroke="#64748B" stroke-width="1.5" opacity="0.5" />
+
+    <!-- 3. 왼쪽 가슴 미니 하늘색 몬치치 정밀 자수 포인트 (Embroidery Point) -->
+    <!-- 가슴 왼쪽 위치: x=320, y=340 기준 미니멀하고 귀여운 자수 스케일 -->
+    <g id="mini-monchhichi-embroidery" transform="translate(320, 340)" filter="url(#embroideryFilter)">
+      <!-- 자수 베이스 배경 미니 서클 (화이트/소프트블루) -->
+      <circle cx="28" cy="28" r="26" fill="#F0F9FF" stroke="#BAE6FD" stroke-width="1.5" />
+
+      <!-- 몬치치 미니 귀 좌/우 (하늘색 자수) -->
+      <ellipse cx="10" cy="25" rx="7" ry="9" fill="url(#embroiderySky)" />
+      <ellipse cx="10" cy="25" rx="4" ry="6" fill="#E0F2FE" />
+      <ellipse cx="46" cy="25" rx="7" ry="9" fill="url(#embroiderySky)" />
+      <ellipse cx="46" cy="25" rx="4" ry="6" fill="#E0F2FE" />
+
+      <!-- 몬치치 털 얼굴 외곽 (하늘색) -->
+      <circle cx="28" cy="24" r="18" fill="url(#embroiderySky)" />
+
+      <!-- 몬치치 앞머리 털 3개 쫑긋 -->
+      <circle cx="23" cy="8" r="4" fill="url(#embroiderySky)" />
+      <circle cx="28" cy="7" r="4.5" fill="url(#embroiderySky)" />
+      <circle cx="33" cy="8" r="4" fill="url(#embroiderySky)" />
+
+      <!-- 살구/아이보리 미니 얼굴 -->
+      <ellipse cx="28" cy="26" rx="13" ry="11" fill="#FEF3C7" />
+
+      <!-- 볼터치 (라이트 핑크) -->
+      <circle cx="19" cy="30" r="2.5" fill="#FDA4AF" />
+      <circle cx="37" cy="30" r="2.5" fill="#FDA4AF" />
+
+      <!-- 주근깨 점 -->
+      <circle cx="21" cy="28" r="0.8" fill="#0369A1" />
+      <circle cx="35" cy="28" r="0.8" fill="#0369A1" />
+
+      <!-- 초롱초롱한 눈 -->
+      <circle cx="23" cy="24" r="2" fill="#0C4A6E" />
+      <circle cx="33" cy="24" r="2" fill="#0C4A6E" />
+      <circle cx="23.7" cy="23.3" r="0.8" fill="#FFFFFF" />
+      <circle cx="33.7" cy="23.3" r="0.8" fill="#FFFFFF" />
+
+      <!-- 미니 코 & 입 -->
+      <circle cx="28" cy="27" r="1" fill="#0C4A6E" />
+      <path d="M 26.5 30 Q 28 32 29.5 30" stroke="#E11D48" stroke-width="1" fill="none" stroke-linecap="round" />
+
+      <!-- 몬치치 시그니처 미니 하늘색 턱받이 & 자수 포인트 -->
+      <path d="M 18 34 Q 28 43 38 34 C 38 41 33 45 28 45 C 23 45 18 41 18 34 Z" fill="#0284C7" stroke="#38BDF8" stroke-width="0.8" />
+      <circle cx="28" cy="38" r="1.5" fill="#FFFFFF" />
+
+      <!-- 자수 텍스트 표기 (Monchhichi) -->
+      <text x="28" y="59" font-family="'Montserrat', sans-serif" font-size="5.5" font-weight="700" fill="#0284C7" text-anchor="middle" letter-spacing="1">MONCHHICHI</text>
+    </g>
+
+  </g>
+
+  <!-- 4. 쇼핑몰 룩북 뱃지 & 오버레이 타이포그래피 -->
+  <!-- 좌상단 카테고리 뱃지 -->
+  <g transform="translate(60, 60)">
+    <rect width="130" height="34" rx="17" fill="#FFFFFF" opacity="0.95" />
+    <text x="65" y="22" font-family="'Montserrat', sans-serif" font-size="12" font-weight="700" fill="#0284C7" text-anchor="middle" letter-spacing="2">APPAREL</text>
+  </g>
+
+  <!-- 우상단 위시리스트 아이콘 -->
+  <g transform="translate(690, 60)">
+    <circle cx="25" cy="25" r="25" fill="#FFFFFF" opacity="0.95" />
+    <path d="M 25 33 C 16 24, 8 13, 17 6 C 22 2, 25 6, 25 7 C 25 6, 28 2, 33 6 C 42 13, 34 24, 25 33 Z" fill="#38BDF8" />
+  </g>
+
+  <!-- 하단 상품명 안내 텍스트 -->
+  <text x="400" y="860" font-family="'Pretendard', 'Noto Sans KR', sans-serif" font-size="22" font-weight="700" fill="#1E293B" text-anchor="middle" letter-spacing="2">SEMI-CROP GRAY HOODIE</text>
+  <text x="400" y="895" font-family="'Pretendard', sans-serif" font-size="14" font-weight="500" fill="#64748B" text-anchor="middle" letter-spacing="1">스카이블루 미니 몬치치 자수 세미 크롭 숏 후드</text>
+</svg>

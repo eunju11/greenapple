@@ -1,0 +1,313 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000" width="800" height="1000">
+  <defs>
+    <!-- 배경 은은한 소프트 파스텔 웜그레이/스카이 그라데이션 -->
+    <linearGradient id="bgStudio" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FDFEFE" />
+      <stop offset="50%" stop-color="#F4F8FB" />
+      <stop offset="100%" stop-color="#EBF2F8" />
+    </linearGradient>
+
+    <!-- 바닥 접지면 소프트 섀도우 -->
+    <radialGradient id="bagFloorShadow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="rgba(70, 95, 120, 0.35)" />
+      <stop offset="60%" stop-color="rgba(70, 95, 120, 0.12)" />
+      <stop offset="100%" stop-color="rgba(70, 95, 120, 0)" />
+    </radialGradient>
+
+    <!-- 에코백 캔버스 원단 질감 그라데이션 (아이보리 화이트) -->
+    <linearGradient id="canvasWhite" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="40%" stop-color="#FAF9F6" />
+      <stop offset="85%" stop-color="#F1EFEA" />
+      <stop offset="100%" stop-color="#E5E1D8" />
+    </linearGradient>
+
+    <!-- 에코백 안쪽 음영 -->
+    <linearGradient id="bagInnerShadow" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#D3CCC2" />
+      <stop offset="100%" stop-color="#EDE9E3" />
+    </linearGradient>
+
+    <!-- 에코백 손잡이 스트랩 그라데이션 -->
+    <linearGradient id="strapGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#F3EFE8" />
+      <stop offset="50%" stop-color="#FFFFFF" />
+      <stop offset="100%" stop-color="#E3DDD3" />
+    </linearGradient>
+
+    <!-- 몬치치 복실복실 털(하늘색) 다채로운 그라데이션 레이어 -->
+    <!-- 털 외곽 딥 스카이블루 -->
+    <linearGradient id="fluffyFurDeep" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#70BBE4" />
+      <stop offset="100%" stop-color="#3A95CA" />
+    </linearGradient>
+
+    <!-- 털 볼륨 소프트 파스텔 하늘색 -->
+    <radialGradient id="fluffyFurSoft" cx="40%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="25%" stop-color="#D8F1FE" />
+      <stop offset="70%" stop-color="#80CBF5" />
+      <stop offset="100%" stop-color="#4AAADF" />
+    </radialGradient>
+
+    <!-- 털 하이라이트/질감용 연하늘 -->
+    <linearGradient id="furHighlight" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="60%" stop-color="#CDECFE" />
+      <stop offset="100%" stop-color="#8FD1F7" />
+    </linearGradient>
+
+    <!-- 키링 메탈 체인(실버 크롬) 그라데이션 -->
+    <linearGradient id="silverChain" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="45%" stop-color="#DDE4EA" />
+      <stop offset="75%" stop-color="#8A9BA8" />
+      <stop offset="100%" stop-color="#CBD5E1" />
+    </linearGradient>
+
+    <!-- 몬치치 피부 뽀송 스킨톤 -->
+    <linearGradient id="dollSkin" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFF3E8" />
+      <stop offset="100%" stop-color="#FEDCBD" />
+    </linearGradient>
+
+    <!-- 부드러운 드롭 섀도우 -->
+    <filter id="softShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="15" stdDeviation="16" flood-color="#475569" flood-opacity="0.22" />
+    </filter>
+
+    <!-- 키링 입체 그림자 -->
+    <filter id="keyringShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="6" dy="12" stdDeviation="10" flood-color="#1E293B" flood-opacity="0.28" />
+    </filter>
+
+    <!-- 볼터치 뽀샤시 블러 -->
+    <filter id="blushBlur" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="3.5" />
+    </filter>
+  </defs>
+
+  <!-- 1. 배경 -->
+  <rect width="800" height="1000" fill="url(#bgStudio)" />
+  <circle cx="200" cy="220" r="190" fill="#FFFFFF" opacity="0.65" />
+  <circle cx="680" cy="280" r="160" fill="#E0F2FE" opacity="0.5" />
+
+  <!-- 에코백 바닥 그림자 -->
+  <ellipse cx="400" cy="850" rx="260" ry="40" fill="url(#bagFloorShadow)" />
+
+  <!-- 2. 내추럴 화이트 캔버스 에코백 (White Canvas Tote Bag) -->
+  <g id="white-tote-bag" filter="url(#softShadow)">
+
+    <!-- 에코백 손잡이 스트랩 (뒤편 핸들) -->
+    <path d="M 330 380 C 330 180, 470 180, 470 380" 
+          stroke="url(#strapGrad)" stroke-width="26" stroke-linecap="round" fill="none" />
+    <path d="M 330 380 C 330 180, 470 180, 470 380" 
+          stroke="#C8C0B2" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.6" />
+
+    <!-- 에코백 입구 안쪽 어두운 안감 영역 -->
+    <ellipse cx="400" cy="385" rx="190" ry="25" fill="url(#bagInnerShadow)" />
+
+    <!-- 에코백 본체 (캔버스 코튼 텍스처 & 부드러운 실루엣) -->
+    <!-- 자연스럽게 살짝 볼륨감이 들어간 사각 바디 -->
+    <path d="M 205 385 
+             C 195 520, 200 700, 210 805 
+             C 215 825, 230 835, 260 835 
+             L 540 835 
+             C 570 835, 585 825, 590 805 
+             C 600 700, 605 520, 595 385 
+             C 525 395, 275 395, 205 385 Z" 
+          fill="url(#canvasWhite)" stroke="#D8D2C5" stroke-width="2" />
+
+    <!-- 에코백 앞면 내추럴 패브릭 주름 음영 라인들 -->
+    <path d="M 230 430 C 240 560, 245 710, 250 820" stroke="#EDE8DE" stroke-width="6" fill="none" />
+    <path d="M 570 430 C 560 560, 555 710, 550 820" stroke="#DED6C7" stroke-width="4" fill="none" opacity="0.7" />
+    <path d="M 310 400 Q 305 600 295 825" stroke="#EFECE5" stroke-width="4" fill="none" />
+    <path d="M 490 400 Q 495 600 505 825" stroke="#E5DECf" stroke-width="3" fill="none" />
+
+    <!-- 가방 앞면 밑단 봉제선 스티치 (자연스러운 스티치 점선) -->
+    <path d="M 225 815 L 575 815" stroke="#C0B7A5" stroke-width="1.8" stroke-dasharray="6,4" fill="none" />
+    <path d="M 215 398 L 585 398" stroke="#C0B7A5" stroke-width="1.8" stroke-dasharray="6,4" fill="none" />
+
+    <!-- 에코백 손잡이 스트랩 (앞면 핸들) -->
+    <!-- 앞쪽으로 자연스럽게 살짝 늘어진 숄더 스트랩 -->
+    <path d="M 310 440 L 310 380 C 310 160, 490 160, 490 380 L 490 440" 
+          stroke="url(#strapGrad)" stroke-width="26" stroke-linecap="round" fill="none" />
+    <!-- 스트랩 양쪽 봉제 스티치 라인 -->
+    <path d="M 299 440 L 299 380 C 299 170, 501 170, 501 380 L 501 440" 
+          stroke="#C8C0B2" stroke-width="1.5" stroke-dasharray="5,3" fill="none" />
+    <path d="M 321 440 L 321 380 C 321 170, 479 170, 479 380 L 479 440" 
+          stroke="#C8C0B2" stroke-width="1.5" stroke-dasharray="5,3" fill="none" />
+
+    <!-- 핸들 부착 사각 X자 박음질 스티치 (좌/우) -->
+    <g transform="translate(297, 400)">
+      <rect width="26" height="35" fill="#FAF8F5" stroke="#B8AE9D" stroke-width="1.2" />
+      <line x1="0" y1="0" x2="26" y2="35" stroke="#B8AE9D" stroke-width="1.2" stroke-dasharray="3,2" />
+      <line x1="26" y1="0" x2="0" y2="35" stroke="#B8AE9D" stroke-width="1.2" stroke-dasharray="3,2" />
+    </g>
+    <g transform="translate(477, 400)">
+      <rect width="26" height="35" fill="#FAF8F5" stroke="#B8AE9D" stroke-width="1.2" />
+      <line x1="0" y1="0" x2="26" y2="35" stroke="#B8AE9D" stroke-width="1.2" stroke-dasharray="3,2" />
+      <line x1="26" y1="0" x2="0" y2="35" stroke="#B8AE9D" stroke-width="1.2" stroke-dasharray="3,2" />
+    </g>
+
+    <!-- 에코백 중앙 미니멀 레터링 타이포그래피 (VIBE x Monchhichi 컬렉션 로고) -->
+    <g transform="translate(400, 580)" text-anchor="middle">
+      <text y="0" font-family="'Montserrat', sans-serif" font-size="14" font-weight="800" fill="#94A3B8" letter-spacing="4">VIBE FASHION</text>
+      <text y="22" font-family="'Pretendard', sans-serif" font-size="10" font-weight="600" fill="#CBD5E1" letter-spacing="2">AUTHENTIC CANVAS TOTE</text>
+      <line x1="-30" y1="36" x2="30" y2="36" stroke="#94A3B8" stroke-width="1.2" opacity="0.6" />
+    </g>
+
+  </g>
+
+  <!-- ==============================================================
+       3. 하늘색 복실복실 몬치치 미니 인형 키링 (Fluffy Sky Blue Monchhichi Keyring)
+       위치: 에코백 오른쪽 핸들 고리에 연결되어 앙증맞게 대롱대롱 걸려있는 형태
+  =============================================================== -->
+  <g id="monchhichi-fluffy-keyring" filter="url(#keyringShadow)">
+
+    <!-- 3-1. 실버 크롬 키링 체인 & 고리 -->
+    <!-- 에코백 핸들에 걸린 O링 고리 -->
+    <ellipse cx="490" cy="435" rx="16" ry="10" fill="none" stroke="url(#silverChain)" stroke-width="5" />
+    <ellipse cx="490" cy="435" rx="16" ry="10" fill="none" stroke="#FFFFFF" stroke-width="1.5" opacity="0.8" />
+
+    <!-- 늘어뜨려진 미니 체인 마디들 -->
+    <ellipse cx="496" cy="452" rx="7" ry="10" fill="none" stroke="url(#silverChain)" stroke-width="3.5" />
+    <ellipse cx="503" cy="470" rx="7" ry="10" fill="none" stroke="url(#silverChain)" stroke-width="3.5" />
+    <ellipse cx="510" cy="488" rx="8" ry="11" fill="none" stroke="url(#silverChain)" stroke-width="3.5" />
+    <!-- 랍스터 클립 / 키링 캡 연결부 -->
+    <circle cx="515" cy="505" r="9" fill="url(#silverChain)" stroke="#64748B" stroke-width="1" />
+    <circle cx="513" cy="503" r="3" fill="#FFFFFF" opacity="0.9" />
+
+    <!-- 3-2. 하늘색 몬치치 인형 본체 그룹 (중심: x=525, y=620 / 복실한 미니 인형 180x200 스케일) -->
+    <g transform="translate(525, 620)">
+
+      <!-- 가방에 닿는 키링 인형 뒷그림자 -->
+      <ellipse cx="-5" cy="20" rx="75" ry="85" fill="rgba(30, 41, 59, 0.22)" filter="url(#blushBlur)" />
+
+      <!-- [복실복실 털 디테일 레이어 1] - 가장 바깥쪽 삐죽삐죽 뽀송뽀송 털 뭉치들 (구름/꽃잎 털 패스) -->
+      <g fill="url(#fluffyFurDeep)">
+        <!-- 둥글둥글 겹쳐진 털 뭉치 바깥 레이어 -->
+        <circle cx="-55" cy="-25" r="28" />
+        <circle cx="-62" cy="10" r="26" />
+        <circle cx="-50" cy="45" r="28" />
+        <circle cx="-25" cy="70" r="26" />
+        <circle cx="10" cy="75" r="27" />
+        <circle cx="45" cy="60" r="26" />
+        <circle cx="65" cy="25" r="28" />
+        <circle cx="62" cy="-15" r="27" />
+        <circle cx="45" cy="-55" r="26" />
+        <circle cx="15" cy="-75" r="28" />
+        <circle cx="-20" cy="-75" r="28" />
+        <circle cx="-45" cy="-55" r="26" />
+      </g>
+
+      <!-- [복실복실 털 레이어 2] - 메인 볼륨 (소프트 그라데이션) -->
+      <circle cx="0" cy="0" r="76" fill="url(#fluffyFurSoft)" />
+
+      <!-- [복실복실 털 레이어 3] - 뽀송뽀송 털의 질감을 살려주는 미세한 구름털 돌기들 -->
+      <g fill="url(#furHighlight)" opacity="0.9">
+        <circle cx="-40" cy="-35" r="18" />
+        <circle cx="-50" cy="0" r="19" />
+        <circle cx="-38" cy="35" r="19" />
+        <circle cx="-15" cy="55" r="18" />
+        <circle cx="20" cy="55" r="18" />
+        <circle cx="48" cy="32" r="19" />
+        <circle cx="52" cy="-5" r="18" />
+        <circle cx="35" cy="-45" r="19" />
+        <circle cx="0" cy="-62" r="19" />
+      </g>
+
+      <!-- [몬치치 귀] 좌 / 우 (복실한 하늘색 귀 + 안쪽 살구색) -->
+      <!-- 왼쪽 귀 -->
+      <ellipse cx="-64" cy="-25" rx="24" ry="28" fill="url(#fluffyFurSoft)" stroke="#38BDF8" stroke-width="1.5" />
+      <ellipse cx="-65" cy="-24" rx="14" ry="17" fill="#FEDCBD" />
+      <ellipse cx="-65" cy="-24" rx="9" ry="11" fill="#FFCBB0" />
+      <!-- 오른쪽 귀 -->
+      <ellipse cx="64" cy="-25" rx="24" ry="28" fill="url(#fluffyFurSoft)" stroke="#38BDF8" stroke-width="1.5" />
+      <ellipse cx="65" cy="-24" rx="14" ry="17" fill="#FEDCBD" />
+      <ellipse cx="65" cy="-24" rx="9" ry="11" fill="#FFCBB0" />
+
+      <!-- [정수리 쫑긋 털 뭉치] 몬치치 시그니처 3가닥 털 -->
+      <ellipse cx="-12" cy="-78" rx="8" ry="16" fill="url(#fluffyFurDeep)" transform="rotate(-15 -12 -78)" />
+      <ellipse cx="0" cy="-84" rx="9" ry="20" fill="url(#fluffyFurSoft)" />
+      <ellipse cx="12" cy="-78" rx="8" ry="16" fill="url(#fluffyFurDeep)" transform="rotate(15 12 -78)" />
+
+      <!-- [몬치치 뽀송한 살구빛 얼굴] (중앙 동글납작한 인형 페이스) -->
+      <ellipse cx="0" cy="6" rx="55" ry="46" fill="url(#dollSkin)" stroke="#F9C6A2" stroke-width="1.2" />
+
+      <!-- [시그니처 이마 뱅 헤어] 둥글둥글 앞머리 털 -->
+      <circle cx="-25" cy="-24" r="13" fill="url(#fluffyFurSoft)" />
+      <circle cx="-8" cy="-29" r="15" fill="url(#fluffyFurSoft)" />
+      <circle cx="10" cy="-28" r="14" fill="url(#fluffyFurSoft)" />
+      <circle cx="26" cy="-23" r="13" fill="url(#fluffyFurSoft)" />
+
+      <!-- [큰 만화 눈망울] 초롱초롱한 몬치치 눈 -->
+      <!-- 왼쪽 눈 -->
+      <ellipse cx="-20" cy="3" rx="8.5" ry="11" fill="#2C1B10" />
+      <circle cx="-23" cy="-1" r="3.5" fill="#FFFFFF" />
+      <circle cx="-17" cy="6" r="1.8" fill="#FFFFFF" />
+      <path d="M -29 -10 Q -20 -15 -11 -10" stroke="#5D4037" stroke-width="1.8" stroke-linecap="round" fill="none" />
+
+      <!-- 오른쪽 눈 -->
+      <ellipse cx="20" cy="3" rx="8.5" ry="11" fill="#2C1B10" />
+      <circle cx="17" cy="-1" r="3.5" fill="#FFFFFF" />
+      <circle cx="23" cy="6" r="1.8" fill="#FFFFFF" />
+      <path d="M 11 -10 Q 20 -15 29 -10" stroke="#5D4037" stroke-width="1.8" stroke-linecap="round" fill="none" />
+
+      <!-- [시그니처 주근깨 점 3개씩] -->
+      <circle cx="-29" cy="18" r="1.3" fill="#B27A56" />
+      <circle cx="-22" cy="22" r="1.3" fill="#B27A56" />
+      <circle cx="-27" cy="26" r="1.3" fill="#B27A56" />
+
+      <circle cx="29" cy="18" r="1.3" fill="#B27A56" />
+      <circle cx="22" cy="22" r="1.3" fill="#B27A56" />
+      <circle cx="27" cy="26" r="1.3" fill="#B27A56" />
+
+      <!-- [사랑스러운 핑크 볼터치] -->
+      <ellipse cx="-26" cy="18" rx="14" ry="9" fill="#FF748C" opacity="0.55" filter="url(#blushBlur)" />
+      <ellipse cx="26" cy="18" rx="14" ry="9" fill="#FF748C" opacity="0.55" filter="url(#blushBlur)" />
+
+      <!-- [앙증맞은 코] -->
+      <ellipse cx="0" cy="15" rx="4.5" ry="3.2" fill="#3D1D10" />
+
+      <!-- [벌린 입 & 핑크 혀] -->
+      <path d="M -6 27 Q 0 36 6 27" stroke="#9A3C2A" stroke-width="2.2" fill="#E11D48" stroke-linecap="round" />
+
+      <!-- [시그니처 미니 턱받이(Bib)] 화이트 레이스 테두리 + 파스텔블루 -->
+      <path d="M -30 42 Q 0 58 30 42 C 34 68, -34 68, -30 42 Z" fill="#FFFFFF" stroke="#BAE6FD" stroke-width="1" />
+      <path d="M -24 44 Q 0 55 24 44 C 26 63, -26 63, -24 44 Z" fill="#38BDF8" />
+      <!-- 턱받이 미니 하트 장식 -->
+      <circle cx="0" cy="51" r="2.5" fill="#FFFFFF" />
+
+      <!-- [쪽쪽이/엄지손가락 물기] 몬치치 시그니처 앙증맞은 살구색 손 -->
+      <circle cx="16" cy="33" r="8" fill="#FEDCBD" stroke="#F9C6A2" stroke-width="1" />
+      <!-- 쪽쪽이 노란 고리 -->
+      <circle cx="10" cy="28" r="4.5" fill="#FDE047" stroke="#EAB308" stroke-width="1" />
+
+      <!-- 키링 인형 하단 앙증맞은 복실복실 미니 발 2개 -->
+      <ellipse cx="-16" cy="80" rx="12" ry="10" fill="url(#fluffyFurSoft)" />
+      <ellipse cx="-16" cy="83" rx="7" ry="5" fill="#FEDCBD" />
+      <ellipse cx="16" cy="80" rx="12" ry="10" fill="url(#fluffyFurSoft)" />
+      <ellipse cx="16" cy="83" rx="7" ry="5" fill="#FEDCBD" />
+
+    </g>
+
+  </g>
+
+  <!-- 4. 쇼핑몰 룩북 뱃지 & 오버레이 타이포그래피 -->
+  <!-- 좌상단 카테고리 뱃지 -->
+  <g transform="translate(60, 60)">
+    <rect width="130" height="34" rx="17" fill="#FFFFFF" opacity="0.95" />
+    <text x="65" y="22" font-family="'Montserrat', sans-serif" font-size="12" font-weight="700" fill="#0284C7" text-anchor="middle" letter-spacing="2">ACC &amp; BAG</text>
+  </g>
+
+  <!-- 우상단 위시리스트 아이콘 -->
+  <g transform="translate(690, 60)">
+    <circle cx="25" cy="25" r="25" fill="#FFFFFF" opacity="0.95" />
+    <path d="M 25 33 C 16 24, 8 13, 17 6 C 22 2, 25 6, 25 7 C 25 6, 28 2, 33 6 C 42 13, 34 24, 25 33 Z" fill="#38BDF8" />
+  </g>
+
+  <!-- 하단 상품명 안내 텍스트 -->
+  <text x="400" y="920" font-family="'Pretendard', 'Noto Sans KR', sans-serif" font-size="22" font-weight="700" fill="#1E293B" text-anchor="middle" letter-spacing="2">CANVAS ECO BAG &amp; MONCHHICHI KEYRING</text>
+  <text x="400" y="955" font-family="'Pretendard', sans-serif" font-size="14" font-weight="500" fill="#64748B" text-anchor="middle" letter-spacing="1">내추럴 화이트 캔버스 토트백 &amp; 스카이블루 복실 인형 키링 세트</text>
+</svg>

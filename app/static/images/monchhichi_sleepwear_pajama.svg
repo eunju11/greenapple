@@ -1,0 +1,245 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000" width="800" height="1000">
+  <defs>
+    <!-- 배경 은은하고 포근한 웜크림/스카이 스튜디오 그라데이션 -->
+    <linearGradient id="pajamaBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FCFDFE" />
+      <stop offset="50%" stop-color="#F4F8FC" />
+      <stop offset="100%" stop-color="#E8F1F8" />
+    </linearGradient>
+
+    <!-- 바닥 접지면 소프트 그림자 -->
+    <radialGradient id="pajamaFloorShadow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="rgba(70, 95, 125, 0.32)" />
+      <stop offset="60%" stop-color="rgba(70, 95, 125, 0.1)" />
+      <stop offset="100%" stop-color="rgba(70, 95, 125, 0)" />
+    </radialGradient>
+
+    <!-- 수면잠옷 부드럽고 따뜻한 플러피/극세사 텍스처 패턴 (하늘색 깅엄 체크) -->
+    <!-- 기본 플러시(수면) 텍스처용 패턴 -->
+    <pattern id="skyGinghamCheck" width="56" height="56" patternUnits="userSpaceOnUse">
+      <!-- 베이스 포근한 아이보리 화이트 극세사 -->
+      <rect width="56" height="56" fill="#F8FAFC" />
+      <!-- 가로 소프트 파스텔 스카이블루 띠 -->
+      <rect y="0" width="56" height="28" fill="#BAE6FD" opacity="0.45" />
+      <!-- 세로 소프트 파스텔 스카이블루 띠 -->
+      <rect x="0" width="28" height="56" fill="#BAE6FD" opacity="0.45" />
+      <!-- 교차 부분 더 짙은 하늘색 -->
+      <rect x="0" y="0" width="28" height="28" fill="#7DD3FC" opacity="0.6" />
+      
+      <!-- 수면잠옷 특유의 보슬보슬 플러피(털실) 질감 점/스티치 효과 -->
+      <circle cx="14" cy="14" r="1.2" fill="#FFFFFF" opacity="0.7" />
+      <circle cx="42" cy="14" r="1.2" fill="#38BDF8" opacity="0.35" />
+      <circle cx="14" cy="42" r="1.2" fill="#38BDF8" opacity="0.35" />
+      <circle cx="42" cy="42" r="1.2" fill="#FFFFFF" opacity="0.7" />
+    </pattern>
+
+    <!-- 상의/하의 가장자리 포근한 음영 필터 -->
+    <filter id="fleeceGlow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="14" stdDeviation="16" flood-color="#334155" flood-opacity="0.18" />
+    </filter>
+
+    <!-- 미니 자수 입체감 필터 -->
+    <filter id="miniEmbroideryShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="1" dy="1.5" stdDeviation="1.2" flood-color="#0284C7" flood-opacity="0.3" />
+    </filter>
+
+    <!-- 단추 펄 그라데이션 -->
+    <radialGradient id="pearlButton" cx="35%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="60%" stop-color="#E2E8F0" />
+      <stop offset="100%" stop-color="#CBD5E1" />
+    </radialGradient>
+
+    <!-- 카라 및 파이핑 뽀송한 화이트 플리스 -->
+    <linearGradient id="pipingWhite" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="100%" stop-color="#F1F5F9" />
+    </linearGradient>
+
+    <!-- 몬치치 미니 자수 색상 -->
+    <linearGradient id="monSky" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38BDF8" />
+      <stop offset="100%" stop-color="#0284C7" />
+    </linearGradient>
+  </defs>
+
+  <!-- 1. 스튜디오 배경 -->
+  <rect width="800" height="1000" fill="url(#pajamaBg)" />
+  <circle cx="200" cy="220" r="190" fill="#FFFFFF" opacity="0.6" />
+  <circle cx="680" cy="260" r="160" fill="#E0F2FE" opacity="0.5" />
+
+  <!-- 바닥 부드러운 접지 그림자 -->
+  <ellipse cx="400" cy="880" rx="270" ry="42" fill="url(#pajamaFloorShadow)" />
+
+  <!-- ==============================================================
+       2. 수면 잠옷 세트 (하늘색 깅엄체크 플러시 상하의 세트)
+  =============================================================== -->
+  <g id="pajama-set" filter="url(#fleeceGlow)">
+
+    <!-- ------------------------------------------------------------
+         [하의] 수면 바지 (Pajama Pants) - 상의 뒤에 자연스럽게 배치
+    ------------------------------------------------------------- -->
+    <g id="pajama-bottom">
+      <!-- 바지 허리 밴딩 & 양쪽 다리 (도톰한 보아퍼/극세사 실루엣) -->
+      <!-- 왼쪽 다리 -->
+      <path d="M 285 530 L 255 830 C 255 848, 280 855, 360 855 C 375 855, 385 845, 385 825 L 392 600 Z" 
+            fill="url(#skyGinghamCheck)" stroke="#7DD3FC" stroke-width="1.5" />
+      <!-- 오른쪽 다리 -->
+      <path d="M 515 530 L 545 830 C 545 848, 520 855, 440 855 C 425 855, 415 845, 415 825 L 408 600 Z" 
+            fill="url(#skyGinghamCheck)" stroke="#7DD3FC" stroke-width="1.5" />
+      
+      <!-- 다리 안쪽 가랑이 겹침 라인 음영 -->
+      <path d="M 392 600 Q 400 635 408 600" stroke="#38BDF8" stroke-width="2" fill="none" opacity="0.7" />
+
+      <!-- 바지 밑단 포근한 화이트 극세사 롤업 밴딩 (좌/우) -->
+      <rect x="255" y="828" width="115" height="24" rx="12" fill="url(#pipingWhite)" stroke="#BAE6FD" stroke-width="1.5" />
+      <rect x="430" y="828" width="115" height="24" rx="12" fill="url(#pipingWhite)" stroke="#BAE6FD" stroke-width="1.5" />
+    </g>
+
+    <!-- ------------------------------------------------------------
+         [상의] 수면 파자마 셔츠 (Pajama Top)
+    ------------------------------------------------------------- -->
+    <g id="pajama-top">
+
+      <!-- 소매 좌/우 (도톰하고 폭신한 볼륨감) -->
+      <!-- 왼소매 -->
+      <path d="M 270 240 L 140 460 C 130 478, 148 505, 175 498 L 245 440 L 265 370 Z" 
+            fill="url(#skyGinghamCheck)" stroke="#7DD3FC" stroke-width="1.5" />
+      <!-- 왼소매 끝단 화이트 파이핑 커프스 -->
+      <polygon points="140,460 175,498 190,480 155,445" fill="url(#pipingWhite)" stroke="#BAE6FD" stroke-width="1.2" />
+
+      <!-- 오른소매 -->
+      <path d="M 530 240 L 660 460 C 670 478, 652 505, 625 498 L 555 440 L 535 370 Z" 
+            fill="url(#skyGinghamCheck)" stroke="#7DD3FC" stroke-width="1.5" />
+      <!-- 오른소매 끝단 화이트 파이핑 커프스 -->
+      <polygon points="660,460 625,498 610,480 645,445" fill="url(#pipingWhite)" stroke="#BAE6FD" stroke-width="1.2" />
+
+      <!-- 상의 몸통 본체 (도톰하고 부드러운 극세사 핏) -->
+      <path d="M 270 230 C 260 270, 250 450, 245 615 C 245 635, 260 645, 290 645 L 510 645 C 540 645, 555 635, 555 615 C 550 450, 540 270, 530 230 Z" 
+            fill="url(#skyGinghamCheck)" stroke="#7DD3FC" stroke-width="1.5" />
+
+      <!-- 앞섶 중앙 단추 플래킷 라인 (화이트 파이핑 테두리) -->
+      <path d="M 400 310 L 400 645" stroke="#FFFFFF" stroke-width="4" />
+      <path d="M 402 310 L 402 645" stroke="#BAE6FD" stroke-width="1.5" />
+
+      <!-- 오픈 카라 (Notch Collar) - 폭신한 화이트 테두리 파이핑 -->
+      <!-- 왼쪽 카라 -->
+      <polygon points="400,230 330,220 300,290 350,330 400,310" 
+               fill="url(#skyGinghamCheck)" stroke="#FFFFFF" stroke-width="3" />
+      <!-- 오른쪽 카라 (살짝 덮이는 구조) -->
+      <polygon points="400,230 470,220 500,290 450,330 400,310" 
+               fill="url(#skyGinghamCheck)" stroke="#FFFFFF" stroke-width="3" />
+      
+      <!-- 넥 뒷단 화이트 안감 라인 -->
+      <path d="M 330 220 Q 400 245 470 220" stroke="#FFFFFF" stroke-width="4" fill="none" />
+
+      <!-- 동글동글 펄 단추 4개 (따뜻한 진주빛 단추) -->
+      <g id="buttons">
+        <!-- 단추 1 -->
+        <circle cx="400" cy="360" r="8" fill="url(#pearlButton)" stroke="#BAE6FD" stroke-width="1.5" />
+        <circle cx="398" cy="358" r="1.2" fill="#64748B" />
+        <circle cx="402" cy="358" r="1.2" fill="#64748B" />
+        <circle cx="398" cy="362" r="1.2" fill="#64748B" />
+        <circle cx="402" cy="362" r="1.2" fill="#64748B" />
+
+        <!-- 단추 2 -->
+        <circle cx="400" cy="430" r="8" fill="url(#pearlButton)" stroke="#BAE6FD" stroke-width="1.5" />
+        <circle cx="398" cy="428" r="1.2" fill="#64748B" />
+        <circle cx="402" cy="428" r="1.2" fill="#64748B" />
+        <circle cx="398" cy="432" r="1.2" fill="#64748B" />
+        <circle cx="402" cy="432" r="1.2" fill="#64748B" />
+
+        <!-- 단추 3 -->
+        <circle cx="400" cy="500" r="8" fill="url(#pearlButton)" stroke="#BAE6FD" stroke-width="1.5" />
+        <circle cx="398" cy="498" r="1.2" fill="#64748B" />
+        <circle cx="402" cy="498" r="1.2" fill="#64748B" />
+        <circle cx="398" cy="502" r="1.2" fill="#64748B" />
+        <circle cx="402" cy="502" r="1.2" fill="#64748B" />
+
+        <!-- 단추 4 -->
+        <circle cx="400" cy="570" r="8" fill="url(#pearlButton)" stroke="#BAE6FD" stroke-width="1.5" />
+        <circle cx="398" cy="568" r="1.2" fill="#64748B" />
+        <circle cx="402" cy="568" r="1.2" fill="#64748B" />
+        <circle cx="398" cy="572" r="1.2" fill="#64748B" />
+        <circle cx="402" cy="572" r="1.2" fill="#64748B" />
+      </g>
+
+      <!-- 왼쪽 가슴 수면잠옷 포켓 (Pocket with piping) -->
+      <g id="chest-pocket" transform="translate(305, 370)">
+        <!-- 주머니 본체 -->
+        <path d="M 0 0 L 70 0 C 70 35, 60 70, 35 70 C 10 70, 0 35, 0 0 Z" 
+              fill="url(#skyGinghamCheck)" stroke="#7DD3FC" stroke-width="1.5" />
+        <!-- 주머니 윗단 화이트 파이핑 밴드 -->
+        <rect x="-2" y="-2" width="74" height="12" rx="4" fill="url(#pipingWhite)" stroke="#BAE6FD" stroke-width="1" />
+
+        <!-- ==========================================================
+             ★ 가슴 주머니 위: 작고 귀여운 미니 몬치치 정밀 자수 포인트 ★
+        =========================================================== -->
+        <g id="pocket-mini-monchhichi" transform="translate(35, 38)" filter="url(#miniEmbroideryShadow)">
+          <!-- 복실복실 얼굴 외곽 베이스 서클 (하늘색 자수) -->
+          <circle cx="0" cy="0" r="15" fill="url(#monSky)" />
+          
+          <!-- 귀여운 몬치치 귀 좌/우 (하늘색 + 안쪽 살구) -->
+          <circle cx="-13" cy="-3" r="6" fill="url(#monSky)" />
+          <circle cx="-13" cy="-3" r="3" fill="#FEDCBD" />
+          <circle cx="13" cy="-3" r="6" fill="url(#monSky)" />
+          <circle cx="13" cy="-3" r="3" fill="#FEDCBD" />
+
+          <!-- 정수리 쫑긋 털 3개 -->
+          <circle cx="-4" cy="-15" r="2.8" fill="url(#monSky)" />
+          <circle cx="0" cy="-16.5" r="3.2" fill="url(#monSky)" />
+          <circle cx="4" cy="-15" r="2.8" fill="url(#monSky)" />
+
+          <!-- 살구빛 뽀송한 미니 얼굴 페이스 -->
+          <ellipse cx="0" cy="2" rx="10" ry="8.5" fill="#FFF3E8" />
+
+          <!-- 앞머리 털 뱅 -->
+          <circle cx="-5" cy="-5" r="2.5" fill="url(#monSky)" />
+          <circle cx="0" cy="-6" r="2.8" fill="url(#monSky)" />
+          <circle cx="5" cy="-5" r="2.5" fill="url(#monSky)" />
+
+          <!-- 눈 좌/우 -->
+          <circle cx="-4" cy="1" r="1.5" fill="#0C4A6E" />
+          <circle cx="4" cy="1" r="1.5" fill="#0C4A6E" />
+          <circle cx="-3.5" cy="0.5" r="0.6" fill="#FFFFFF" />
+          <circle cx="4.5" cy="0.5" r="0.6" fill="#FFFFFF" />
+
+          <!-- 핑크빛 뺨 볼터치 & 주근깨 -->
+          <circle cx="-6.5" cy="4" r="2" fill="#FDA4AF" opacity="0.8" />
+          <circle cx="6.5" cy="4" r="2" fill="#FDA4AF" opacity="0.8" />
+          <circle cx="-6" cy="3.2" r="0.5" fill="#0284C7" />
+          <circle cx="6" cy="3.2" r="0.5" fill="#0284C7" />
+
+          <!-- 미니 코 & 입 -->
+          <circle cx="0" cy="3" r="0.8" fill="#0C4A6E" />
+          <path d="M -1.5 5 Q 0 6.5 1.5 5" stroke="#E11D48" stroke-width="0.8" fill="none" stroke-linecap="round" />
+
+          <!-- 턱받이 미니 포인트 -->
+          <path d="M -5 8 Q 0 11 5 8 Z" fill="#FFFFFF" stroke="#0284C7" stroke-width="0.6" />
+        </g>
+      </g>
+
+      <!-- 상의 밑단 화이트 파이핑 마감 라인 -->
+      <path d="M 245 635 C 270 650, 530 650, 555 635" stroke="#FFFFFF" stroke-width="4" fill="none" />
+      <path d="M 245 637 C 270 652, 530 652, 555 637" stroke="#BAE6FD" stroke-width="1.5" fill="none" />
+    </g>
+
+  </g>
+
+  <!-- 3. 쇼핑몰 룩북 뱃지 & 오버레이 타이포그래피 -->
+  <!-- 좌상단 카테고리 뱃지 -->
+  <g transform="translate(60, 60)">
+    <rect width="130" height="34" rx="17" fill="#FFFFFF" opacity="0.95" />
+    <text x="65" y="22" font-family="'Montserrat', sans-serif" font-size="12" font-weight="700" fill="#0284C7" text-anchor="middle" letter-spacing="2">LOUNGEWEAR</text>
+  </g>
+
+  <!-- 우상단 위시리스트 아이콘 -->
+  <g transform="translate(690, 60)">
+    <circle cx="25" cy="25" r="25" fill="#FFFFFF" opacity="0.95" />
+    <path d="M 25 33 C 16 24, 8 13, 17 6 C 22 2, 25 6, 25 7 C 25 6, 28 2, 33 6 C 42 13, 34 24, 25 33 Z" fill="#38BDF8" />
+  </g>
+
+  <!-- 하단 상품명 안내 텍스트 -->
+  <text x="400" y="930" font-family="'Pretendard', 'Noto Sans KR', sans-serif" font-size="22" font-weight="700" fill="#1E293B" text-anchor="middle" letter-spacing="2">SKY BLUE GINGHAM FLEECE PAJAMAS</text>
+  <text x="400" y="960" font-family="'Pretendard', sans-serif" font-size="14" font-weight="500" fill="#64748B" text-anchor="middle" letter-spacing="1">미니 몬치치 자수 포인트 따뜻한 극세사 체크 수면잠옷 세트</text>
+</svg>

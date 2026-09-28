@@ -1,0 +1,251 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000" width="800" height="1000">
+  <defs>
+    <!-- 소프트 파스텔 핑크 & 스카이블루 스튜디오 배경 그라데이션 -->
+    <linearGradient id="kittyMonStudioBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFF5F7" />
+      <stop offset="50%" stop-color="#F4F8FD" />
+      <stop offset="100%" stop-color="#EBF4FB" />
+    </linearGradient>
+
+    <!-- 바닥 접지 소프트 그림자 -->
+    <radialGradient id="keyringFloorShadow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="rgba(100, 116, 139, 0.35)" />
+      <stop offset="60%" stop-color="rgba(100, 116, 139, 0.12)" />
+      <stop offset="100%" stop-color="rgba(100, 116, 139, 0)" />
+    </radialGradient>
+
+    <!-- 실버 크롬 키링 체인 그라데이션 -->
+    <linearGradient id="silverChrome" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="40%" stop-color="#E2E8F0" />
+      <stop offset="75%" stop-color="#94A3B8" />
+      <stop offset="100%" stop-color="#CBD5E1" />
+    </linearGradient>
+
+    <!-- 몬치치 복실한 하늘색 털 그라데이션 -->
+    <linearGradient id="monSkyFur" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#7DD3FC" />
+      <stop offset="60%" stop-color="#38BDF8" />
+      <stop offset="100%" stop-color="#0284C7" />
+    </linearGradient>
+
+    <!-- 헬로키티 시그니처 레드 리본 그라데이션 -->
+    <linearGradient id="kittyRedRibbon" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF4D6D" />
+      <stop offset="100%" stop-color="#C9184A" />
+    </linearGradient>
+
+    <!-- 키티 하늘색 오버롤 옷 그라데이션 -->
+    <linearGradient id="kittyOverallSky" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#BAE6FD" />
+      <stop offset="100%" stop-color="#38BDF8" />
+    </linearGradient>
+
+    <!-- 인형 전체 입체 그림자 -->
+    <filter id="dollShadow" x="-15%" y="-15%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="16" stdDeviation="18" flood-color="#475569" flood-opacity="0.25" />
+    </filter>
+
+    <filter id="blushFilter" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="4" />
+    </filter>
+  </defs>
+
+  <!-- 1. 배경 -->
+  <rect width="800" height="1000" fill="url(#kittyMonStudioBg)" />
+  <circle cx="240" cy="220" r="180" fill="#FFFFFF" opacity="0.7" />
+  <circle cx="620" cy="240" r="160" fill="#FFE4E6" opacity="0.6" />
+
+  <!-- 바닥 그림자 -->
+  <ellipse cx="400" cy="850" rx="260" ry="40" fill="url(#keyringFloorShadow)" />
+
+  <!-- 2. 상단 골드/실버 키링 링 & 체인 -->
+  <g id="top-keychain-hardware">
+    <!-- 메인 빅 O링 고리 -->
+    <ellipse cx="400" cy="180" rx="42" ry="24" fill="none" stroke="url(#silverChrome)" stroke-width="9" />
+    <ellipse cx="400" cy="180" rx="42" ry="24" fill="none" stroke="#FFFFFF" stroke-width="2.5" opacity="0.8" />
+    <!-- 미니 스위블 클립 -->
+    <rect x="393" y="200" width="14" height="28" rx="7" fill="url(#silverChrome)" />
+    <!-- 좌우로 갈라지는 체인 (왼쪽 키티행, 오른쪽 몬치치행) -->
+    <path d="M 395 228 Q 360 270 310 320" stroke="url(#silverChrome)" stroke-width="6" fill="none" stroke-linecap="round" />
+    <path d="M 405 228 Q 440 270 490 320" stroke="url(#silverChrome)" stroke-width="6" fill="none" stroke-linecap="round" />
+    
+    <!-- 중앙 작은 하트 펜던트 참 (콜라보 상징) -->
+    <circle cx="400" cy="265" r="16" fill="#FF80AB" stroke="#FFFFFF" stroke-width="2" />
+    <path d="M 400 273 C 392 265, 385 255, 393 248 C 397 245, 400 248, 400 249 C 400 248, 403 245, 407 248 C 415 255, 408 265, 400 273 Z" fill="#FFFFFF" />
+  </g>
+
+  <!-- 3. 메인 듀오 키링 인형 (몸이 작고 짧은 2등신 베이비 미니 인형 비율) -->
+  <g id="duo-dolls" filter="url(#dollShadow)">
+
+    <!-- ==============================================================
+         [왼쪽] 헬로키티 (Hello Kitty) - 2등신 숏 바디 & 앙증맞은 미니 사이즈
+    ============================================================== -->
+    <g id="hello-kitty" transform="translate(290, 520)">
+      <!-- 키티 체인 연결 O링 -->
+      <circle cx="10" cy="-175" r="8" fill="none" stroke="url(#silverChrome)" stroke-width="4" />
+
+      <!-- 키티 작은 숏 바디 & 앙증맞은 미니 다리 -->
+      <!-- 다리 좌/우 (짧고 통통한 젤리 다리) -->
+      <ellipse cx="-18" cy="88" rx="14" ry="14" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="2" />
+      <ellipse cx="18" cy="88" rx="14" ry="14" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="2" />
+
+      <!-- 키티 하늘색 오버롤 멜빵바지 (몸길이 대폭 축소) -->
+      <path d="M -34 35 C -34 85, 34 85, 34 35 Z" fill="url(#kittyOverallSky)" />
+      <!-- 멜빵 스트랩 좌/우 -->
+      <rect x="-26" y="8" width="12" height="34" rx="3" fill="url(#kittyOverallSky)" />
+      <circle cx="-20" cy="34" r="3" fill="#FDE047" />
+      <rect x="14" y="8" width="12" height="34" rx="3" fill="url(#kittyOverallSky)" />
+      <circle cx="20" cy="34" r="3" fill="#FDE047" />
+      <!-- 이너 티셔츠 (핑크) -->
+      <ellipse cx="0" cy="18" rx="28" ry="18" fill="#FFC0CB" />
+
+      <!-- 키티 왼팔 (손에 작은 핑크 꽃 들기) -->
+      <path d="M -30 20 C -50 28, -48 55, -34 55" stroke="#FFFFFF" stroke-width="15" stroke-linecap="round" fill="none" />
+      <circle cx="-40" cy="56" r="8" fill="#FF69B4" />
+
+      <!-- 키티 오른팔 (몬치치와 손 꼭 잡기/허리 감싸기) -->
+      <path d="M 26 24 C 50 28, 60 44, 48 56" stroke="#FFFFFF" stroke-width="14" stroke-linecap="round" fill="none" />
+
+      <!-- 키티 동글납작 얼굴 -->
+      <ellipse cx="0" cy="-60" rx="105" ry="82" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="2.5" />
+
+      <!-- 키티 귀 좌/우 -->
+      <polygon points="-75,-110 -95,-165 -35,-130" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="2" />
+      <polygon points="75,-110 95,-165 35,-130" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="2" />
+
+      <!-- 시그니처 레드 리본 (오른쪽 귀 부근) -->
+      <g transform="translate(60, -135)">
+        <circle cx="0" cy="0" r="15" fill="url(#kittyRedRibbon)" />
+        <ellipse cx="-22" cy="-6" rx="20" ry="14" fill="url(#kittyRedRibbon)" transform="rotate(-15 -22 -6)" />
+        <ellipse cx="22" cy="6" rx="20" ry="14" fill="url(#kittyRedRibbon)" transform="rotate(15 22 6)" />
+        <circle cx="0" cy="0" r="6" fill="#FFE4E6" opacity="0.6" />
+      </g>
+
+      <!-- 눈 좌/우 (동글납작 블랙 오발) -->
+      <ellipse cx="-35" cy="-55" rx="7" ry="10" fill="#1E293B" />
+      <ellipse cx="35" cy="-55" rx="7" ry="10" fill="#1E293B" />
+
+      <!-- 노란 코 -->
+      <ellipse cx="0" cy="-42" rx="9" ry="6.5" fill="#FACC15" />
+
+      <!-- 핑크빛 귀여운 볼터치 -->
+      <ellipse cx="-45" cy="-35" rx="16" ry="10" fill="#FF80AB" opacity="0.5" filter="url(#blushFilter)" />
+      <ellipse cx="45" cy="-35" rx="16" ry="10" fill="#FF80AB" opacity="0.5" filter="url(#blushFilter)" />
+
+      <!-- 시그니처 수염 3줄씩 -->
+      <line x1="-75" y1="-50" x2="-105" y2="-55" stroke="#1E293B" stroke-width="3" stroke-linecap="round" />
+      <line x1="-78" y1="-40" x2="-108" y2="-40" stroke="#1E293B" stroke-width="3" stroke-linecap="round" />
+      <line x1="-75" y1="-30" x2="-105" y2="-25" stroke="#1E293B" stroke-width="3" stroke-linecap="round" />
+
+      <line x1="75" y1="-50" x2="105" y2="-55" stroke="#1E293B" stroke-width="3" stroke-linecap="round" />
+      <line x1="78" y1="-40" x2="108" y2="-40" stroke="#1E293B" stroke-width="3" stroke-linecap="round" />
+      <line x1="75" y1="-30" x2="105" y2="-25" stroke="#1E293B" stroke-width="3" stroke-linecap="round" />
+    </g>
+
+
+    <!-- ==============================================================
+         [오른쪽] 하늘색 몬치치 (Sky Blue Monchhichi) - 2등신 숏 바디 & 앙증맞은 미니 인형
+    ============================================================== -->
+    <g id="sky-monchhichi" transform="translate(510, 520)">
+      <!-- 몬치치 체인 연결 O링 -->
+      <circle cx="0" cy="-185" r="8" fill="none" stroke="url(#silverChrome)" stroke-width="4" />
+
+      <!-- 아담하고 짧은 복실복실 숏 몸통 (하늘색 털) -->
+      <ellipse cx="10" cy="48" rx="46" ry="44" fill="url(#monSkyFur)" />
+
+      <!-- 앙증맞고 짧은 미니 발바닥 -->
+      <ellipse cx="-10" cy="88" rx="15" ry="14" fill="url(#monSkyFur)" />
+      <ellipse cx="-10" cy="92" rx="9" ry="6" fill="#FEDCBD" />
+      <ellipse cx="30" cy="88" rx="15" ry="14" fill="url(#monSkyFur)" />
+      <ellipse cx="30" cy="92" rx="9" ry="6" fill="#FEDCBD" />
+
+      <!-- 몬치치 왼팔 (키티 어깨에 짧고 귀엽게 손 얹기) -->
+      <path d="M -26 28 C -55 18, -68 32, -60 48" stroke="url(#monSkyFur)" stroke-width="18" stroke-linecap="round" fill="none" />
+      <circle cx="-62" cy="50" r="10" fill="#FEDCBD" />
+
+      <!-- 몬치치 오른팔 & 입에 쪽쪽이/엄지 대기 포즈 -->
+      <path d="M 36 28 C 58 38, 52 65, 20 54" stroke="url(#monSkyFur)" stroke-width="17" stroke-linecap="round" fill="none" />
+      <circle cx="16" cy="-5" r="10" fill="#FEDCBD" />
+      <circle cx="10" cy="-11" r="5" fill="#FDE047" stroke="#EAB308" stroke-width="1.2" />
+
+      <!-- 복실복실 머리 털 (구름형 실루엣) -->
+      <circle cx="10" cy="-60" r="95" fill="url(#monSkyFur)" />
+      <!-- 털 돌기 볼륨 -->
+      <circle cx="-65" cy="-85" r="28" fill="url(#monSkyFur)" />
+      <circle cx="-35" cy="-135" r="30" fill="url(#monSkyFur)" />
+      <circle cx="10" cy="-150" r="32" fill="url(#monSkyFur)" />
+      <circle cx="55" cy="-135" r="30" fill="url(#monSkyFur)" />
+      <circle cx="85" cy="-85" r="28" fill="url(#monSkyFur)" />
+      <circle cx="95" cy="-35" r="28" fill="url(#monSkyFur)" />
+
+      <!-- 정수리 쫑긋 3가닥 털 -->
+      <ellipse cx="-3" cy="-172" rx="7" ry="18" fill="url(#monSkyFur)" transform="rotate(-15 -3 -172)" />
+      <ellipse cx="10" cy="-178" rx="8" ry="22" fill="url(#monSkyFur)" />
+      <ellipse cx="23" cy="-172" rx="7" ry="18" fill="url(#monSkyFur)" transform="rotate(15 23 -172)" />
+
+      <!-- 귀 좌/우 (하늘색 털 + 살구 안쪽) -->
+      <circle cx="-70" cy="-65" r="30" fill="url(#monSkyFur)" />
+      <circle cx="-70" cy="-65" r="16" fill="#FEDCBD" />
+      <circle cx="90" cy="-65" r="30" fill="url(#monSkyFur)" />
+      <circle cx="90" cy="-65" r="16" fill="#FEDCBD" />
+
+      <!-- 살구빛 뽀송한 얼굴 -->
+      <ellipse cx="10" cy="-50" rx="68" ry="58" fill="#FFF3E8" stroke="#FBBF97" stroke-width="1.5" />
+
+      <!-- 앞머리 뱅 털 뭉치 -->
+      <circle cx="-20" cy="-90" r="16" fill="url(#monSkyFur)" />
+      <circle cx="3" cy="-95" r="18" fill="url(#monSkyFur)" />
+      <circle cx="28" cy="-93" r="17" fill="url(#monSkyFur)" />
+      <circle cx="48" cy="-85" r="15" fill="url(#monSkyFur)" />
+
+      <!-- 몬치치 눈 좌/우 -->
+      <ellipse cx="-12" cy="-55" rx="10" ry="13" fill="#1E293B" />
+      <circle cx="-15" cy="-60" r="4.5" fill="#FFFFFF" />
+      <circle cx="-9" cy="-50" r="2" fill="#FFFFFF" />
+
+      <ellipse cx="32" cy="-55" rx="10" ry="13" fill="#1E293B" />
+      <circle cx="29" cy="-60" r="4.5" fill="#FFFFFF" />
+      <circle cx="35" cy="-50" r="2" fill="#FFFFFF" />
+
+      <!-- 주근깨 3개씩 -->
+      <circle cx="-25" cy="-35" r="1.8" fill="#0284C7" />
+      <circle cx="-18" cy="-30" r="1.8" fill="#0284C7" />
+      <circle cx="-23" cy="-25" r="1.8" fill="#0284C7" />
+
+      <circle cx="45" cy="-35" r="1.8" fill="#0284C7" />
+      <circle cx="38" cy="-30" r="1.8" fill="#0284C7" />
+      <circle cx="43" cy="-25" r="1.8" fill="#0284C7" />
+
+      <!-- 핑크 볼터치 -->
+      <circle cx="-22" cy="-32" r="15" fill="#FF80AB" opacity="0.5" filter="url(#blushFilter)" />
+      <circle cx="42" cy="-32" r="15" fill="#FF80AB" opacity="0.5" filter="url(#blushFilter)" />
+
+      <!-- 코 & 입 -->
+      <ellipse cx="10" cy="-42" rx="6" ry="4.5" fill="#1E293B" />
+      <path d="M 3 -30 Q 10 -20 17 -30" stroke="#E11D48" stroke-width="2.5" fill="none" stroke-linecap="round" />
+
+      <!-- 시그니처 레이스 턱받이 (화이트 & 핑크 리본) -->
+      <path d="M -25 -5 Q 10 20 45 -5 C 48 20, -28 20, -25 -5 Z" fill="#FFFFFF" stroke="#38BDF8" stroke-width="1.5" />
+      <circle cx="10" cy="8" r="3" fill="#FF4D6D" />
+    </g>
+
+  </g>
+
+  <!-- 4. 쇼핑몰 룩북 뱃지 & 오버레이 타이포그래피 -->
+  <!-- 좌상단 스페셜 콜라보 뱃지 -->
+  <g transform="translate(60, 60)">
+    <rect width="180" height="36" rx="18" fill="#FFFFFF" opacity="0.95" />
+    <text x="90" y="23" font-family="'Montserrat', sans-serif" font-size="12" font-weight="800" fill="#E11D48" text-anchor="middle" letter-spacing="1">KITTY x MONCHHICHI</text>
+  </g>
+
+  <!-- 우상단 위시리스트 아이콘 -->
+  <g transform="translate(690, 60)">
+    <circle cx="25" cy="25" r="25" fill="#FFFFFF" opacity="0.95" />
+    <path d="M 25 33 C 16 24, 8 13, 17 6 C 22 2, 25 6, 25 7 C 25 6, 28 2, 33 6 C 42 13, 34 24, 25 33 Z" fill="#FF69B4" />
+  </g>
+
+  <!-- 하단 상품명 안내 텍스트 -->
+  <text x="400" y="920" font-family="'Pretendard', 'Noto Sans KR', sans-serif" font-size="22" font-weight="700" fill="#1E293B" text-anchor="middle" letter-spacing="2">HELLO KITTY x MONCHHICHI DUO KEYRING</text>
+  <text x="400" y="955" font-family="'Pretendard', sans-serif" font-size="14" font-weight="500" fill="#64748B" text-anchor="middle" letter-spacing="1">산리오 헬로키티 &amp; 스카이블루 몬치치 베프 커플 인형 키링</text>
+</svg>

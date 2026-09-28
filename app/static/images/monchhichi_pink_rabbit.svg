@@ -1,0 +1,289 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 950" width="800" height="950">
+  <defs>
+    <!-- 1. 실제 인형 모피/플러시 털 질감 생성 필터 (실제 보아퍼 극세사 텍스처) -->
+    <filter id="furTexture" x="0%" y="0%" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.045 0.045" numOctaves="4" result="noise" />
+      <feColorMatrix type="matrix" values="
+        0 0 0 0 0.96
+        0 0 0 0 0.72
+        0 0 0 0 0.79
+        0.35 0.35 0.35 0 0" in="noise" result="coloredNoise" />
+      <feComposite operator="in" in2="SourceGraphic" result="furPattern" />
+      <feBlend mode="multiply" in="SourceGraphic" in2="furPattern" />
+    </filter>
+
+    <!-- 화이트 귀 안쪽 보아퍼 텍스처 필터 -->
+    <filter id="whiteFurTexture" x="0%" y="0%" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.05 0.05" numOctaves="3" result="noise" />
+      <feColorMatrix type="matrix" values="
+        0 0 0 0 0.90
+        0 0 0 0 0.90
+        0 0 0 0 0.92
+        0.25 0.25 0.25 0 0" in="noise" result="coloredNoise" />
+      <feComposite operator="in" in2="SourceGraphic" result="whitePattern" />
+      <feBlend mode="multiply" in="SourceGraphic" in2="whitePattern" />
+    </filter>
+
+    <!-- 얼굴 패브릭 미세 질감 필터 -->
+    <filter id="fabricTexture" x="0%" y="0%" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.08 0.08" numOctaves="2" result="noise" />
+      <feColorMatrix type="matrix" values="
+        0 0 0 0 0.98
+        0 0 0 0 0.88
+        0 0 0 0 0.82
+        0.15 0.15 0.15 0 0" in="noise" result="coloredNoise" />
+      <feComposite operator="in" in2="SourceGraphic" result="fabricPattern" />
+      <feBlend mode="multiply" in="SourceGraphic" in2="fabricPattern" />
+    </filter>
+
+    <!-- 2. 실물 사진 조명 그라데이션 -->
+    <!-- 인형 전체 핑크 털 그라데이션 (사진 실물과 동일한 연분홍 빛) -->
+    <radialGradient id="realPinkFur" cx="45%" cy="40%" r="65%">
+      <stop offset="0%" stop-color="#FFEBF2" />
+      <stop offset="35%" stop-color="#FCD2DF" />
+      <stop offset="70%" stop-color="#F5B7CB" />
+      <stop offset="100%" stop-color="#EAA3BA" />
+    </radialGradient>
+
+    <!-- 귀 안쪽 뽀송한 흰색 털 그라데이션 -->
+    <linearGradient id="realWhiteEar" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="70%" stop-color="#F8F8FA" />
+      <stop offset="100%" stop-color="#EAEAEF" />
+    </linearGradient>
+
+    <!-- 얼굴 스킨톤 펠트 원단 그라데이션 -->
+    <linearGradient id="realFaceSkin" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFF5EE" />
+      <stop offset="60%" stop-color="#FEE8DC" />
+      <stop offset="100%" stop-color="#FBD8C8" />
+    </linearGradient>
+
+    <!-- 실버 메탈 키링 크롬 그라데이션 -->
+    <linearGradient id="metalChrome" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="25%" stop-color="#CBD5E1" />
+      <stop offset="50%" stop-color="#64748B" />
+      <stop offset="75%" stop-color="#94A3B8" />
+      <stop offset="100%" stop-color="#E2E8F0" />
+    </linearGradient>
+
+    <!-- 자수 눈동자 딥 초콜릿-버건디 그라데이션 -->
+    <radialGradient id="eyeEmbroidery" cx="40%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#6A2B20" />
+      <stop offset="65%" stop-color="#461A13" />
+      <stop offset="100%" stop-color="#2A0F0B" />
+    </radialGradient>
+
+    <!-- 볼록한 입체 핑크 코 그라데이션 -->
+    <radialGradient id="pinkNoseGrad" cx="35%" cy="30%" r="65%">
+      <stop offset="0%" stop-color="#FF9BBB" />
+      <stop offset="40%" stop-color="#FF4071" />
+      <stop offset="85%" stop-color="#D91648" />
+      <stop offset="100%" stop-color="#A50830" />
+    </radialGradient>
+
+    <!-- 입술 안쪽 붉은 펠트 -->
+    <linearGradient id="mouthInner" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#D90429" />
+      <stop offset="100%" stop-color="#800016" />
+    </linearGradient>
+
+    <!-- 부드러운 스튜디오 바닥 접지 그림자 -->
+    <radialGradient id="realFloorShadow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="rgba(50, 50, 60, 0.45)" />
+      <stop offset="50%" stop-color="rgba(60, 60, 70, 0.18)" />
+      <stop offset="100%" stop-color="rgba(100, 100, 110, 0)" />
+    </radialGradient>
+
+    <!-- 입체감 섀도우 필터 -->
+    <filter id="realPouchShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="24" stdDeviation="28" flood-color="#2D283E" flood-opacity="0.28" />
+      <feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#4A3B52" flood-opacity="0.18" />
+    </filter>
+
+    <filter id="softBlushReal" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="8" />
+    </filter>
+  </defs>
+
+  <!-- ==============================================================
+       1. 실제 사진 1의 스튜디오 라이트 그레이 배경
+  ============================================================== -->
+  <rect width="800" height="950" fill="#EDEDED" />
+
+  <!-- 상단 키링 걸이 가상 와이어 (실물 사진 속 얇은 실/와이어) -->
+  <line x1="400" y1="0" x2="400" y2="70" stroke="#CCCCCC" stroke-width="1.5" />
+
+  <!-- ==============================================================
+       2. 상단 실제 실버 메탈 키링 (실물 100% 형태)
+  ============================================================== -->
+  <g id="real-metal-keyring" transform="translate(400, 140)">
+    <!-- 메인 열쇠고리 O링 -->
+    <circle cx="0" cy="0" r="50" fill="none" stroke="url(#metalChrome)" stroke-width="10" stroke-linecap="round" />
+    <circle cx="0" cy="0" r="50" fill="none" stroke="#FFFFFF" stroke-width="2.5" opacity="0.85" />
+    <path d="M 32 -38 L 48 -18" stroke="#334155" stroke-width="2" />
+
+    <!-- 체인 연결 스위블 클립 (회전 금속 부품) -->
+    <rect x="-9" y="48" width="18" height="32" rx="9" fill="url(#metalChrome)" stroke="#475569" stroke-width="1.2" />
+    <circle cx="0" cy="56" r="3.5" fill="#1E293B" />
+    <line x1="-7" y1="64" x2="7" y2="64" stroke="#475569" stroke-width="1.5" />
+
+    <!-- 3단 실버 체인 링크 -->
+    <g id="chain-links">
+      <ellipse cx="0" cy="88" rx="8" ry="12" fill="none" stroke="url(#metalChrome)" stroke-width="4.5" />
+      <ellipse cx="0" cy="88" rx="8" ry="12" fill="none" stroke="#FFFFFF" stroke-width="1.2" opacity="0.8" />
+      
+      <ellipse cx="0" cy="108" rx="8" ry="12" fill="none" stroke="url(#metalChrome)" stroke-width="4.5" transform="rotate(35 0 108)" />
+      <ellipse cx="0" cy="126" rx="8" ry="12" fill="none" stroke="url(#metalChrome)" stroke-width="4.5" />
+    </g>
+  </g>
+
+  <!-- ==============================================================
+       3. 우측 상단 실물 정품 오벌 태그 (핫핑크 타원형 라벨)
+  ============================================================== -->
+  <g transform="translate(565, 235) rotate(14)">
+    <ellipse cx="2" cy="6" rx="88" ry="46" fill="rgba(0,0,0,0.18)" filter="url(#softBlushReal)" />
+    <ellipse cx="0" cy="0" rx="86" ry="44" fill="#E60049" stroke="#FFFFFF" stroke-width="3" />
+    <ellipse cx="0" cy="0" rx="79" ry="37" fill="none" stroke="#FFFFFF" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.85" />
+    <text x="0" y="6" font-family="'Brush Script MT', 'Dancing Script', cursive, sans-serif" font-style="italic" font-size="28" font-weight="bold" fill="#FFFFFF" text-anchor="middle">Chimutan</text>
+    <text x="0" y="24" font-family="'Arial', 'Helvetica', sans-serif" font-size="8.5" font-weight="bold" fill="#FFFFFF" text-anchor="middle" letter-spacing="1">SEKIGUCHI CO.,LTD.</text>
+  </g>
+
+  <!-- 바닥 부드러운 접지 그림자 -->
+  <ellipse cx="400" cy="855" rx="275" ry="45" fill="url(#realFloorShadow)" />
+
+  <!-- ==============================================================
+       4. 메인 치무탄 봉제 인형 파우치 본체 (실물 사진 1:1 완벽 구현)
+  ============================================================== -->
+  <g id="real-chimutan-doll" filter="url(#realPouchShadow)">
+
+    <!-- [왼쪽 토끼 귀] -->
+    <g id="left-bunny-ear">
+      <path d="M 225 435 C 160 360, 185 190, 255 180 C 320 170, 355 330, 315 430 Z" 
+            fill="url(#realPinkFur)" filter="url(#furTexture)" />
+      <circle cx="255" cy="190" r="34" fill="url(#realPinkFur)" />
+      <circle cx="225" cy="230" r="30" fill="url(#realPinkFur)" />
+      <circle cx="290" cy="230" r="30" fill="url(#realPinkFur)" />
+
+      <!-- 귀 안쪽 보송보송 화이트 극세사 퍼 패치 -->
+      <path d="M 245 405 C 215 350, 222 225, 258 215 C 295 205, 318 335, 292 400 Z" 
+            fill="url(#realWhiteEar)" filter="url(#whiteFurTexture)" stroke="#EAEAEA" stroke-width="1.5" />
+    </g>
+
+    <!-- [오른쪽 토끼 귀] -->
+    <g id="right-bunny-ear">
+      <path d="M 485 430 C 445 330, 480 170, 545 180 C 615 190, 640 360, 575 435 Z" 
+            fill="url(#realPinkFur)" filter="url(#furTexture)" />
+      <circle cx="545" cy="190" r="34" fill="url(#realPinkFur)" />
+      <circle cx="510" cy="230" r="30" fill="url(#realPinkFur)" />
+      <circle cx="575" cy="230" r="30" fill="url(#realPinkFur)" />
+
+      <!-- 귀 안쪽 화이트 극세사 퍼 패치 -->
+      <path d="M 508 400 C 482 335, 505 205, 542 215 C 578 225, 585 350, 555 405 Z" 
+            fill="url(#realWhiteEar)" filter="url(#whiteFurTexture)" stroke="#EAEAEA" stroke-width="1.5" />
+    </g>
+
+    <!-- [파우치 측면 지퍼 & 레드 라벨] -->
+    <g transform="translate(628, 565) rotate(22)">
+      <rect x="0" y="-8" width="16" height="16" rx="3" fill="url(#metalChrome)" stroke="#475569" stroke-width="1" />
+      <path d="M 12 -5 L 32 -10 C 35 -10, 36 -5, 34 0 L 12 5 Z" fill="#E60049" stroke="#990026" stroke-width="1" />
+      <circle cx="28" cy="-5" r="3" fill="#FFFFFF" />
+    </g>
+
+    <g transform="translate(620, 675) rotate(16)">
+      <rect x="1" y="2" width="45" height="65" rx="3" fill="rgba(0,0,0,0.2)" />
+      <rect x="0" y="0" width="44" height="64" rx="3" fill="#E60039" />
+      <text x="22" y="38" font-family="'Brush Script MT', 'Dancing Script', cursive" font-style="italic" font-size="14" font-weight="bold" fill="#FFFFFF" text-anchor="middle" transform="rotate(-90 22 38)">Chimutan</text>
+    </g>
+
+    <!-- [파우치 메인 바디] -->
+    <ellipse cx="400" cy="580" rx="245" ry="230" fill="url(#realPinkFur)" filter="url(#furTexture)" />
+
+    <!-- 가장자리 복슬복슬 털 뭉치 입체 레이어 -->
+    <g fill="url(#realPinkFur)" opacity="0.95">
+      <circle cx="180" cy="480" r="42" />
+      <circle cx="160" cy="570" r="45" />
+      <circle cx="175" cy="660" r="44" />
+      <circle cx="225" cy="740" r="46" />
+      <circle cx="300" cy="795" r="48" />
+      <circle cx="400" cy="815" r="52" />
+      <circle cx="500" cy="795" r="48" />
+      <circle cx="575" cy="740" r="46" />
+      <circle cx="625" cy="660" r="44" />
+      <circle cx="640" cy="570" r="45" />
+      <circle cx="620" cy="480" r="42" />
+      <circle cx="560" cy="405" r="44" />
+      <circle cx="400" cy="365" r="48" />
+      <circle cx="240" cy="405" r="44" />
+    </g>
+
+    <!-- [얼굴 영역: 실물 사진과 동일한 형태 & 굵은 자수 스티치] -->
+    <path d="M 260 705 
+             C 240 655, 245 595, 278 565 
+             C 318 530, 355 550, 400 540 
+             C 445 550, 482 530, 522 565 
+             C 555 595, 560 655, 540 705 
+             C 512 760, 475 780, 400 785 
+             C 325 780, 288 760, 260 705 Z" 
+          fill="#FCA0B7" stroke="#E66A85" stroke-width="4.5" />
+
+    <path d="M 266 700 
+             C 248 655, 252 600, 284 572 
+             C 322 540, 358 558, 400 548 
+             C 442 558, 478 540, 516 572 
+             C 548 600, 552 655, 534 700 
+             C 508 752, 472 772, 400 776 
+             C 328 772, 292 752, 266 700 Z" 
+          fill="url(#realFaceSkin)" filter="url(#fabricTexture)" />
+
+    <path d="M 270 698 
+             C 252 655, 256 605, 286 576 
+             C 324 545, 360 562, 400 552 
+             C 440 562, 476 545, 514 576 
+             C 544 605, 548 655, 530 698 
+             C 505 748, 470 768, 400 772 
+             C 330 772, 295 748, 270 698 Z" 
+          fill="none" stroke="#E66A85" stroke-width="2.5" stroke-dasharray="5,3" stroke-linecap="round" />
+
+    <!-- [이목구비: 실물 자수 눈동자, 핫핑크 볼록 코, 혀 내민 입] -->
+    <g id="real-left-eye">
+      <ellipse cx="338" cy="628" rx="20" ry="25" fill="url(#eyeEmbroidery)" stroke="#220B08" stroke-width="1.8" />
+      <circle cx="332" cy="620" r="8" fill="#FFFFFF" />
+      <ellipse cx="346" cy="638" rx="4.5" ry="3.5" fill="#FFFFFF" />
+      <path d="M 320 615 Q 338 600 356 612" stroke="#220B08" stroke-width="3.5" stroke-linecap="round" fill="none" />
+      <line x1="318" y1="616" x2="310" y2="612" stroke="#220B08" stroke-width="3" stroke-linecap="round" />
+    </g>
+
+    <g id="real-right-eye">
+      <ellipse cx="462" cy="628" rx="20" ry="25" fill="url(#eyeEmbroidery)" stroke="#220B08" stroke-width="1.8" />
+      <circle cx="456" cy="620" r="8" fill="#FFFFFF" />
+      <ellipse cx="470" cy="638" rx="4.5" ry="3.5" fill="#FFFFFF" />
+      <path d="M 444 612 Q 462 600 480 615" stroke="#220B08" stroke-width="3.5" stroke-linecap="round" fill="none" />
+      <line x1="480" y1="616" x2="488" y2="612" stroke="#220B08" stroke-width="3" stroke-linecap="round" fill="none" />
+    </g>
+
+    <!-- 핫핑크 볼록 단추 코 -->
+    <g id="real-pink-nose">
+      <ellipse cx="400" cy="658" rx="21" ry="17" fill="rgba(60, 10, 25, 0.35)" filter="url(#softBlushReal)" />
+      <ellipse cx="400" cy="655" rx="20" ry="16" fill="url(#pinkNoseGrad)" stroke="#A50830" stroke-width="1.5" />
+      <ellipse cx="395" cy="650" rx="7" ry="4.5" fill="#FFFFFF" opacity="0.9" />
+    </g>
+
+    <!-- 귀여운 미소 입 -->
+    <g id="real-smiling-mouth">
+      <path d="M 368 676 
+               C 382 710, 418 710, 432 676 
+               C 414 683, 386 683, 368 676 Z" 
+            fill="url(#mouthInner)" stroke="#2A0F0B" stroke-width="2.5" />
+      <path d="M 380 686 C 392 706, 408 706, 420 686 Z" fill="#FF7092" stroke="#D91648" stroke-width="1" />
+      <path d="M 362 672 Q 367 678 372 676" stroke="#2A0F0B" stroke-width="3.5" stroke-linecap="round" fill="none" />
+      <path d="M 438 672 Q 433 678 428 676" stroke="#2A0F0B" stroke-width="3.5" stroke-linecap="round" fill="none" />
+    </g>
+
+    <!-- 에어브러시 핑크 볼터치 -->
+    <ellipse cx="316" cy="655" rx="36" ry="22" fill="#FF5E8A" opacity="0.45" filter="url(#softBlushReal)" />
+    <ellipse cx="484" cy="655" rx="36" ry="22" fill="#FF5E8A" opacity="0.45" filter="url(#softBlushReal)" />
+
+  </g>
+</svg>

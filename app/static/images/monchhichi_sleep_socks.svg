@@ -1,0 +1,211 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000" width="800" height="1000">
+  <defs>
+    <!-- 소프트 웜크림 & 베이비블루 스튜디오 배경 -->
+    <linearGradient id="socksBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FCFDFF" />
+      <stop offset="50%" stop-color="#F2F7FC" />
+      <stop offset="100%" stop-color="#E5F0FA" />
+    </linearGradient>
+
+    <!-- 바닥 접지 소프트 그림자 -->
+    <radialGradient id="socksFloorShadow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="rgba(70, 95, 125, 0.32)" />
+      <stop offset="60%" stop-color="rgba(70, 95, 125, 0.1)" />
+      <stop offset="100%" stop-color="rgba(70, 95, 125, 0)" />
+    </radialGradient>
+
+    <!-- 수면양말 극세사 밍크 수면 퍼(Fleece) 텍스처 (하늘색 스트라이프 & 구름) -->
+    <linearGradient id="fuzzySky" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#BAE6FD" />
+      <stop offset="50%" stop-color="#7DD3FC" />
+      <stop offset="100%" stop-color="#38BDF8" />
+    </linearGradient>
+
+    <!-- 폭신한 화이트 보아퍼 밴딩 -->
+    <linearGradient id="fluffyBoaWhite" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="100%" stop-color="#F1F5F9" />
+    </linearGradient>
+
+    <!-- 양말 입체 그림자 -->
+    <filter id="sockSoftShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="16" stdDeviation="16" flood-color="#334155" flood-opacity="0.2" />
+    </filter>
+
+    <!-- 몬치치 미니 입체 패치 자수 그림자 -->
+    <filter id="patchShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="2" dy="4" stdDeviation="4" flood-color="#0284C7" flood-opacity="0.3" />
+    </filter>
+
+    <filter id="blushBlur" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="3" />
+    </filter>
+  </defs>
+
+  <!-- 1. 배경 -->
+  <rect width="800" height="1000" fill="url(#socksBg)" />
+  <circle cx="200" cy="240" r="180" fill="#FFFFFF" opacity="0.7" />
+  <circle cx="650" cy="260" r="160" fill="#E0F2FE" opacity="0.6" />
+
+  <!-- 바닥 그림자 -->
+  <ellipse cx="400" cy="850" rx="270" ry="42" fill="url(#socksFloorShadow)" />
+
+  <!-- 2. 수면양말 한 켤레 (왼발 & 오른발 나란히 앙증맞은 구도) -->
+  <g id="fuzzy-socks-pair" filter="url(#sockSoftShadow)">
+
+    <!-- ==============================================================
+         [왼쪽 양말] 베이비블루 & 화이트 포근한 보아퍼 수면양말
+    ============================================================== -->
+    <g id="left-sock" transform="translate(260, 240)">
+      <!-- 양말 본체 (도톰하고 폭신한 곡선) -->
+      <!-- 목 부분에서 발뒤꿈치, 발가락으로 이어지는 곡면 -->
+      <path d="M 40 40 
+               L 40 340 
+               C 35 410, -50 460, -90 490 
+               C -130 520, -145 470, -115 420 
+               C -85 370, -20 330, -10 280 
+               L -10 40 Z" 
+            fill="url(#fuzzySky)" stroke="#38BDF8" stroke-width="1.5" />
+
+      <!-- 양말 스트라이프 극세사 무늬 (화이트 & 연하늘 교차) -->
+      <path d="M -10 100 L 40 100" stroke="#FFFFFF" stroke-width="26" opacity="0.8" />
+      <path d="M -10 170 L 40 170" stroke="#FFFFFF" stroke-width="26" opacity="0.8" />
+      <path d="M -10 240 L 40 240" stroke="#FFFFFF" stroke-width="26" opacity="0.8" />
+      <!-- 발가락 캡 화이트 보아퍼 -->
+      <ellipse cx="-110" cy="470" rx="36" ry="28" fill="url(#fluffyBoaWhite)" stroke="#BAE6FD" stroke-width="1.5" transform="rotate(-35 -110 470)" />
+      <!-- 발뒤꿈치 힐 패치 -->
+      <ellipse cx="32" cy="355" rx="24" ry="32" fill="url(#fluffyBoaWhite)" stroke="#BAE6FD" stroke-width="1.5" />
+
+      <!-- 양말 발목 입구: 복슬복슬한 화이트 밍크 털 트리밍 (구름 형태 밴드) -->
+      <g id="left-cuff">
+        <rect x="-20" y="20" width="70" height="34" rx="17" fill="url(#fluffyBoaWhite)" stroke="#BAE6FD" stroke-width="1.5" />
+        <!-- 뽀송한 털 돌기 도트 -->
+        <circle cx="-15" cy="37" r="10" fill="#FFFFFF" />
+        <circle cx="0" cy="37" r="10" fill="#FFFFFF" />
+        <circle cx="15" cy="37" r="10" fill="#FFFFFF" />
+        <circle cx="30" cy="37" r="10" fill="#FFFFFF" />
+        <circle cx="45" cy="37" r="10" fill="#FFFFFF" />
+      </g>
+
+      <!-- 발목 부분: 입체 몬치치 미니 얼굴 인형 자수 패치 (포인트) -->
+      <g id="monchhichi-patch-left" transform="translate(15, 135)" filter="url(#patchShadow)">
+        <!-- 하늘색 복실 털 베이스 -->
+        <circle cx="0" cy="0" r="32" fill="#38BDF8" />
+        <circle cx="-25" cy="-8" r="12" fill="#38BDF8" />
+        <circle cx="-25" cy="-8" r="6" fill="#FEDCBD" />
+        <circle cx="25" cy="-8" r="12" fill="#38BDF8" />
+        <circle cx="25" cy="-8" r="6" fill="#FEDCBD" />
+        <!-- 정수리 털 -->
+        <circle cx="0" cy="-34" r="7" fill="#38BDF8" />
+        <circle cx="-9" cy="-30" r="6" fill="#38BDF8" />
+        <circle cx="9" cy="-30" r="6" fill="#38BDF8" />
+        <!-- 살구빛 얼굴 -->
+        <ellipse cx="0" cy="3" rx="23" ry="19" fill="#FFF3E8" />
+        <!-- 앞머리 뱅 -->
+        <circle cx="-10" cy="-11" r="6" fill="#38BDF8" />
+        <circle cx="0" cy="-13" r="7" fill="#38BDF8" />
+        <circle cx="10" cy="-11" r="6" fill="#38BDF8" />
+        <!-- 눈 좌/우 -->
+        <circle cx="-9" cy="0" r="3.2" fill="#0C4A6E" />
+        <circle cx="-8" cy="-1.5" r="1.2" fill="#FFFFFF" />
+        <circle cx="9" cy="0" r="3.2" fill="#0C4A6E" />
+        <circle cx="10" cy="-1.5" r="1.2" fill="#FFFFFF" />
+        <!-- 주근깨 & 볼터치 -->
+        <circle cx="-13" cy="7" r="1" fill="#0284C7" />
+        <circle cx="13" cy="7" r="1" fill="#0284C7" />
+        <circle cx="-14" cy="6" r="5" fill="#FF80AB" opacity="0.6" filter="url(#blushFilter)" />
+        <circle cx="14" cy="6" r="5" fill="#FF80AB" opacity="0.6" filter="url(#blushFilter)" />
+        <!-- 코 & 입 & 미니 턱받이 -->
+        <circle cx="0" cy="4" r="1.8" fill="#0C4A6E" />
+        <path d="M -3 9 Q 0 12 3 9" stroke="#E11D48" stroke-width="1.5" fill="none" stroke-linecap="round" />
+        <path d="M -12 17 Q 0 25 12 17 Z" fill="#FFFFFF" stroke="#0284C7" stroke-width="1" />
+      </g>
+
+      <!-- 미끄럼 방지 젤리 실리콘 발바닥 (발바닥 뒤편 곰발바닥 젤리) -->
+      <g transform="translate(-80, 480)" opacity="0.6">
+        <circle cx="0" cy="0" r="4" fill="#0284C7" />
+        <circle cx="-7" cy="-7" r="2.5" fill="#0284C7" />
+        <circle cx="0" cy="-9" r="2.5" fill="#0284C7" />
+        <circle cx="7" cy="-7" r="2.5" fill="#0284C7" />
+      </g>
+    </g>
+
+    <!-- ==============================================================
+         [오른쪽 양말] 대칭형으로 사랑스럽게 겹쳐진 디자인
+    ============================================================== -->
+    <g id="right-sock" transform="translate(480, 240)">
+      <!-- 양말 본체 -->
+      <path d="M -40 40 
+               L -40 340 
+               C -35 410, 50 460, 90 490 
+               C 130 520, 145 470, 115 420 
+               C 85 370, 20 330, 10 280 
+               L 10 40 Z" 
+            fill="url(#fuzzySky)" stroke="#38BDF8" stroke-width="1.5" />
+
+      <!-- 스트라이프 -->
+      <path d="M -40 100 L 10 100" stroke="#FFFFFF" stroke-width="26" opacity="0.8" />
+      <path d="M -40 170 L 10 170" stroke="#FFFFFF" stroke-width="26" opacity="0.8" />
+      <path d="M -40 240 L 10 240" stroke="#FFFFFF" stroke-width="26" opacity="0.8" />
+      <!-- 발가락 화이트 보아퍼 -->
+      <ellipse cx="110" cy="470" rx="36" ry="28" fill="url(#fluffyBoaWhite)" stroke="#BAE6FD" stroke-width="1.5" transform="rotate(35 110 470)" />
+      <!-- 뒤꿈치 패치 -->
+      <ellipse cx="-32" cy="355" rx="24" ry="32" fill="url(#fluffyBoaWhite)" stroke="#BAE6FD" stroke-width="1.5" />
+
+      <!-- 발목 화이트 밍크 털 트리밍 -->
+      <g id="right-cuff">
+        <rect x="-50" y="20" width="70" height="34" rx="17" fill="url(#fluffyBoaWhite)" stroke="#BAE6FD" stroke-width="1.5" />
+        <circle cx="-45" cy="37" r="10" fill="#FFFFFF" />
+        <circle cx="-30" cy="37" r="10" fill="#FFFFFF" />
+        <circle cx="-15" cy="37" r="10" fill="#FFFFFF" />
+        <circle cx="0" cy="37" r="10" fill="#FFFFFF" />
+        <circle cx="15" cy="37" r="10" fill="#FFFFFF" />
+      </g>
+
+      <!-- 발목 부분: 입체 몬치치 미니 얼굴 인형 자수 패치 -->
+      <g id="monchhichi-patch-right" transform="translate(-15, 135)" filter="url(#patchShadow)">
+        <circle cx="0" cy="0" r="32" fill="#38BDF8" />
+        <circle cx="-25" cy="-8" r="12" fill="#38BDF8" />
+        <circle cx="-25" cy="-8" r="6" fill="#FEDCBD" />
+        <circle cx="25" cy="-8" r="12" fill="#38BDF8" />
+        <circle cx="25" cy="-8" r="6" fill="#FEDCBD" />
+        <circle cx="0" cy="-34" r="7" fill="#38BDF8" />
+        <circle cx="-9" cy="-30" r="6" fill="#38BDF8" />
+        <circle cx="9" cy="-30" r="6" fill="#38BDF8" />
+        <ellipse cx="0" cy="3" rx="23" ry="19" fill="#FFF3E8" />
+        <circle cx="-10" cy="-11" r="6" fill="#38BDF8" />
+        <circle cx="0" cy="-13" r="7" fill="#38BDF8" />
+        <circle cx="10" cy="-11" r="6" fill="#38BDF8" />
+        <circle cx="-9" cy="0" r="3.2" fill="#0C4A6E" />
+        <circle cx="-8" cy="-1.5" r="1.2" fill="#FFFFFF" />
+        <circle cx="9" cy="0" r="3.2" fill="#0C4A6E" />
+        <circle cx="10" cy="-1.5" r="1.2" fill="#FFFFFF" />
+        <circle cx="-13" cy="7" r="1" fill="#0284C7" />
+        <circle cx="13" cy="7" r="1" fill="#0284C7" />
+        <circle cx="-14" cy="6" r="5" fill="#FF80AB" opacity="0.6" filter="url(#blushFilter)" />
+        <circle cx="14" cy="6" r="5" fill="#FF80AB" opacity="0.6" filter="url(#blushFilter)" />
+        <circle cx="0" cy="4" r="1.8" fill="#0C4A6E" />
+        <path d="M -3 9 Q 0 12 3 9" stroke="#E11D48" stroke-width="1.5" fill="none" stroke-linecap="round" />
+        <path d="M -12 17 Q 0 25 12 17 Z" fill="#FFFFFF" stroke="#0284C7" stroke-width="1" />
+      </g>
+    </g>
+
+  </g>
+
+  <!-- 3. 쇼핑몰 룩북 뱃지 & 오버레이 타이포그래피 -->
+  <!-- 좌상단 카테고리 뱃지 -->
+  <g transform="translate(60, 60)">
+    <rect width="130" height="34" rx="17" fill="#FFFFFF" opacity="0.95" />
+    <text x="65" y="22" font-family="'Montserrat', sans-serif" font-size="12" font-weight="700" fill="#0284C7" text-anchor="middle" letter-spacing="2">HOMEWEAR</text>
+  </g>
+
+  <!-- 우상단 위시리스트 아이콘 -->
+  <g transform="translate(690, 60)">
+    <circle cx="25" cy="25" r="25" fill="#FFFFFF" opacity="0.95" />
+    <path d="M 25 33 C 16 24, 8 13, 17 6 C 22 2, 25 6, 25 7 C 25 6, 28 2, 33 6 C 42 13, 34 24, 25 33 Z" fill="#38BDF8" />
+  </g>
+
+  <!-- 하단 상품명 안내 텍스트 -->
+  <text x="400" y="920" font-family="'Pretendard', 'Noto Sans KR', sans-serif" font-size="22" font-weight="700" fill="#1E293B" text-anchor="middle" letter-spacing="2">MONCHHICHI FLUFFY SLEEP SOCKS</text>
+  <text x="400" y="955" font-family="'Pretendard', sans-serif" font-size="14" font-weight="500" fill="#64748B" text-anchor="middle" letter-spacing="1">보송보송 극세사 밍크 수면양말 &amp; 미니 몬치치 얼굴 자수 패치 (1+1 세트)</text>
+</svg>
