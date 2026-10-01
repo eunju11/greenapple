@@ -152,18 +152,6 @@
         <p class="text-muted mt-2">실제 구매 고객님들이 남겨주신 달콤한 딸기 평점과 생생한 후기를 확인해보세요.</p>
     </div>
 
-    <!-- 플래시 알림 메시지 (리뷰 작성 완료/경고) -->
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            {% for category, message in messages %}
-            <div class="alert alert-{{ category }} alert-dismissible fade show rounded-4 shadow-sm mb-4" role="alert">
-                <i class="bi bi-check-circle-fill me-2"></i> {{ message }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-            {% endfor %}
-        {% endif %}
-    {% endwith %}
-
     <!-- 상단: 딸기 평점 종합 대시보드 카드 -->
     <div class="row g-4 mb-5 align-items-stretch">
         <!-- 1) 종합 만족도 평점 -->
@@ -326,8 +314,15 @@
 
                     <!-- 3. 작성자 닉네임 -->
                     <div class="mb-3">
-                        <label class="form-label fw-semibold small text-dark">작성자 이름 / 닉네임</label>
-                        <input type="text" name="author" class="form-control rounded-3" placeholder="예: 김하늘" required>
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <label class="form-label fw-semibold small text-dark mb-0">작성자 이름 / 닉네임</label>
+                            {% if session.get('user') %}
+                            <span class="badge bg-warning-subtle text-dark border border-warning-subtle small fw-bold" style="font-size: 0.72rem;">
+                                <i class="bi bi-chat-fill text-warning me-1"></i>카카오 로그인 연동됨
+                            </span>
+                            {% endif %}
+                        </div>
+                        <input type="text" name="author" class="form-control rounded-3" placeholder="예: 김하늘" value="{{ session['user'].get('name', '') if session.get('user') else '' }}" required>
                     </div>
 
                     <!-- 4. 리뷰 내용 -->

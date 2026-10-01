@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block title %}카카오 개발자 API 설정 안내 | VIBE-FASHION{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card border-0 rounded-4 shadow-sm p-4 p-md-5 bg-white">
+                <div class="d-flex align-items-center gap-3 mb-4 border-bottom pb-3">
+                    <span class="rounded-circle p-3 d-inline-flex align-items-center justify-content-center" style="background-color: #FEE500; width: 60px; height: 60px;">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="#191919">
+                            <path d="M12 3C6.477 3 2 6.477 2 10.772c0 2.768 1.87 5.187 4.673 6.551-.157.574-.567 2.073-.65 2.399-.101.401.147.395.31.286.128-.086 2.036-1.385 2.868-1.949.574.08 1.164.123 1.799.123 5.523 0 10-3.477 10-7.772S17.523 3 12 3z"/>
+                        </svg>
+                    </span>
+                    <div>
+                        <h4 class="fw-bold text-dark mb-1">카카오톡 회원가입 연동 키(API Key) 설정 안내</h4>
+                        <p class="text-muted small mb-0">실제 카카오톡 인증 화면으로 연결하기 위해 환경 변수 등록이 필요합니다.</p>
+                    </div>
+                </div>
+
+                <div class="alert alert-warning rounded-3 mb-4">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                    현재 프로젝트에 <strong>KAKAO_CLIENT_ID</strong> 환경 변수가 설정되어 있지 않습니다.
+                </div>
+
+                <h5 class="fw-bold mb-3 text-dark">💡 카카오 로그인 3단계 설정 방법</h5>
+                <ol class="list-group list-group-numbered mb-4 rounded-3 border-0">
+                    <li class="list-group-item d-flex justify-content-between align-items-start border-0 ps-0 pb-3">
+                        <div class="ms-2 me-auto">
+                            <div class="fw-bold">카카오 디벨로퍼스(Kakao Developers) 앱 생성</div>
+                            <span class="text-muted small">
+                                <a href="https://developers.kakao.com" target="_blank" class="text-danger fw-bold text-decoration-none">developers.kakao.com</a>에 로그인 후 <strong>[내 애플리케이션] &gt; [애플리케이션 추가하기]</strong>를 진행합니다.
+                            </span>
+                        </div>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-start border-0 ps-0 pb-3">
+                        <div class="ms-2 me-auto">
+                            <div class="fw-bold">카카오 로그인 활성화 &amp; Redirect URI 등록</div>
+                            <span class="text-muted small">
+                                [제품 설정] &gt; [카카오 로그인] 메뉴에서 활성화 토글을 ON으로 변경하고, 아래 Redirect URI를 추가합니다.<br>
+                                <code class="user-select-all bg-light px-2 py-1 rounded text-danger border mt-1 d-inline-block">{{ redirect_uri }}</code>
+                            </span>
+                        </div>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-start border-0 ps-0 pb-3">
+                        <div class="ms-2 me-auto">
+                            <div class="fw-bold">.env 파일에 REST API 키 입력</div>
+                            <span class="text-muted small">
+                                [앱 설정] &gt; [앱 키]에서 <strong>REST API 키</strong>를 복사하여 프로젝트 최상위의 <code>.env</code> 파일에 추가합니다.
+                            </span>
+                        </div>
+                    </li>
+                </ol>
+
+                <div class="bg-dark text-light p-3 rounded-3 mb-4 font-monospace small">
+                    <div class="text-secondary mb-1"># .env 파일에 아래 내용을 추가하세요</div>
+                    <div>KAKAO_CLIENT_ID=여러분의_카카오_REST_API_키</div>
+                    <div>KAKAO_REDIRECT_URI={{ redirect_uri }}</div>
+                </div>
+
+                <div class="d-flex flex-column flex-sm-row gap-2 pt-2">
+                    <a href="{{ url_for('auth.mock_login') }}" class="btn btn-danger rounded-pill fw-bold px-4 py-2 shadow-sm flex-grow-1">
+                        🍓 [개발 테스트] 카카오 가입 즉시 체험하기
+                    </a>
+                    <a href="{{ url_for('main.index') }}" class="btn btn-outline-secondary rounded-pill px-4 py-2">
+                        메인으로 돌아가기
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

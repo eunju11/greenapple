@@ -56,13 +56,61 @@
                         <i class="bi bi-cart3 me-1"></i> 장바구니 
                         <span id="navCartBadge" class="badge badge-berry ms-1">{{ cart.total_count if cart else 0 }}</span>
                     </button>
-                    <button class="btn btn-light btn-sm rounded-pill px-3 text-danger fw-bold shadow-sm" type="button">
-                        로그인
+
+                    {% if session.get('user') %}
+                    <!-- 로그인된 사용자 프로필 드롭다운 -->
+                    <div class="dropdown">
+                        <button class="btn btn-light btn-sm rounded-pill px-3 py-1 text-danger fw-bold shadow-sm d-flex align-items-center gap-2 dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <img src="{{ session['user'].get('avatar_url') or url_for('static', filename='images/strawberry_icon.svg') }}" alt="프로필" class="user-nav-avatar">
+                            <span>{{ session['user'].get('name', '회원') }}</span>
+                            <span class="badge bg-danger-subtle text-danger border border-danger-subtle rounded-pill" style="font-size: 0.7rem;">{{ session['user'].get('grade', 'BRONZE') }}</span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end rounded-4 shadow-sm border-0 py-2 mt-2">
+                            <li class="px-3 py-2 border-bottom">
+                                <div class="fw-bold text-dark small">{{ session['user'].get('name') }} 님</div>
+                                <div class="text-muted small" style="font-size: 0.75rem;">{{ session['user'].get('email', '') }}</div>
+                                <div class="mt-1"><span class="badge bg-warning text-dark small fw-bold">카카오 간편회원</span></div>
+                            </li>
+                            <li>
+                                <a class="dropdown-item py-2 small d-flex align-items-center gap-2" href="{{ url_for('main.mypage') }}">
+                                    <i class="bi bi-person-circle text-primary"></i> 마이페이지
+                                </a>
+                            </li>
+                            <li><hr class="dropdown-divider my-1"></li>
+                            <li>
+                                <a class="dropdown-item py-2 small d-flex align-items-center gap-2 text-danger" href="{{ url_for('auth.logout') }}">
+                                    <i class="bi bi-box-arrow-right"></i> 로그아웃
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    {% else %}
+                    <!-- 로그인 / 회원가입 버튼 (클릭 시 카카오 가입 모달 오픈) -->
+                    <button class="btn btn-light btn-sm rounded-pill px-3 text-danger fw-bold shadow-sm d-flex align-items-center gap-1" type="button" data-bs-toggle="modal" data-bs-target="#loginModal">
+                        <i class="bi bi-person-fill"></i> 로그인 / 회원가입
                     </button>
+                    {% endif %}
                 </div>
             </div>
         </div>
     </nav>
+
+    <!-- 전역 플래시 알림 메시지 영역 -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="container mt-3">
+            {% for category, message in messages %}
+            <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show rounded-4 shadow-sm mb-3 border-0" role="alert">
+                <div class="d-flex align-items-center gap-2">
+                    <i class="bi {% if category == 'success' %}bi-check-circle-fill text-success{% elif category in ['danger', 'error'] %}bi-exclamation-octagon-fill text-danger{% else %}bi-info-circle-fill text-primary{% endif %} fs-5"></i>
+                    <div>{{ message }}</div>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    {% endwith %}
 
     <!-- 메인 본문 콘텐츠 영역 -->
     <main class="flex-grow-1">
@@ -139,6 +187,72 @@
                     <button type="button" class="btn btn-light btn-sm text-muted rounded-pill" onclick="clearAllCart()">
                         장바구니 전체 비우기
                     </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 카카오 간편 회원가입 / 로그인 모달 다이얼로그 -->
+    <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content rounded-4 border-0 shadow-lg overflow-hidden">
+                <!-- 모달 헤더 -->
+                <div class="modal-header border-0 py-3 px-4 position-relative" style="background: linear-gradient(135deg, #ffe3e8 0%, #fff0f3 100%);">
+                    <div class="d-flex align-items-center gap-2">
+                        <img src="{{ url_for('static', filename='images/strawberry_icon.svg') }}" width="28" height="28" alt="딸기">
+                        <h6 class="modal-title fw-bold text-danger mb-0" id="loginModalLabel">CHIMUTAN &amp; MONCHHICHI</h6>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="닫기"></button>
+                </div>
+
+                <!-- 모달 본문 -->
+                <div class="modal-body p-4 text-center">
+                    <span class="badge bg-danger-subtle text-danger px-3 py-1 rounded-pill fw-bold small mb-2">
+                        🍓 3초 간편 회원가입
+                    </span>
+                    <h4 class="fw-bold text-dark mb-2">카카오로 3초 만에 시작하기</h4>
+                    <p class="text-muted small mb-4">
+                        아이디, 비밀번호 입력 없이<br>
+                        카카오톡으로 간편하게 가입하고 즉시 혜택을 받아보세요!
+                    </p>
+
+                    <!-- 카카오 로그인 / 가입 버튼 -->
+                    <div class="d-grid gap-2 mb-4">
+                        <a href="{{ url_for('auth.kakao_login') }}" class="btn btn-kakao btn-lg rounded-pill fw-bold py-3 shadow-sm d-flex align-items-center justify-content-center gap-2 text-decoration-none">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="#191919">
+                                <path d="M12 3C6.477 3 2 6.477 2 10.772c0 2.768 1.87 5.187 4.673 6.551-.157.574-.567 2.073-.65 2.399-.101.401.147.395.31.286.128-.086 2.036-1.385 2.868-1.949.574.08 1.164.123 1.799.123 5.523 0 10-3.477 10-7.772S17.523 3 12 3z"/>
+                            </svg>
+                            <span>카카오톡으로 회원가입 / 로그인</span>
+                        </a>
+                    </div>
+
+                    <!-- 신규 가입 혜택 안내 카드 -->
+                    <div class="text-start p-3 rounded-4 mb-3" style="background-color: #fff9fa; border: 1px dashed #ffb8c6;">
+                        <div class="fw-bold text-danger small mb-2 d-flex align-items-center gap-1">
+                            <i class="bi bi-gift-fill"></i> 신규 가입 즉시 제공되는 3가지 혜택
+                        </div>
+                        <ul class="list-unstyled small mb-0 d-flex flex-column gap-2 text-secondary">
+                            <li class="d-flex align-items-center gap-2">
+                                <i class="bi bi-check2-circle text-danger"></i>
+                                <span>첫 구매 전 상품 <strong>10% 할인 쿠폰</strong></span>
+                            </li>
+                            <li class="d-flex align-items-center gap-2">
+                                <i class="bi bi-check2-circle text-danger"></i>
+                                <span>배송비 걱정 없는 <strong>전 상품 무료 배송</strong></span>
+                            </li>
+                            <li class="d-flex align-items-center gap-2">
+                                <i class="bi bi-check2-circle text-danger"></i>
+                                <span>구매 시 <strong>3% 딸기 포인트</strong> 자동 적립</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- 개발 테스트 환경 링크 (API 키 미설정 시에도 바로 테스트 가능) -->
+                    <div class="pt-2 text-center border-top">
+                        <a href="{{ url_for('auth.mock_login') }}" class="btn btn-link btn-sm text-muted text-decoration-none" title="개발 환경용 원클릭 테스트">
+                            <i class="bi bi-lightning-charge-fill text-warning"></i> 개발 환경 테스트 로그인
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>

@@ -45,6 +45,8 @@ CREATE TABLE IF NOT EXISTS public.profiles (
     avatar_url TEXT,
     role VARCHAR(20) DEFAULT 'customer' NOT NULL CHECK (role IN ('customer', 'admin')),
     grade VARCHAR(20) DEFAULT 'BRONZE' NOT NULL CHECK (grade IN ('BRONZE', 'SILVER', 'GOLD', 'VIP')),
+    provider VARCHAR(50) DEFAULT 'email' NOT NULL, -- email, kakao, naver 등
+    provider_id VARCHAR(100),                     -- 카카오 고유 회원 ID
     total_spent NUMERIC(12, 2) DEFAULT 0 NOT NULL,
     order_count INTEGER DEFAULT 0 NOT NULL,
     created_at TIMESTAMPTZ DEFAULT timezone('utc'::text, now()) NOT NULL,

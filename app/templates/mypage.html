@@ -1,0 +1,156 @@
+{% extends "base.html" %}
+
+{% block title %}마이페이지 | VIBE-FASHION x CHIMUTAN{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <!-- 마이페이지 상단 헤더 -->
+            <div class="d-flex align-items-center justify-content-between mb-4 pb-3 border-bottom">
+                <div class="d-flex align-items-center gap-3">
+                    <img src="{{ session['user'].get('avatar_url') or url_for('static', filename='images/strawberry_icon.svg') }}" 
+                         alt="프로필 사진" class="rounded-circle shadow-sm border border-2 border-white" style="width: 54px; height: 54px; object-fit: cover;">
+                    <div>
+                        <h4 class="fw-bold mb-1 text-dark d-flex align-items-center gap-2">
+                            <span>{{ profile.full_name or session['user'].get('name', '고객') }} 님의 마이페이지</span>
+                            <span class="badge bg-danger rounded-pill fs-6">{{ profile.grade or 'BRONZE' }}</span>
+                        </h4>
+                        <p class="small text-muted mb-0">{{ profile.email }}</p>
+                    </div>
+                </div>
+                <div>
+                    <span class="badge bg-warning-subtle text-dark border border-warning-subtle px-3 py-2 rounded-pill fw-bold small">
+                        <i class="bi bi-chat-fill text-warning me-1"></i> 카카오 연동 계정
+                    </span>
+                </div>
+            </div>
+
+            <!-- 마이페이지 Bootstrap 5 탭 네비게이션 -->
+            <div class="card border-0 rounded-4 shadow-sm bg-white overflow-hidden">
+                <div class="card-header bg-white border-bottom pt-3 px-4">
+                    <ul class="nav nav-tabs card-header-tabs gap-2" id="mypageTab" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active fw-bold px-4 py-3 d-flex align-items-center gap-2" 
+                                    id="info-tab" data-bs-toggle="tab" data-bs-target="#info-pane" 
+                                    type="button" role="tab" aria-controls="info-pane" aria-selected="true">
+                                <i class="bi bi-person-lines-fill text-danger"></i> 내 정보
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link fw-bold px-4 py-3 d-flex align-items-center gap-2 text-secondary" 
+                                    id="orders-tab" data-bs-toggle="tab" data-bs-target="#orders-pane" 
+                                    type="button" role="tab" aria-controls="orders-pane" aria-selected="false">
+                                <i class="bi bi-bag-check-fill text-danger"></i> 주문 내역
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link fw-bold px-4 py-3 d-flex align-items-center gap-2 text-secondary" 
+                                    id="refunds-tab" data-bs-toggle="tab" data-bs-target="#refunds-pane" 
+                                    type="button" role="tab" aria-controls="refunds-pane" aria-selected="false">
+                                <i class="bi bi-arrow-counterclockwise text-danger"></i> 환불 내역
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- 탭 콘텐츠 영역 -->
+                <div class="card-body p-4 p-md-5">
+                    <div class="tab-content" id="mypageTabContent">
+
+                        <!-- 탭 1: 내 정보 (이름, 이메일, 기본 배송지 표시 + 수정 폼) -->
+                        <div class="tab-pane fade show active" id="info-pane" role="tabpanel" aria-labelledby="info-tab" tabindex="0">
+                            <div class="row justify-content-center">
+                                <div class="col-lg-8">
+                                    <form method="POST" action="{{ url_for('main.mypage') }}">
+                                        <!-- 기본 계정 정보 카드 -->
+                                        <div class="mb-4">
+                                            <h5 class="fw-bold text-dark mb-3 d-flex align-items-center gap-2">
+                                                <i class="bi bi-person-badge text-danger"></i> 기본 계정 정보
+                                            </h5>
+                                            <div class="mb-3">
+                                                <label class="form-label small fw-bold text-secondary">이름 / 닉네임</label>
+                                                <input type="text" name="full_name" class="form-control rounded-3" 
+                                                       value="{{ profile.full_name }}" required>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label small fw-bold text-secondary">이메일 주소</label>
+                                                <input type="email" class="form-control rounded-3 bg-light text-muted" 
+                                                       value="{{ profile.email }}" readonly>
+                                                <div class="form-text small">카카오톡 계정 연동 이메일은 변경할 수 없습니다.</div>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label small fw-bold text-secondary">연락처</label>
+                                                <input type="tel" name="phone" class="form-control rounded-3" 
+                                                       placeholder="예: 010-1234-5678" value="{{ profile.phone or '' }}">
+                                            </div>
+                                        </div>
+
+                                        <hr class="my-4 text-secondary opacity-25">
+
+                                        <!-- 기본 배송지 정보 카드 -->
+                                        <div class="mb-4">
+                                            <h5 class="fw-bold text-dark mb-3 d-flex align-items-center gap-2">
+                                                <i class="bi bi-geo-alt-fill text-danger"></i> 기본 배송지 정보
+                                            </h5>
+                                            <div class="row g-2 mb-2">
+                                                <div class="col-sm-5">
+                                                    <label class="form-label small fw-bold text-secondary">우편번호</label>
+                                                    <input type="text" name="postal_code" class="form-control rounded-3" 
+                                                           placeholder="예: 06236" value="{{ profile.postal_code or '' }}">
+                                                </div>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label small fw-bold text-secondary">기본 주소</label>
+                                                <input type="text" name="shipping_address" class="form-control rounded-3" 
+                                                       placeholder="예: 서울특별시 강남구 테헤란로 123" value="{{ profile.shipping_address or '' }}">
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label small fw-bold text-secondary">상세 주소</label>
+                                                <input type="text" name="shipping_detail_address" class="form-control rounded-3" 
+                                                       placeholder="예: 101동 202호" value="{{ profile.shipping_detail_address or '' }}">
+                                            </div>
+                                        </div>
+
+                                        <div class="d-flex justify-content-end gap-2 pt-2">
+                                            <button type="submit" class="btn btn-danger rounded-pill px-4 fw-bold shadow-sm">
+                                                <i class="bi bi-check2-circle me-1"></i> 정보 저장하기
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 탭 2: 주문 내역 -->
+                        <div class="tab-pane fade" id="orders-pane" role="tabpanel" aria-labelledby="orders-tab" tabindex="0">
+                            <div class="text-center py-5 my-4">
+                                <div class="mb-3">
+                                    <i class="bi bi-cart-x text-muted" style="font-size: 3.5rem;"></i>
+                                </div>
+                                <h5 class="fw-bold text-secondary mb-2">아직 주문 내역이 없습니다</h5>
+                                <p class="small text-muted mb-4">치무탄 &amp; 몬치치 컬렉션을 쇼핑해보세요! 🍓</p>
+                                <a href="{{ url_for('main.index') }}#products" class="btn btn-outline-danger btn-sm rounded-pill px-4 fw-bold">
+                                    인기 상품 보러가기
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- 탭 3: 환불 내역 -->
+                        <div class="tab-pane fade" id="refunds-pane" role="tabpanel" aria-labelledby="refunds-tab" tabindex="0">
+                            <div class="text-center py-5 my-4">
+                                <div class="mb-3">
+                                    <i class="bi bi-arrow-counterclockwise text-muted" style="font-size: 3.5rem;"></i>
+                                </div>
+                                <h5 class="fw-bold text-secondary mb-2">아직 환불 내역이 없습니다</h5>
+                                <p class="small text-muted mb-0">주문 취소 및 환불 신청 내역이 발생하면 이곳에 표시됩니다.</p>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

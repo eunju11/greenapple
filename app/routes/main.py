@@ -4,6 +4,7 @@
 """
 
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session, jsonify
+from functools import wraps
 from app.supabase_client import get_supabase_client
 from datetime import datetime
 
@@ -371,3 +372,98 @@ def create_review():
         flash("리뷰 내용을 입력해주세요.", "warning")
 
     return redirect(url_for("main.index") + "#reviews")
+
+
+def login_required(f):
+    """
+    로그인 필수 데코레이터
+    로그인되지 않은 사용자의 접근 시 안내 메시지와 함께 로그인 화면으로 리다이렉트합니다.
+    """
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if "user" not in session:
+            flash("로그인이 필요한 서비스입니다. 카카오톡으로 간편 로그인해주세요.", "warning")
+            return redirect(url_for("auth.login_page"))
+        return f(*args, **kwargs)
+    return decorated_function
+
+
+@main_bp.route("/mypage", methods=["GET", "POST"])
+@login_required
+def mypage():
+    """
+    마이페이지 뷰 함수 (GET /mypage)
+    - 탭1: 내 정보 (이름, 이메일, 기본 배송지 표시 및 정보 수정 폼)
+    - 탭2: 주문 내역 (안내 문구)
+    - 탭3: 환불 내역 (안내 문구)
+    - profiles 테이블에서 로그인 사용자 정보를 조회하여 표시합니다.
+    """
+    current_user = session.get("user", {})
+    user_email = current_user.get("email", "")
+
+    supabase = get_supabase_client()
+    profile_data = {
+        "full_name": current_user.get("name", ""),
+        "email": user_email,
+        "phone": current_user.get("phone", ""),
+        "postal_code": "",
+        "shipping_address": "",
+        "shipping_detail_address": "",
+        "grade": current_user.get("grade", "BRONZE"),
+        "role": "customer",
+    }
+
+    # Supabase profiles 테이블에서 사용자 최신 정보 조회
+    if supabase and user_email:
+        try:
+            res = supabase.table("profiles").select("*").eq("email", user_email).limit(1).execute()
+            if res.data and len(res.data) > 0:
+                user_row = res.data[0]
+                profile_data["full_name"] = user_row.get("full_name") or profile_data["full_name"]
+                profile_data["email"] = user_row.get("email") or profile_data["email"]
+                profile_data["phone"] = user_row.get("phone") or profile_data["phone"]
+                profile_data["postal_code"] = user_row.get("postal_code") or ""
+                profile_data["shipping_address"] = user_row.get("shipping_address") or ""
+                profile_data["shipping_detail_address"] = user_row.get("shipping_detail_address") or ""
+                profile_data["grade"] = user_row.get("grade") or profile_data["grade"]
+        except Exception as e:
+            print(f"[안내] Supabase 프로필 조회: {e}")
+
+    # POST 요청: 내 정보 및 배송지 정보 수정 처리
+    if request.method == "POST":
+        full_name = request.form.get("full_name", "").strip() or profile_data["full_name"]
+        phone = request.form.get("phone", "").strip()
+        postal_code = request.form.get("postal_code", "").strip()
+        shipping_address = request.form.get("shipping_address", "").strip()
+        shipping_detail_address = request.form.get("shipping_detail_address", "").strip()
+
+        # 세션 정보 갱신
+        session["user"]["name"] = full_name
+        session["user"]["phone"] = phone
+        session.modified = True
+
+        # profiles 테이블 업데이트 시도
+        if supabase and user_email:
+            try:
+                update_payload = {
+                    "full_name": full_name,
+                    "phone": phone,
+                    "postal_code": postal_code,
+                    "shipping_address": shipping_address,
+                    "shipping_detail_address": shipping_detail_address,
+                    "updated_at": datetime.utcnow().isoformat(),
+                }
+                # 컬럼 미존재 에러 방지를 위해 단계별 저장 시도
+                try:
+                    supabase.table("profiles").update(update_payload).eq("email", user_email).execute()
+                except Exception:
+                    basic_payload = {"full_name": full_name, "phone": phone}
+                    supabase.table("profiles").update(basic_payload).eq("email", user_email).execute()
+            except Exception as e:
+                print(f"[안내] Supabase 프로필 수정: {e}")
+
+        flash("회원 정보 및 배송지 정보가 성공적으로 저장되었습니다. 🍓", "success")
+        return redirect(url_for("main.mypage"))
+
+    return render_template("mypage.html", profile=profile_data)
+

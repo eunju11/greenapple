@@ -16,7 +16,7 @@ def get_supabase_client() -> Optional[Client]:
     환경 변수가 누락되었거나 연결에 실패한 경우 사용자 친화적인 한국어 안내 메시지를 출력합니다.
     """
     supabase_url: Optional[str] = os.getenv("SUPABASE_URL")
-    supabase_key: Optional[str] = os.getenv("SUPABASE_KEY")
+    supabase_key: Optional[str] = os.getenv("SUPABASE_KEY") or os.getenv("SUPABASE_ANON_KEY")
 
     if not supabase_url or not supabase_key:
         print("[안내] SUPABASE_URL 또는 SUPABASE_KEY 환경 변수가 설정되지 않았습니다. (더미 데이터를 사용합니다)")

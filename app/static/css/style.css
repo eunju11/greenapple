@@ -248,3 +248,26 @@ h1, h2, h3, h4, h5, h6, .btn, .badge, .navbar, .card-title {
     background: linear-gradient(135deg, #47000f 0%, #680016 100%);
     border-top: 3px solid #ff4d6d;
 }
+
+/* 6. 카카오톡 로그인 & 회원가입 버튼 및 사용자 프로필 스타일 */
+.btn-kakao {
+    background-color: #FEE500 !important;
+    color: #191919 !important;
+    border: none !important;
+    transition: all 0.2s ease-in-out;
+}
+
+.btn-kakao:hover, .btn-kakao:focus {
+    background-color: #fada0a !important;
+    color: #191919 !important;
+    box-shadow: 0 4px 14px rgba(254, 229, 0, 0.45) !important;
+    transform: translateY(-1px);
+}
+
+.user-nav-avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1.5px solid #ffffff;
+}

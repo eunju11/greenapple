@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block title %}카카오 간편 회원가입 / 로그인 | VIBE-FASHION x CHIMUTAN{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-7 col-lg-5">
+            <!-- 회원가입 & 로그인 메인 카드 -->
+            <div class="card border-0 rounded-4 shadow-sm overflow-hidden" style="background: #ffffff;">
+                <!-- 카드 헤더 장식 -->
+                <div class="text-center py-4 px-3" style="background: linear-gradient(135deg, #ffe3e8 0%, #fff0f3 100%); border-bottom: 1px solid #ffd4dc;">
+                    <img src="{{ url_for('static', filename='images/strawberry_icon.svg') }}" alt="딸기" width="56" height="56" class="mb-2">
+                    <h4 class="fw-bold text-danger mb-1">CHIMUTAN &amp; MONCHHICHI</h4>
+                    <p class="small text-muted mb-0">딸기 캡슐 컬렉션 공식 스토어</p>
+                </div>
+
+                <div class="card-body p-4 p-md-5 text-center">
+                    <span class="badge bg-danger-subtle text-danger px-3 py-1 rounded-pill fw-bold small mb-2">
+                        ✨ 3초 만에 빠른 시작
+                    </span>
+                    <h3 class="fw-bold text-dark mb-2">카카오로 간편 회원가입</h3>
+                    <p class="text-muted small mb-4">
+                        복잡한 정보 입력 없이, 사용 중이신 카카오톡 계정으로<br>
+                        3초 만에 회원가입하고 달콤한 혜택을 받아보세요! 🍓
+                    </p>
+
+                    <!-- 카카오 로그인 / 회원가입 버튼 -->
+                    <div class="d-grid gap-2 mb-4">
+                        <a href="{{ url_for('auth.kakao_login') }}" class="btn btn-kakao btn-lg rounded-pill fw-bold py-3 shadow-sm d-flex align-items-center justify-content-center gap-2">
+                            <!-- 카카오 말풍선 공식 아이콘 -->
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="#191919">
+                                <path d="M12 3C6.477 3 2 6.477 2 10.772c0 2.768 1.87 5.187 4.673 6.551-.157.574-.567 2.073-.65 2.399-.101.401.147.395.31.286.128-.086 2.036-1.385 2.868-1.949.574.08 1.164.123 1.799.123 5.523 0 10-3.477 10-7.772S17.523 3 12 3z"/>
+                            </svg>
+                            <span>카카오톡으로 회원가입 / 로그인</span>
+                        </a>
+
+                        {% if not is_kakao_configured %}
+                        <div class="mt-2 text-start p-3 rounded-3 bg-light border">
+                            <div class="d-flex align-items-center gap-2 text-secondary small fw-bold mb-1">
+                                <i class="bi bi-info-circle-fill text-warning"></i> 개발 환경 안내
+                            </div>
+                            <p class="small text-muted mb-2">
+                                <code>.env</code> 파일에 카카오 API 키가 등록되지 않은 상태입니다. 키 설정 전 기능을 테스트하려면 아래 빠른 테스트 버튼을 클릭하세요.
+                            </p>
+                            <a href="{{ url_for('auth.mock_login') }}" class="btn btn-sm btn-outline-danger rounded-pill w-100 fw-bold">
+                                🍓 [테스트 모드] 카카오 가입/로그인 체험하기
+                            </a>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- 신규 가입자 혜택 박스 -->
+                    <div class="text-start p-3 rounded-4 mb-4" style="background-color: #fff9fa; border: 1px dashed #ffb8c6;">
+                        <h6 class="fw-bold text-danger mb-3 d-flex align-items-center gap-1">
+                            <i class="bi bi-gift-fill text-danger"></i> 신규 회원만을 위한 3가지 혜택
+                        </h6>
+                        <ul class="list-unstyled small mb-0 d-flex flex-column gap-2 text-secondary">
+                            <li class="d-flex align-items-center gap-2">
+                                <span class="badge bg-danger rounded-circle p-1" style="width: 18px; height: 18px; display: inline-flex; align-items: center; justify-content: center;"><i class="bi bi-check text-white"></i></span>
+                                <span>가입 즉시 지급되는 <strong>10% 웰컴 할인 쿠폰</strong></span>
+                            </li>
+                            <li class="d-flex align-items-center gap-2">
+                                <span class="badge bg-danger rounded-circle p-1" style="width: 18px; height: 18px; display: inline-flex; align-items: center; justify-content: center;"><i class="bi bi-check text-white"></i></span>
+                                <span>치무탄 전 상품 <strong>무료 배송 혜택</strong></span>
+                            </li>
+                            <li class="d-flex align-items-center gap-2">
+                                <span class="badge bg-danger rounded-circle p-1" style="width: 18px; height: 18px; display: inline-flex; align-items: center; justify-content: center;"><i class="bi bi-check text-white"></i></span>
+                                <span>구매 금액의 <strong>3% 딸기 포인트 적립</strong></span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="text-center">
+                        <a href="{{ url_for('main.index') }}" class="text-muted small text-decoration-none">
+                            <i class="bi bi-arrow-left me-1"></i> 메인 화면으로 돌아가기
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 하단 안내 문구 -->
+            <p class="text-center text-muted small mt-4">
+                카카오 로그인 시 VIBE-FASHION의 <a href="#" class="text-secondary">이용약관</a> 및 <a href="#" class="text-secondary">개인정보처리방침</a>에 동의한 것으로 간주됩니다.
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

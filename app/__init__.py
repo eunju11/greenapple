@@ -32,7 +32,9 @@ def create_app(test_config=None):
 
     # 블루프린트(Blueprint) 등록 - 기능별로 분리된 라우트 모듈을 앱에 연결합니다.
     from app.routes.main import main_bp
+    from app.routes.auth import auth_bp
     app.register_blueprint(main_bp)
+    app.register_blueprint(auth_bp)
 
     # 한국어 및 Bootstrap 5 스타일의 에러 핸들러 등록
     from flask import render_template
