@@ -1,35 +1,33 @@
 {% extends "base.html" %}
 
-{% block title %}카카오 간편 회원가입 / 로그인 | VIBE-FASHION x CHIMUTAN{% endblock %}
+{% block title %}회원가입 및 로그인 | VIBE-FASHION x CHIMUTAN{% endblock %}
 
 {% block content %}
 <div class="container py-5">
     <div class="row justify-content-center">
-        <div class="col-md-7 col-lg-5">
+        <div class="col-md-8 col-lg-6">
             <!-- 회원가입 & 로그인 메인 카드 -->
             <div class="card border-0 rounded-4 shadow-sm overflow-hidden" style="background: #ffffff;">
                 <!-- 카드 헤더 장식 -->
                 <div class="text-center py-4 px-3" style="background: linear-gradient(135deg, #ffe3e8 0%, #fff0f3 100%); border-bottom: 1px solid #ffd4dc;">
-                    <img src="{{ url_for('static', filename='images/strawberry_icon.svg') }}" alt="딸기" width="56" height="56" class="mb-2">
+                    <img src="{{ url_for('static', filename='images/strawberry_icon.svg') }}" alt="딸기" width="52" height="52" class="mb-2">
                     <h4 class="fw-bold text-danger mb-1">CHIMUTAN &amp; MONCHHICHI</h4>
                     <p class="small text-muted mb-0">딸기 캡슐 컬렉션 공식 스토어</p>
                 </div>
 
-                <div class="card-body p-4 p-md-5 text-center">
-                    <span class="badge bg-danger-subtle text-danger px-3 py-1 rounded-pill fw-bold small mb-2">
-                        ✨ 3초 만에 빠른 시작
-                    </span>
-                    <h3 class="fw-bold text-dark mb-2">카카오로 간편 회원가입</h3>
-                    <p class="text-muted small mb-4">
-                        복잡한 정보 입력 없이, 사용 중이신 카카오톡 계정으로<br>
-                        3초 만에 회원가입하고 달콤한 혜택을 받아보세요! 🍓
-                    </p>
+                <div class="card-body p-4 p-md-5">
+                    <!-- 1. 카카오 3초 간편 시작 섹션 -->
+                    <div class="mb-4 text-center">
+                        <span class="badge bg-danger-subtle text-danger px-3 py-1 rounded-pill fw-bold small mb-2">
+                            ✨ 3초 만에 빠른 시작
+                        </span>
+                        <h4 class="fw-bold text-dark mb-2">소셜 계정으로 시작하기</h4>
+                        <p class="text-muted small mb-3">
+                            복잡한 절차 없이 카카오톡으로 즉시 가입 및 로그인이 가능합니다.
+                        </p>
 
-                    <!-- 카카오 로그인 / 회원가입 버튼 -->
-                    <div class="d-grid gap-2 mb-4">
-                        <a href="{{ url_for('auth.kakao_login') }}" class="btn btn-kakao btn-lg rounded-pill fw-bold py-3 shadow-sm d-flex align-items-center justify-content-center gap-2">
-                            <!-- 카카오 말풍선 공식 아이콘 -->
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="#191919">
+                        <a href="{{ url_for('auth.kakao_login') }}" class="btn btn-kakao btn-lg rounded-pill fw-bold py-3 shadow-sm d-flex align-items-center justify-content-center gap-2 text-decoration-none w-100">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="#191919">
                                 <path d="M12 3C6.477 3 2 6.477 2 10.772c0 2.768 1.87 5.187 4.673 6.551-.157.574-.567 2.073-.65 2.399-.101.401.147.395.31.286.128-.086 2.036-1.385 2.868-1.949.574.08 1.164.123 1.799.123 5.523 0 10-3.477 10-7.772S17.523 3 12 3z"/>
                             </svg>
                             <span>카카오톡으로 회원가입 / 로그인</span>
@@ -38,11 +36,8 @@
                         {% if not is_kakao_configured %}
                         <div class="mt-2 text-start p-3 rounded-3 bg-light border">
                             <div class="d-flex align-items-center gap-2 text-secondary small fw-bold mb-1">
-                                <i class="bi bi-info-circle-fill text-warning"></i> 개발 환경 안내
+                                <i class="bi bi-info-circle-fill text-warning"></i> 개발 환경 테스트
                             </div>
-                            <p class="small text-muted mb-2">
-                                <code>.env</code> 파일에 카카오 API 키가 등록되지 않은 상태입니다. 키 설정 전 기능을 테스트하려면 아래 빠른 테스트 버튼을 클릭하세요.
-                            </p>
                             <a href="{{ url_for('auth.mock_login') }}" class="btn btn-sm btn-outline-danger rounded-pill w-100 fw-bold">
                                 🍓 [테스트 모드] 카카오 가입/로그인 체험하기
                             </a>
@@ -50,28 +45,92 @@
                         {% endif %}
                     </div>
 
+                    <!-- 구분선 -->
+                    <div class="position-relative my-4 text-center">
+                        <hr class="text-secondary opacity-25">
+                        <span class="position-absolute top-50 start-50 translate-middle bg-white px-3 text-muted small fw-bold">
+                            또는 이메일로 시작
+                        </span>
+                    </div>
+
+                    <!-- 2. 이메일 회원가입 / 로그인 탭 -->
+                    <ul class="nav nav-pills nav-fill mb-4 rounded-pill p-1 bg-light border" id="authTab" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link rounded-pill fw-bold active" id="tab-signup" data-bs-toggle="pill" data-bs-target="#pane-signup" type="button" role="tab">
+                                <i class="bi bi-person-plus-fill me-1"></i> 이메일 회원가입
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link rounded-pill fw-bold text-secondary" id="tab-signin" data-bs-toggle="pill" data-bs-target="#pane-signin" type="button" role="tab">
+                                <i class="bi bi-box-arrow-in-right me-1"></i> 이메일 로그인
+                            </button>
+                        </li>
+                    </ul>
+
+                    <div class="tab-content" id="authTabContent">
+                        <!-- 이메일 회원가입 패널 -->
+                        <div class="tab-pane fade show active" id="pane-signup" role="tabpanel" aria-labelledby="tab-signup">
+                            <form method="POST" action="{{ url_for('auth.email_signup') }}">
+                                <div class="mb-3">
+                                    <label class="form-label small fw-bold text-secondary">이름 / 닉네임</label>
+                                    <input type="text" name="name" class="form-control rounded-3" placeholder="예: 김딸기" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label small fw-bold text-secondary">이메일 주소</label>
+                                    <input type="email" name="email" class="form-control rounded-3" placeholder="example@email.com" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label small fw-bold text-secondary">비밀번호</label>
+                                    <input type="password" name="password" class="form-control rounded-3" placeholder="8자 이상, 영문+숫자+특수문자 조합" required autocomplete="new-password">
+                                    <div class="form-text small text-muted">
+                                        영문, 숫자, 특수문자를 모두 포함하여 8자 이상 입력해주세요.
+                                    </div>
+                                </div>
+                                <div class="mb-4">
+                                    <label class="form-label small fw-bold text-secondary">비밀번호 확인</label>
+                                    <input type="password" name="confirm_password" class="form-control rounded-3" placeholder="비밀번호를 한 번 더 입력하세요" required autocomplete="new-password">
+                                </div>
+                                <div class="d-grid">
+                                    <button type="submit" class="btn btn-danger btn-lg rounded-pill fw-bold py-3 shadow-sm">
+                                        <i class="bi bi-check2-circle me-1"></i> 이메일로 회원가입 완료
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- 이메일 로그인 패널 -->
+                        <div class="tab-pane fade" id="pane-signin" role="tabpanel" aria-labelledby="tab-signin">
+                            <form method="POST" action="{{ url_for('auth.email_signin') }}">
+                                <div class="mb-3">
+                                    <label class="form-label small fw-bold text-secondary">이메일 주소</label>
+                                    <input type="email" name="email" class="form-control rounded-3" placeholder="example@email.com" required>
+                                </div>
+                                <div class="mb-4">
+                                    <label class="form-label small fw-bold text-secondary">비밀번호</label>
+                                    <input type="password" name="password" class="form-control rounded-3" placeholder="비밀번호를 입력하세요" required autocomplete="current-password">
+                                </div>
+                                <div class="d-grid">
+                                    <button type="submit" class="btn btn-danger btn-lg rounded-pill fw-bold py-3 shadow-sm">
+                                        <i class="bi bi-box-arrow-in-right me-1"></i> 로그인
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
                     <!-- 신규 가입자 혜택 박스 -->
-                    <div class="text-start p-3 rounded-4 mb-4" style="background-color: #fff9fa; border: 1px dashed #ffb8c6;">
-                        <h6 class="fw-bold text-danger mb-3 d-flex align-items-center gap-1">
-                            <i class="bi bi-gift-fill text-danger"></i> 신규 회원만을 위한 3가지 혜택
+                    <div class="text-start p-3 rounded-4 mt-4" style="background-color: #fff9fa; border: 1px dashed #ffb8c6;">
+                        <h6 class="fw-bold text-danger mb-2 d-flex align-items-center gap-1">
+                            <i class="bi bi-gift-fill text-danger"></i> 신규 회원 혜택
                         </h6>
-                        <ul class="list-unstyled small mb-0 d-flex flex-column gap-2 text-secondary">
-                            <li class="d-flex align-items-center gap-2">
-                                <span class="badge bg-danger rounded-circle p-1" style="width: 18px; height: 18px; display: inline-flex; align-items: center; justify-content: center;"><i class="bi bi-check text-white"></i></span>
-                                <span>가입 즉시 지급되는 <strong>10% 웰컴 할인 쿠폰</strong></span>
-                            </li>
-                            <li class="d-flex align-items-center gap-2">
-                                <span class="badge bg-danger rounded-circle p-1" style="width: 18px; height: 18px; display: inline-flex; align-items: center; justify-content: center;"><i class="bi bi-check text-white"></i></span>
-                                <span>치무탄 전 상품 <strong>무료 배송 혜택</strong></span>
-                            </li>
-                            <li class="d-flex align-items-center gap-2">
-                                <span class="badge bg-danger rounded-circle p-1" style="width: 18px; height: 18px; display: inline-flex; align-items: center; justify-content: center;"><i class="bi bi-check text-white"></i></span>
-                                <span>구매 금액의 <strong>3% 딸기 포인트 적립</strong></span>
-                            </li>
+                        <ul class="list-unstyled small mb-0 d-flex flex-column gap-1 text-secondary">
+                            <li><i class="bi bi-check2 text-danger"></i> 가입 즉시 <strong>10% 웰컴 할인 쿠폰</strong> 지급</li>
+                            <li><i class="bi bi-check2 text-danger"></i> 치무탄 전 상품 <strong>무료 배송</strong></li>
+                            <li><i class="bi bi-check2 text-danger"></i> 구매 금액의 <strong>3% 딸기 포인트</strong> 적립</li>
                         </ul>
                     </div>
 
-                    <div class="text-center">
+                    <div class="text-center mt-4">
                         <a href="{{ url_for('main.index') }}" class="text-muted small text-decoration-none">
                             <i class="bi bi-arrow-left me-1"></i> 메인 화면으로 돌아가기
                         </a>
@@ -81,9 +140,22 @@
 
             <!-- 하단 안내 문구 -->
             <p class="text-center text-muted small mt-4">
-                카카오 로그인 시 VIBE-FASHION의 <a href="#" class="text-secondary">이용약관</a> 및 <a href="#" class="text-secondary">개인정보처리방침</a>에 동의한 것으로 간주됩니다.
+                회원가입 시 VIBE-FASHION의 <a href="#" class="text-secondary">이용약관</a> 및 <a href="#" class="text-secondary">개인정보처리방침</a>에 동의한 것으로 간주됩니다.
             </p>
         </div>
     </div>
 </div>
+
+<script>
+    // URL 해시에 따른 탭 자동 활성화 (#email-login 또는 #email-signup)
+    document.addEventListener("DOMContentLoaded", function () {
+        if (window.location.hash === "#email-login") {
+            const tabTrigger = new bootstrap.Tab(document.getElementById("tab-signin"));
+            tabTrigger.show();
+        } else if (window.location.hash === "#email-signup") {
+            const tabTrigger = new bootstrap.Tab(document.getElementById("tab-signup"));
+            tabTrigger.show();
+        }
+    });
+</script>
 {% endblock %}

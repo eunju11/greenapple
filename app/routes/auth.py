@@ -8,8 +8,9 @@
 
 import os
 import secrets
+import re
 from urllib.parse import urlencode
-from flask import Blueprint, render_template, request, redirect, url_for, flash, session, current_app
+from flask import Blueprint, render_template, request, redirect, url_for, flash, session, current_app, jsonify
 import httpx
 from app.supabase_client import get_supabase_client
 
@@ -225,6 +226,214 @@ def mock_login():
     session.modified = True
 
     flash("🍓 [개발 테스트 모드] 카카오 계정으로 간편 가입 및 로그인이 완료되었습니다!", "success")
+    return redirect(url_for("main.index"))
+
+
+@auth_bp.route("/signup", methods=["POST"])
+def email_signup():
+    """
+    이메일/비밀번호 기반 회원가입 처리 핸들러
+    JSON 또는 Form 데이터 모두 지원
+    - 이메일 유효성, 비밀번호 복잡도(8자 이상, 영문+숫자+특수문자) 및 확인 일치 검증
+    - Supabase auth.sign_up() 호출 및 profiles 테이블 동기화
+    """
+    # JSON 또는 Form 데이터 파싱
+    data = request.get_json(silent=True) or request.form
+    email = data.get("email", "").strip()
+    name = data.get("full_name", data.get("name", "")).strip()
+    password = data.get("password", "").strip()
+    confirm_password = data.get("password_confirm", data.get("confirm_password", "")).strip()
+
+    if not email or not name or not password or not confirm_password:
+        error_msg = "모든 필수 입력 항목을 작성해주세요."
+        if request.is_json:
+            return jsonify({"success": False, "message": error_msg}), 400
+        flash(error_msg, "danger")
+        return redirect(url_for("auth.login_page") + "#email-signup")
+
+    # 이메일 형식 정규식 검증
+    if not re.match(r"^[^@]+@[^@]+\.[^@]+$", email):
+        error_msg = "올바른 이메일 형식을 입력해주세요."
+        if request.is_json:
+            return jsonify({"success": False, "message": error_msg}), 400
+        flash(error_msg, "danger")
+        return redirect(url_for("auth.login_page") + "#email-signup")
+
+    # 비밀번호 확인 일치 검증
+    if password != confirm_password:
+        error_msg = "비밀번호와 확인용 비밀번호가 일치하지 않습니다."
+        if request.is_json:
+            return jsonify({"success": False, "message": error_msg}), 400
+        flash(error_msg, "danger")
+        return redirect(url_for("auth.login_page") + "#email-signup")
+
+    # 비밀번호 정책 검증 (최소 8자, 영문 + 숫자 + 특수문자 조합)
+    if len(password) < 8:
+        error_msg = "비밀번호는 최소 8자 이상이어야 합니다."
+        if request.is_json:
+            return jsonify({"success": False, "message": error_msg}), 400
+        flash(error_msg, "danger")
+        return redirect(url_for("auth.login_page") + "#email-signup")
+
+    has_letter = bool(re.search(r"[A-Za-z]", password))
+    has_digit = bool(re.search(r"\d", password))
+    has_special = bool(re.search(r"[!@#$%^&*(),.?\":{}|<>]", password))
+    if not (has_letter and has_digit and has_special):
+        error_msg = "비밀번호는 영문, 숫자, 특수문자를 모두 포함해야 합니다."
+        if request.is_json:
+            return jsonify({"success": False, "message": error_msg}), 400
+        flash(error_msg, "danger")
+        return redirect(url_for("auth.login_page") + "#email-signup")
+
+    supabase = get_supabase_client()
+    user_id = f"user_{secrets.token_hex(8)}"
+    avatar_url = "/static/images/strawberry_icon.svg"
+
+    if supabase:
+        try:
+            sign_up_res = supabase.auth.sign_up({
+                "email": email,
+                "password": password,
+                "options": {
+                    "data": {
+                        "full_name": name
+                    }
+                }
+            })
+            if sign_up_res and sign_up_res.user:
+                user_id = sign_up_res.user.id
+
+            # profiles 테이블에 회원 정보 저장 시도 (provider 컬럼 미존재 시 기본 정보만 저장)
+            profile_payload = {
+                "id": user_id,
+                "email": email,
+                "full_name": name,
+                "avatar_url": avatar_url,
+                "role": "customer",
+                "grade": "BRONZE",
+            }
+            try:
+                supabase.table("profiles").upsert({**profile_payload, "provider": "email"}).execute()
+            except Exception as pe1:
+                print(f"[안내] provider 포함 upsert 실패: {pe1}")
+                try:
+                    supabase.table("profiles").upsert(profile_payload).execute()
+                except Exception as pe2:
+                    print(f"[안내] Supabase profiles 저장 실패: {pe2}")
+        except Exception as e:
+            err_msg = str(e).lower()
+            if "already registered" in err_msg or "already exists" in err_msg:
+                error_msg = "이미 가입된 이메일 주소입니다. 로그인해주세요."
+                if request.is_json:
+                    return jsonify({"success": False, "message": error_msg}), 409
+                flash(error_msg, "warning")
+                return redirect(url_for("auth.login_page") + "#email-login")
+            print(f"[오류] Supabase 이메일 회원가입: {e}")
+            import traceback
+            traceback.print_exc()
+            error_msg = "회원가입 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요."
+            if request.is_json:
+                return jsonify({"success": False, "message": error_msg}), 500
+            flash(error_msg, "danger")
+            return redirect(url_for("auth.login_page") + "#email-signup")
+
+    # 세션에 로그인 상태 등록
+    session["user"] = {
+        "id": user_id,
+        "provider": "email",
+        "provider_id": email,
+        "name": name,
+        "email": email,
+        "avatar_url": avatar_url,
+        "grade": "BRONZE",
+    }
+    session.modified = True
+
+    success_msg = f"🍓 '{name}'님 환영합니다! 이메일 회원가입 및 로그인이 완료되었습니다."
+    if request.is_json:
+        return jsonify({"success": True, "message": success_msg, "user": session["user"]}), 201
+    
+    flash(success_msg, "success")
+    return redirect(url_for("main.index"))
+
+
+@auth_bp.route("/signin", methods=["POST"])
+def email_signin():
+    """
+    이메일/비밀번호 기반 로그인 처리 핸들러
+    JSON 또는 Form 데이터 모두 지원
+    """
+    # JSON 또는 Form 데이터 파싱
+    data = request.get_json(silent=True) or request.form
+    email = data.get("email", "").strip()
+    password = data.get("password", "").strip()
+
+    if not email or not password:
+        error_msg = "이메일과 비밀번호를 모두 입력해주세요."
+        if request.is_json:
+            return jsonify({"success": False, "message": error_msg}), 400
+        flash(error_msg, "danger")
+        return redirect(url_for("auth.login_page") + "#email-login")
+
+    supabase = get_supabase_client()
+    user_name = email.split("@")[0]
+    user_id = f"user_{secrets.token_hex(8)}"
+    avatar_url = "/static/images/strawberry_icon.svg"
+    grade = "BRONZE"
+
+    if supabase:
+        try:
+            sign_in_res = supabase.auth.sign_in_with_password({
+                "email": email,
+                "password": password
+            })
+            if not sign_in_res or not sign_in_res.user:
+                error_msg = "이메일 또는 비밀번호가 일치하지 않습니다."
+                if request.is_json:
+                    return jsonify({"success": False, "message": error_msg}), 401
+                flash(error_msg, "danger")
+                return redirect(url_for("auth.login_page") + "#email-login")
+
+            user_id = sign_in_res.user.id
+            if sign_in_res.user.user_metadata and sign_in_res.user.user_metadata.get("full_name"):
+                user_name = sign_in_res.user.user_metadata.get("full_name")
+
+            # profiles 테이블 조회
+            try:
+                prof_res = supabase.table("profiles").select("*").eq("email", email).limit(1).execute()
+                if prof_res.data and len(prof_res.data) > 0:
+                    p = prof_res.data[0]
+                    user_name = p.get("full_name") or user_name
+                    avatar_url = p.get("avatar_url") or avatar_url
+                    grade = p.get("grade") or grade
+            except Exception as pe:
+                print(f"[안내] profiles 조회: {pe}")
+        except Exception as e:
+            err_msg = str(e).lower()
+            print(f"[안내] Supabase 로그인 인증: {e}")
+            error_msg = "이메일 또는 비밀번호가 올바르지 않습니다."
+            if request.is_json:
+                return jsonify({"success": False, "message": error_msg}), 401
+            flash(error_msg, "danger")
+            return redirect(url_for("auth.login_page") + "#email-login")
+
+    # 세션 로그인 처리
+    session["user"] = {
+        "id": str(user_id),
+        "provider": "email",
+        "provider_id": email,
+        "name": user_name,
+        "email": email,
+        "avatar_url": avatar_url,
+        "grade": grade,
+    }
+    session.modified = True
+
+    success_msg = f"🍓 '{user_name}'님 반갑습니다! 로그인이 완료되었습니다."
+    if request.is_json:
+        return jsonify({"success": True, "message": success_msg, "user": session["user"]}), 200
+    
+    flash(success_msg, "success")
     return redirect(url_for("main.index"))
 
 

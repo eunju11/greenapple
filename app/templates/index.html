@@ -70,7 +70,7 @@
         <div class="col-12 col-sm-6 col-lg-3">
             <div class="card h-100 product-card rounded-4 overflow-hidden shadow-sm">
                 <!-- 상품 이미지 컨테이너 -->
-                <div class="position-relative overflow-hidden product-image-wrapper">
+                <a href="{{ url_for('main.product_detail', product_id=product.id) }}" class="position-relative overflow-hidden product-image-wrapper d-block text-decoration-none">
                     <!-- 뱃지 표시 (BEST, NEW, HOT, SALE 등) -->
                     <span class="badge bg-{{ product.badge_color }} position-absolute top-0 start-0 m-3 px-2 py-1 rounded-pill fw-bold z-2">
                         {{ product.badge }}
@@ -96,11 +96,15 @@
                          alt="{{ product.name }}"
                          loading="lazy">
                     {% endif %}
-                </div>
+                </a>
 
                 <!-- 상품 정보 본문 -->
                 <div class="card-body d-flex flex-column p-4">
-                    <h5 class="card-title fw-bold fs-6 mb-2 text-dark">{{ product.name }}</h5>
+                    <h5 class="card-title fw-bold fs-6 mb-2">
+                        <a href="{{ url_for('main.product_detail', product_id=product.id) }}" class="text-dark text-decoration-none text-truncate d-block" title="{{ product.name }}">
+                            {{ product.name }}
+                        </a>
+                    </h5>
                     <p class="card-text text-muted small flex-grow-1 line-clamp-2">
                         {{ product.description }}
                     </p>

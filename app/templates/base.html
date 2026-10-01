@@ -52,10 +52,10 @@
                 </ul>
                 <!-- 우측 사용자 아이콘 및 장바구니 -->
                 <div class="d-flex align-items-center gap-2">
-                    <button class="btn btn-outline-light btn-sm rounded-pill px-3 fw-medium position-relative" type="button" data-bs-toggle="offcanvas" data-bs-target="#cartOffcanvas" aria-controls="cartOffcanvas">
+                    <a class="btn btn-outline-light btn-sm rounded-pill px-3 fw-medium position-relative" href="{{ url_for('main.view_cart') }}" title="장바구니">
                         <i class="bi bi-cart3 me-1"></i> 장바구니 
                         <span id="navCartBadge" class="badge badge-berry ms-1">{{ cart.total_count if cart else 0 }}</span>
-                    </button>
+                    </a>
 
                     {% if session.get('user') %}
                     <!-- 로그인된 사용자 프로필 드롭다운 -->
@@ -138,6 +138,9 @@
                             <img src="{{ item.image }}" alt="{{ item.name }}" class="rounded-3" style="width: 64px; height: 64px; object-fit: contain; background-color: #ffffff; padding: 4px;">
                             <div class="flex-grow-1">
                                 <h6 class="fw-bold mb-1 fs-6 text-dark text-truncate" style="max-width: 170px;">{{ item.name }}</h6>
+                                {% if item.option_text %}
+                                <div class="badge bg-danger-subtle text-danger mb-1" style="font-size: 0.72rem;">{{ item.option_text }}</div>
+                                {% endif %}
                                 <div class="text-danger fw-bold small mb-2">{{ item.price }}원</div>
                                 <div class="d-flex align-items-center gap-2">
                                     <div class="btn-group btn-group-sm rounded-pill border border-danger-subtle overflow-hidden" role="group">
@@ -145,7 +148,7 @@
                                         <span class="btn btn-white px-3 fw-bold small text-dark bg-white border-0">{{ item.quantity }}</span>
                                         <button type="button" class="btn btn-light px-2 text-danger fw-bold" onclick="updateCartItem('{{ item.id }}', 'increase')">+</button>
                                     </div>
-                                    <button type="button" class="btn btn-link text-muted p-0 ms-auto" title="삭제" onclick="updateCartItem('{{ item.id }}', 'delete')">
+                                    <button type="button" class="btn btn-link text-muted p-0 ms-auto" title="삭제" onclick="showDeleteModal({{ item.id }})">
                                         <i class="bi bi-trash3 text-secondary"></i>
                                     </button>
                                 </div>
@@ -181,11 +184,36 @@
                 </div>
 
                 <div class="d-grid gap-2">
-                    <button type="button" class="btn btn-danger btn-lg rounded-pill fw-bold shadow-sm" onclick="checkoutCart()">
-                        <i class="bi bi-check2-circle me-1"></i> 주문하기
-                    </button>
-                    <button type="button" class="btn btn-light btn-sm text-muted rounded-pill" onclick="clearAllCart()">
+                    <a href="{{ url_for('main.view_cart') }}" class="btn btn-danger btn-lg rounded-pill fw-bold shadow-sm" onclick="event.preventDefault(); window.location.href = '{{ url_for('main.view_cart') }}'">
+                        <i class="bi bi-check2-circle me-1"></i> 장바구니 확인하기
+                    </a>
+                    <button type="button" class="btn btn-light btn-sm text-muted rounded-pill" data-bs-dismiss="offcanvas" onclick="clearAllCart()">
                         장바구니 전체 비우기
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 장바구니 아이템 삭제 확인 모달 -->
+    <div class="modal fade" id="deleteCartItemModal" tabindex="-1" aria-labelledby="deleteCartItemModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content rounded-4 border-0 shadow-lg">
+                <div class="modal-header border-0 py-3 px-4" style="background: linear-gradient(135deg, #ffe3e8 0%, #fff0f3 100%);">
+                    <h6 class="modal-title fw-bold text-danger d-flex align-items-center gap-2" id="deleteCartItemModalLabel">
+                        <i class="bi bi-exclamation-circle"></i> 삭제 확인
+                    </h6>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="닫기"></button>
+                </div>
+                <div class="modal-body py-4 px-4 text-center">
+                    <p class="text-dark fw-medium mb-0">이 상품을 장바구니에서 삭제하시겠습니까?</p>
+                </div>
+                <div class="modal-footer border-top py-3 px-4 gap-2">
+                    <button type="button" class="btn btn-light rounded-pill px-4 fw-medium" data-bs-dismiss="modal">
+                        취소
+                    </button>
+                    <button type="button" class="btn btn-danger rounded-pill px-4 fw-bold" id="confirmDeleteBtn" onclick="confirmDeleteCartItem()">
+                        삭제
                     </button>
                 </div>
             </div>
@@ -208,21 +236,25 @@
                 <!-- 모달 본문 -->
                 <div class="modal-body p-4 text-center">
                     <span class="badge bg-danger-subtle text-danger px-3 py-1 rounded-pill fw-bold small mb-2">
-                        🍓 3초 간편 회원가입
+                        🍓 간편 회원가입 / 로그인
                     </span>
-                    <h4 class="fw-bold text-dark mb-2">카카오로 3초 만에 시작하기</h4>
+                    <h4 class="fw-bold text-dark mb-2">달콤한 치무탄 스토어 시작하기</h4>
                     <p class="text-muted small mb-4">
-                        아이디, 비밀번호 입력 없이<br>
-                        카카오톡으로 간편하게 가입하고 즉시 혜택을 받아보세요!
+                        원하시는 가입 방식을 선택해 3초 만에 시작하세요!
                     </p>
 
                     <!-- 카카오 로그인 / 가입 버튼 -->
-                    <div class="d-grid gap-2 mb-4">
+                    <div class="d-grid gap-2 mb-3">
                         <a href="{{ url_for('auth.kakao_login') }}" class="btn btn-kakao btn-lg rounded-pill fw-bold py-3 shadow-sm d-flex align-items-center justify-content-center gap-2 text-decoration-none">
                             <svg width="22" height="22" viewBox="0 0 24 24" fill="#191919">
                                 <path d="M12 3C6.477 3 2 6.477 2 10.772c0 2.768 1.87 5.187 4.673 6.551-.157.574-.567 2.073-.65 2.399-.101.401.147.395.31.286.128-.086 2.036-1.385 2.868-1.949.574.08 1.164.123 1.799.123 5.523 0 10-3.477 10-7.772S17.523 3 12 3z"/>
                             </svg>
-                            <span>카카오톡으로 회원가입 / 로그인</span>
+                            <span>카카오톡으로 3초 만에 시작하기</span>
+                        </a>
+
+                        <a href="{{ url_for('auth.login_page') }}#email-signup" class="btn btn-outline-danger btn-lg rounded-pill fw-bold py-3 shadow-sm d-flex align-items-center justify-content-center gap-2 text-decoration-none" onclick="bootstrap.Modal.getInstance(document.getElementById('loginModal')).hide();">
+                            <i class="bi bi-envelope-fill"></i>
+                            <span>이메일로 회원가입 / 로그인하기</span>
                         </a>
                     </div>
 
@@ -250,7 +282,7 @@
                     <!-- 개발 테스트 환경 링크 (API 키 미설정 시에도 바로 테스트 가능) -->
                     <div class="pt-2 text-center border-top">
                         <a href="{{ url_for('auth.mock_login') }}" class="btn btn-link btn-sm text-muted text-decoration-none" title="개발 환경용 원클릭 테스트">
-                            <i class="bi bi-lightning-charge-fill text-warning"></i> 개발 환경 테스트 로그인
+                            <i class="bi bi-lightning-charge-fill text-warning"></i> 개발 환경 카카오 테스트 로그인
                         </a>
                     </div>
                 </div>
@@ -326,6 +358,7 @@
                                 <img src="${item.image}" alt="${item.name}" class="rounded-3" style="width: 64px; height: 64px; object-fit: contain; background-color: #ffffff; padding: 4px;">
                                 <div class="flex-grow-1">
                                     <h6 class="fw-bold mb-1 fs-6 text-dark text-truncate" style="max-width: 170px;">${item.name}</h6>
+                                    ${item.option_text ? `<div class="badge bg-danger-subtle text-danger mb-1" style="font-size: 0.72rem;">${item.option_text}</div>` : ''}
                                     <div class="text-danger fw-bold small mb-2">${item.price}원</div>
                                     <div class="d-flex align-items-center gap-2">
                                         <div class="btn-group btn-group-sm rounded-pill border border-danger-subtle overflow-hidden" role="group">
@@ -423,6 +456,73 @@
                 }
             })
             .catch(err => console.error("주문 처리 오류:", err));
+        }
+
+        // 장바구니 아이템 삭제 모달 표시
+        let pendingDeleteCartId = null;
+        
+        function showDeleteModal(cartId) {
+            pendingDeleteCartId = cartId;
+            const deleteModal = new bootstrap.Modal(document.getElementById('deleteCartItemModal'), {});
+            deleteModal.show();
+        }
+
+        // 장바구니 아이템 삭제 확정
+        function confirmDeleteCartItem() {
+            if (!pendingDeleteCartId) {
+                alert("오류: 삭제할 항목을 찾을 수 없습니다.");
+                return;
+            }
+
+            fetch(`/cart/${pendingDeleteCartId}`, {
+                method: "DELETE",
+                headers: { "Content-Type": "application/json" }
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    // 해당 아이템 DOM 제거
+                    const cartItemRow = document.querySelector(`[data-id="${pendingDeleteCartId}"]`);
+                    if (cartItemRow) {
+                        cartItemRow.remove();
+                    }
+
+                    // 장바구니가 비어있는지 확인
+                    const container = document.getElementById('cartItemsContainer');
+                    const remainingItems = container.querySelectorAll('.cart-item-row').length;
+
+                    if (remainingItems === 0) {
+                        // 장바구니가 비었으므로 빈 상태 표시
+                        container.innerHTML = `
+                            <div id="emptyCartNotice" class="text-center py-5 my-auto">
+                                <img src="{{ url_for('static', filename='images/strawberry_icon.svg') }}" width="64" height="64" alt="딸기" class="mb-3 opacity-75">
+                                <h6 class="fw-bold text-secondary">장바구니가 비어 있습니다</h6>
+                                <p class="small text-muted mb-4">사랑스러운 치무탄 &amp; 몬치치 컬렉션을 담아보세요! 🍓</p>
+                                <a href="#products" class="btn btn-outline-danger btn-sm rounded-pill px-4 fw-bold" data-bs-dismiss="offcanvas">
+                                    상품 보러가기
+                                </a>
+                            </div>
+                        `;
+                        // 하단 결제 섹션 숨기기
+                        document.getElementById('cartFooterSection').classList.add('d-none');
+                    }
+
+                    // 모달 닫기
+                    bootstrap.Modal.getInstance(document.getElementById('deleteCartItemModal')).hide();
+                    pendingDeleteCartId = null;
+                    
+                    alert(data.message || "상품이 삭제되었습니다.");
+                } else {
+                    alert(data.message || "삭제에 실패했습니다.");
+                    if (data.redirect) {
+                        window.location.href = data.redirect;
+                    }
+                }
+            })
+            .catch(err => {
+                console.error("장바구니 삭제 오류:", err);
+                alert("삭제 중 오류가 발생했습니다.");
+            });
         }
     </script>
 </body>

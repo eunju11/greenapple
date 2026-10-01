@@ -89,6 +89,8 @@ CREATE TABLE IF NOT EXISTS public.product_options (
     product_id BIGINT NOT NULL REFERENCES public.products(id) ON DELETE CASCADE,
     option_name VARCHAR(50) NOT NULL,    -- 예: '컬러', '사이즈'
     option_value VARCHAR(100) NOT NULL,  -- 예: '블랙', 'L'
+    color VARCHAR(50),                   -- 색상값 (color 필터링용)
+    size VARCHAR(20),                    -- 사이즈값 (size 필터링용)
     additional_price NUMERIC(12, 2) DEFAULT 0 NOT NULL,
     stock_quantity INTEGER DEFAULT 0 NOT NULL CHECK (stock_quantity >= 0),
     is_available BOOLEAN DEFAULT true NOT NULL,
@@ -437,11 +439,13 @@ ALTER TABLE public.reviews ENABLE ROW LEVEL SECURITY;
 
 -- 8-2. profiles 정책
 -- 누구나 프로필 조회 가능 (리뷰 작성자 등 표시)
+DROP POLICY IF EXISTS "profiles_select_all" ON public.profiles;
 CREATE POLICY "profiles_select_all" 
 ON public.profiles FOR SELECT 
 USING (true);
 
 -- 본인 프로필만 수정 가능
+DROP POLICY IF EXISTS "profiles_update_own" ON public.profiles;
 CREATE POLICY "profiles_update_own" 
 ON public.profiles FOR UPDATE 
 USING (auth.uid() = id) 
@@ -449,11 +453,13 @@ WITH CHECK (auth.uid() = id);
 
 -- 8-3. categories 정책
 -- 누구나 카테고리 조회 가능
+DROP POLICY IF EXISTS "categories_select_public" ON public.categories;
 CREATE POLICY "categories_select_public" 
 ON public.categories FOR SELECT 
 USING (is_active = true OR public.is_admin());
 
 -- 관리자만 카테고리 추가/수정/삭제 가능
+DROP POLICY IF EXISTS "categories_admin_all" ON public.categories;
 CREATE POLICY "categories_admin_all" 
 ON public.categories FOR ALL 
 USING (public.is_admin()) 
@@ -461,11 +467,13 @@ WITH CHECK (public.is_admin());
 
 -- 8-4. products 정책
 -- 활성 상품은 누구나 조회 가능 (관리자는 전체 조회 가능)
+DROP POLICY IF EXISTS "products_select_public" ON public.products;
 CREATE POLICY "products_select_public" 
 ON public.products FOR SELECT 
 USING (status = 'active' OR public.is_admin());
 
 -- 관리자만 상품 등록/수정/삭제 가능
+DROP POLICY IF EXISTS "products_admin_all" ON public.products;
 CREATE POLICY "products_admin_all" 
 ON public.products FOR ALL 
 USING (public.is_admin()) 
@@ -473,11 +481,13 @@ WITH CHECK (public.is_admin());
 
 -- 8-5. product_options 정책
 -- 누구나 조회 가능
+DROP POLICY IF EXISTS "product_options_select_public" ON public.product_options;
 CREATE POLICY "product_options_select_public" 
 ON public.product_options FOR SELECT 
 USING (true);
 
 -- 관리자만 옵션 등록/수정/삭제 가능
+DROP POLICY IF EXISTS "product_options_admin_all" ON public.product_options;
 CREATE POLICY "product_options_admin_all" 
 ON public.product_options FOR ALL 
 USING (public.is_admin()) 
@@ -485,11 +495,13 @@ WITH CHECK (public.is_admin());
 
 -- 8-6. product_images 정책
 -- 누구나 이미지 조회 가능
+DROP POLICY IF EXISTS "product_images_select_public" ON public.product_images;
 CREATE POLICY "product_images_select_public" 
 ON public.product_images FOR SELECT 
 USING (true);
 
 -- 관리자만 이미지 등록/수정/삭제 가능
+DROP POLICY IF EXISTS "product_images_admin_all" ON public.product_images;
 CREATE POLICY "product_images_admin_all" 
 ON public.product_images FOR ALL 
 USING (public.is_admin()) 
@@ -497,35 +509,42 @@ WITH CHECK (public.is_admin());
 
 -- 8-7. carts 정책
 -- 본인 장바구니만 조회, 추가, 수정, 삭제 가능
+DROP POLICY IF EXISTS "carts_select_own" ON public.carts;
 CREATE POLICY "carts_select_own" 
 ON public.carts FOR SELECT 
 USING (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "carts_insert_own" ON public.carts;
 CREATE POLICY "carts_insert_own" 
 ON public.carts FOR INSERT 
 WITH CHECK (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "carts_update_own" ON public.carts;
 CREATE POLICY "carts_update_own" 
 ON public.carts FOR UPDATE 
 USING (auth.uid() = user_id) 
 WITH CHECK (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "carts_delete_own" ON public.carts;
 CREATE POLICY "carts_delete_own" 
 ON public.carts FOR DELETE 
 USING (auth.uid() = user_id);
 
 -- 8-8. orders 정책
 -- 본인 주문 조회 또는 관리자 전체 조회
+DROP POLICY IF EXISTS "orders_select_own_or_admin" ON public.orders;
 CREATE POLICY "orders_select_own_or_admin" 
 ON public.orders FOR SELECT 
 USING (auth.uid() = user_id OR public.is_admin());
 
 -- 로그인한 사용자는 본인 주문 생성 가능
+DROP POLICY IF EXISTS "orders_insert_own" ON public.orders;
 CREATE POLICY "orders_insert_own" 
 ON public.orders FOR INSERT 
 WITH CHECK (auth.uid() = user_id);
 
 -- 주문 상태 수정은 관리자만 또는 본인의 주문 취소(pending 상태)만 허용
+DROP POLICY IF EXISTS "orders_update_admin_or_own_cancel" ON public.orders;
 CREATE POLICY "orders_update_admin_or_own_cancel" 
 ON public.orders FOR UPDATE 
 USING (
@@ -535,6 +554,7 @@ USING (
 
 -- 8-9. order_items 정책
 -- 주문 소유자 또는 관리자만 조회 가능
+DROP POLICY IF EXISTS "order_items_select_own_or_admin" ON public.order_items;
 CREATE POLICY "order_items_select_own_or_admin" 
 ON public.order_items FOR SELECT 
 USING (
@@ -546,6 +566,7 @@ USING (
 );
 
 -- 로그인한 사용자는 본인 주문의 항목 생성 가능
+DROP POLICY IF EXISTS "order_items_insert_own" ON public.order_items;
 CREATE POLICY "order_items_insert_own" 
 ON public.order_items FOR INSERT 
 WITH CHECK (
@@ -558,16 +579,19 @@ WITH CHECK (
 
 -- 8-10. refunds 정책
 -- 본인 환불 내역 조회 또는 관리자 전체 조회
+DROP POLICY IF EXISTS "refunds_select_own_or_admin" ON public.refunds;
 CREATE POLICY "refunds_select_own_or_admin" 
 ON public.refunds FOR SELECT 
 USING (auth.uid() = user_id OR public.is_admin());
 
 -- 본인 환불 요청 생성
+DROP POLICY IF EXISTS "refunds_insert_own" ON public.refunds;
 CREATE POLICY "refunds_insert_own" 
 ON public.refunds FOR INSERT 
 WITH CHECK (auth.uid() = user_id);
 
 -- 관리자만 환불 처리/상태 변경 가능
+DROP POLICY IF EXISTS "refunds_update_admin" ON public.refunds;
 CREATE POLICY "refunds_update_admin" 
 ON public.refunds FOR UPDATE 
 USING (public.is_admin()) 
@@ -575,10 +599,12 @@ WITH CHECK (public.is_admin());
 
 -- 8-11. notifications 정책
 -- 본인 알림만 조회 및 읽음 처리 가능
+DROP POLICY IF EXISTS "notifications_select_own" ON public.notifications;
 CREATE POLICY "notifications_select_own" 
 ON public.notifications FOR SELECT 
 USING (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "notifications_update_own" ON public.notifications;
 CREATE POLICY "notifications_update_own" 
 ON public.notifications FOR UPDATE 
 USING (auth.uid() = user_id) 
@@ -586,21 +612,25 @@ WITH CHECK (auth.uid() = user_id);
 
 -- 8-12. reviews 정책
 -- 누구나 리뷰 조회 가능
+DROP POLICY IF EXISTS "reviews_select_public" ON public.reviews;
 CREATE POLICY "reviews_select_public" 
 ON public.reviews FOR SELECT 
 USING (true);
 
 -- 본인만 리뷰 작성 가능
+DROP POLICY IF EXISTS "reviews_insert_own" ON public.reviews;
 CREATE POLICY "reviews_insert_own" 
 ON public.reviews FOR INSERT 
 WITH CHECK (auth.uid() = user_id);
 
 -- 본인 또는 관리자만 리뷰 수정 및 삭제 가능
+DROP POLICY IF EXISTS "reviews_update_own" ON public.reviews;
 CREATE POLICY "reviews_update_own" 
 ON public.reviews FOR UPDATE 
 USING (auth.uid() = user_id OR public.is_admin()) 
 WITH CHECK (auth.uid() = user_id OR public.is_admin());
 
+DROP POLICY IF EXISTS "reviews_delete_own" ON public.reviews;
 CREATE POLICY "reviews_delete_own" 
 ON public.reviews FOR DELETE 
 USING (auth.uid() = user_id OR public.is_admin());

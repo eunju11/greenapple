@@ -29,3 +29,28 @@ def get_supabase_client() -> Optional[Client]:
     except Exception as e:
         print(f"[오류] Supabase 클라이언트 초기화 중 오류가 발생했습니다: {e}")
         return None
+
+
+def get_supabase_admin_client() -> Optional[Client]:
+    """
+    Supabase Admin(서비스 롤) 클라이언트 인스턴스를 반환합니다.
+    사용자 비밀번호 강제 변경 등 관리자 권한 API 호출 시 사용됩니다.
+    SUPABASE_SERVICE_ROLE_KEY 또는 SUPABASE_SERVICE_KEY 환경 변수를 참조합니다.
+    """
+    supabase_url: Optional[str] = os.getenv("SUPABASE_URL")
+    service_key: Optional[str] = (
+        os.getenv("SUPABASE_SERVICE_ROLE_KEY") or
+        os.getenv("SUPABASE_SERVICE_KEY") or
+        os.getenv("SUPABASE_KEY") or
+        os.getenv("SUPABASE_ANON_KEY")
+    )
+
+    if not supabase_url or not service_key:
+        return None
+
+    try:
+        client: Client = create_client(supabase_url, service_key)
+        return client
+    except Exception as e:
+        print(f"[오류] Supabase Admin 클라이언트 초기화 오류: {e}")
+        return None
