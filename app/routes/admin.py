@@ -7,7 +7,7 @@
 """
 
 from functools import wraps
-from datetime import datetime
+from datetime import datetime, timedelta
 from flask import (
     Blueprint,
     render_template,
@@ -115,6 +115,62 @@ def promote_me():
             flash("관리자 권한 변경에 실패했습니다.", "danger")
 
     return redirect(url_for("main.index"))
+
+
+def compute_daily_analytics(orders, days=7):
+    """
+    지정된 기간(days) 동안의 일별 매출액 및 주문 건수 통계 산출
+    """
+    today = datetime.utcnow().date()
+    date_list = [(today - timedelta(days=i)) for i in range(days - 1, -1, -1)]
+
+    stats = {
+        d.strftime("%Y-%m-%d"): {
+            "date": d.strftime("%Y-%m-%d"),
+            "label": d.strftime("%m/%d"),
+            "revenue": 0,
+            "orders": 0
+        }
+        for d in date_list
+    }
+
+    total_rev = 0
+    total_cnt = 0
+
+    for o in orders:
+        c = o.get("created_at", "")
+        if c:
+            d_str = c[:10]
+            if d_str in stats:
+                st = o.get("status")
+                if st in ["paid", "preparing", "shipped", "delivered"]:
+                    amt = int(float(o.get("final_amount") or 0))
+                    stats[d_str]["revenue"] += amt
+                    stats[d_str]["orders"] += 1
+                    total_rev += amt
+                    total_cnt += 1
+
+    sorted_dates = sorted(stats.keys())
+    labels = [stats[d]["label"] for d in sorted_dates]
+    full_dates = sorted_dates
+    revenues = [stats[d]["revenue"] for d in sorted_dates]
+    orders_counts = [stats[d]["orders"] for d in sorted_dates]
+    avg_order_value = int(total_rev / total_cnt) if total_cnt > 0 else 0
+
+    return {
+        "labels": labels,
+        "dates": full_dates,
+        "revenues": revenues,
+        "orders": orders_counts,
+        "summary": {
+            "days": days,
+            "total_revenue": total_rev,
+            "total_revenue_formatted": f"{total_rev:,}원",
+            "total_orders": total_cnt,
+            "avg_order_value": avg_order_value,
+            "avg_order_value_formatted": f"{avg_order_value:,}원",
+        }
+    }
 
 
 @admin_bp.route("/")
@@ -393,13 +449,48 @@ def dashboard():
         "low_stock_count": f"{low_stock_count}개 품목",
     }
 
+    # 일자별 매출 및 주문 통계 계산 (최근 7일, 14일, 30일)
+    analytics_data = {
+        7: compute_daily_analytics(orders, 7),
+        14: compute_daily_analytics(orders, 14),
+        30: compute_daily_analytics(orders, 30),
+    }
+
     return render_template(
         "admin/dashboard.html",
         kpi=kpi_stats,
         popular_products=popular_products,
         members=members_data,
         orders=orders_data,
+        analytics=analytics_data,
     )
+
+
+@admin_bp.route("/api/analytics/daily")
+@admin_required
+def api_daily_analytics():
+    """
+    일자별 매출 및 주문 추이 데이터 비동기 조회 API (GET /admin/api/analytics/daily?days=7)
+    지원 기간: 7일, 14일, 30일
+    """
+    try:
+        days = int(request.args.get("days", 7))
+        if days not in [7, 14, 30]:
+            days = 7
+    except (ValueError, TypeError):
+        days = 7
+
+    supabase = get_supabase_admin_client() or get_supabase_client()
+    orders = []
+    if supabase:
+        try:
+            res = supabase.table("orders").select("id, status, final_amount, created_at").execute()
+            orders = res.data or []
+        except Exception as e:
+            print(f"[오류] 일자별 매출 통계 조회 실패: {e}")
+
+    result = compute_daily_analytics(orders, days)
+    return jsonify({"success": True, **result})
 
 
 @admin_bp.route("/orders/<order_id>/status", methods=["POST"])

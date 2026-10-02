@@ -97,6 +97,26 @@ class AdminTestCase(unittest.TestCase):
         # 원래 재고(15)로 복구
         self.client.post("/admin/inventory/options/274/stock", json={"stock": 15})
 
+    def test_daily_analytics_api(self):
+        """6. 일자별 매출 및 주문 통계 API (GET /admin/api/analytics/daily) 검증"""
+        with self.client.session_transaction() as sess:
+            sess["user"] = {
+                "id": "001aa710-9d3d-46e0-b24d-4c22c34fdd5f",
+                "name": "관리자",
+                "email": "strawberry_new@vibe-fashion.com",
+                "role": "admin"
+            }
+
+        for days in [7, 14, 30]:
+            res = self.client.get(f"/admin/api/analytics/daily?days={days}")
+            self.assertEqual(res.status_code, 200)
+            data = res.get_json()
+            self.assertTrue(data.get("success"))
+            self.assertEqual(len(data.get("labels", [])), days)
+            self.assertEqual(len(data.get("revenues", [])), days)
+            self.assertEqual(len(data.get("orders", [])), days)
+            self.assertIn("summary", data)
+
 
 if __name__ == "__main__":
     unittest.main()
