@@ -49,6 +49,11 @@
                     <li class="nav-item">
                         <a class="nav-link text-white fw-bold" href="#reviews">🍓 구매 후기</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-warning fw-bold d-flex align-items-center gap-1" href="{{ url_for('admin.dashboard') }}" title="쇼핑몰 관리자 대시보드">
+                            <i class="bi bi-shield-lock"></i> 관리자
+                        </a>
+                    </li>
                 </ul>
                 <!-- 우측 사용자 아이콘 및 장바구니 -->
                 <div class="d-flex align-items-center gap-2">
@@ -74,6 +79,16 @@
                             <li>
                                 <a class="dropdown-item py-2 small d-flex align-items-center gap-2" href="{{ url_for('main.mypage') }}">
                                     <i class="bi bi-person-circle text-primary"></i> 마이페이지
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item py-2 small d-flex align-items-center gap-2 text-danger fw-bold" href="{{ url_for('admin.dashboard') }}">
+                                    <i class="bi bi-shield-lock-fill"></i> 관리자 대시보드
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item py-2 small d-flex align-items-center gap-2 text-dark fw-bold" href="{{ url_for('admin.inventory') }}">
+                                    <i class="bi bi-box-seam-fill text-warning"></i> 재고 관리
                                 </a>
                             </li>
                             <li><hr class="dropdown-divider my-1"></li>
@@ -385,16 +400,24 @@
             fetch("{{ url_for('main.add_to_cart') }}", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ product_id: productId })
+                body: JSON.stringify({ product_id: productId, quantity: 1 })
             })
             .then(res => res.json())
             .then(data => {
                 if (data.success) {
-                    renderCartUI(data.cart);
+                    if (data.cart) {
+                        renderCartUI(data.cart);
+                    }
                     // 오프캔버스 장바구니 열기
                     const cartElement = document.getElementById('cartOffcanvas');
-                    const bsOffcanvas = bootstrap.Offcanvas.getOrCreateInstance(cartElement);
-                    bsOffcanvas.show();
+                    if (cartElement) {
+                        const bsOffcanvas = bootstrap.Offcanvas.getOrCreateInstance(cartElement);
+                        bsOffcanvas.show();
+                    }
+                } else if (data.redirect) {
+                    if (confirm(data.message + "\n로그인 페이지로 이동하시겠습니까?")) {
+                        window.location.href = data.redirect;
+                    }
                 } else {
                     alert(data.message || '장바구니 담기에 실패했습니다.');
                 }

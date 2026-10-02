@@ -213,7 +213,99 @@ def get_cart():
 
 
 def get_cart_summary():
-    """장바구니 아이템 목록, 총 수량, 총 금액을 계산합니다."""
+    """
+    장바구니 아이템 목록, 총 수량, 총 금액을 계산합니다.
+    - 로그인 사용자의 경우 Supabase carts 테이블을 우선 조회합니다.
+    - 비로그인 사용자의 경우 세션 cart를 기반으로 계산합니다.
+    """
+    user_id = session.get("user", {}).get("id") if "user" in session else None
+    supabase = get_supabase_admin_client() or get_supabase_client()
+
+    if user_id and supabase:
+        try:
+            cart_res = (
+                supabase.table("carts")
+                .select(
+                    """
+                    id,
+                    quantity,
+                    product_id,
+                    option_id,
+                    product_options(option_name, option_value, color, size, stock_quantity, stock),
+                    products(id, name, sale_price, original_price, product_images(image_url))
+                    """
+                )
+                .eq("user_id", user_id)
+                .order("created_at")
+                .execute()
+            )
+            if cart_res.data is not None:
+                item_list = []
+                total_price = 0
+                total_count = 0
+
+                for row in cart_res.data:
+                    qty = int(row.get("quantity") or 1)
+                    total_count += qty
+
+                    prod = row.get("products") or {}
+                    if isinstance(prod, list) and len(prod) > 0:
+                        prod = prod[0]
+                    elif not isinstance(prod, dict):
+                        prod = {}
+
+                    opt = row.get("product_options") or {}
+                    if isinstance(opt, list) and len(opt) > 0:
+                        opt = opt[0]
+                    elif not isinstance(opt, dict):
+                        opt = {}
+
+                    price = int(prod.get("sale_price") or prod.get("original_price") or 0)
+                    subtotal = price * qty
+                    total_price += subtotal
+
+                    color = (opt.get("color") or "").strip()
+                    size = (opt.get("size") or "").strip()
+                    opt_name = (opt.get("option_name") or "").strip()
+                    opt_val = (opt.get("option_value") or "").strip()
+
+                    opt_parts = []
+                    if color:
+                        opt_parts.append(color)
+                    if size:
+                        opt_parts.append(size)
+                    if not opt_parts and opt_name and opt_val:
+                        opt_parts.append(f"{opt_name}: {opt_val}")
+                    option_text = " / ".join(opt_parts)
+
+                    images = prod.get("product_images") or []
+                    img_url = images[0].get("image_url") if (isinstance(images, list) and len(images) > 0) else "/static/images/real_pink_rabbit.png"
+
+                    item_list.append({
+                        "id": row.get("id"),
+                        "product_id": row.get("product_id"),
+                        "name": prod.get("name") or "상품",
+                        "price": f"{price:,}",
+                        "raw_price": price,
+                        "quantity": qty,
+                        "option_text": option_text,
+                        "image": img_url,
+                        "subtotal": subtotal,
+                        "subtotal_formatted": f"{subtotal:,}원",
+                    })
+
+                return {
+                    "items": item_list,
+                    "item_list": item_list,
+                    "total_count": total_count,
+                    "total_price": total_price,
+                    "total_price_formatted": f"{total_price:,}",
+                    "shipping_fee": 0 if total_price >= 50000 else 3000,
+                }
+        except Exception as e:
+            print(f"[안내] Supabase DB 장바구니 요약 조회: {e}")
+
+    # Fallback: 세션 기반 장바구니
     cart = get_cart()
     item_list = list(cart.values())
     total_count = sum(item.get("quantity", 1) for item in item_list)
@@ -224,7 +316,7 @@ def get_cart_summary():
         "total_count": total_count,
         "total_price": total_price,
         "total_price_formatted": f"{total_price:,}",
-        "shipping_fee": 0,
+        "shipping_fee": 0 if total_price >= 50000 else 3000,
     }
 
 
@@ -459,40 +551,109 @@ def add_to_cart():
         flash("사용자 정보를 찾을 수 없습니다.", "danger")
         return redirect(url_for("main.index"))
 
+    # 세션에 이전 비-UUID 형식의 user_id (예: kakao_xxx)가 남아있는 경우 올바른 UUID로 자동 보정
+    supabase = get_supabase_admin_client() or get_supabase_client()
+    if isinstance(user_id, str) and not re.match(r"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$", user_id, re.IGNORECASE):
+        user_email = session.get("user", {}).get("email")
+        if user_email and supabase:
+            try:
+                p_res = supabase.table("profiles").select("id").eq("email", user_email).limit(1).execute()
+                if p_res.data and len(p_res.data) > 0:
+                    user_id = p_res.data[0]["id"]
+                    session["user"]["id"] = user_id
+                    session.modified = True
+                elif hasattr(supabase, "auth") and hasattr(supabase.auth, "admin"):
+                    created = supabase.auth.admin.create_user({
+                        "email": user_email,
+                        "email_confirm": True,
+                        "user_metadata": {"full_name": session.get("user", {}).get("name", "회원")}
+                    })
+                    if created and created.user:
+                        user_id = created.user.id
+                        session["user"]["id"] = user_id
+                        session.modified = True
+            except Exception as fix_err:
+                print(f"[안내] user_id UUID 변환 오류: {fix_err}")
+
     # 2. 요청 파라미터 파싱
     data = request.get_json(silent=True) or request.form
     print(f"[디버그] 요청 데이터: {data}")
+
+    product_option_id = 0
+    quantity = 1
     try:
-        product_option_id = int(data.get("product_option_id", 0))
-        quantity = int(data.get("quantity", 1))
+        if data.get("product_option_id"):
+            product_option_id = int(data.get("product_option_id"))
+        if data.get("quantity"):
+            quantity = int(data.get("quantity"))
     except (ValueError, TypeError):
-        print(f"[오류] product_option_id={data.get('product_option_id')}, quantity={data.get('quantity')} 파싱 실패")
+        print(f"[오류] 파싱 실패: {data}")
         return jsonify({
             "success": False,
-            "message": "product_option_id와 quantity는 정수여야 합니다."
+            "message": "옵션 및 수량 형식이 올바르지 않습니다."
         }), 400
 
-    print(f"[디버그] product_option_id={product_option_id}, quantity={quantity}")
-
-    if product_option_id <= 0 or quantity <= 0:
-        print(f"[오류] product_option_id 또는 quantity가 0 이하: {product_option_id}, {quantity}")
+    if quantity <= 0:
         return jsonify({
             "success": False,
-            "message": "product_option_id와 quantity는 0보다 커야 합니다."
+            "message": "수량은 1개 이상이어야 합니다."
         }), 400
 
-    supabase = get_supabase_client()
+    supabase = get_supabase_admin_client() or get_supabase_client()
     if not supabase:
         return jsonify({
             "success": False,
             "message": "데이터베이스 연결을 할 수 없습니다."
         }), 500
 
-    # 3. product_options에서 stock_quantity 및 product_id 조회
+    # 메인 페이지 등에서 product_option_id 없이 product_id만 전달된 경우 기본 옵션 자동 조회
+    if product_option_id <= 0:
+        product_id_param = data.get("product_id")
+        if product_id_param:
+            try:
+                pid = int(product_id_param)
+                opt_list_res = (
+                    supabase.table("product_options")
+                    .select("id, stock_quantity, stock")
+                    .eq("product_id", pid)
+                    .order("id")
+                    .execute()
+                )
+                if opt_list_res.data and len(opt_list_res.data) > 0:
+                    # 재고가 남아있는 옵션 우선 선택
+                    available_opt = next(
+                        (o for o in opt_list_res.data if int(o.get("stock_quantity") or o.get("stock") or 0) > 0),
+                        None
+                    )
+                    if available_opt:
+                        product_option_id = available_opt["id"]
+                    else:
+                        product_option_id = opt_list_res.data[0]["id"]
+                else:
+                    # 옵션이 아예 없는 상품인 경우 기본 옵션 자동 생성
+                    new_opt = supabase.table("product_options").insert({
+                        "product_id": pid,
+                        "option_name": "기본",
+                        "option_value": "Free",
+                        "stock_quantity": 50,
+                        "is_available": True
+                    }).execute()
+                    if new_opt.data and len(new_opt.data) > 0:
+                        product_option_id = new_opt.data[0]["id"]
+            except Exception as e:
+                print(f"[오류] product_options 기본 옵션 조회 실패: {e}")
+
+    if product_option_id <= 0:
+        return jsonify({
+            "success": False,
+            "message": "상품 옵션을 선택해주세요."
+        }), 400
+
+    # 3. product_options에서 재고 및 product_id 조회
     try:
         opt_res = (
             supabase.table("product_options")
-            .select("id, product_id, stock_quantity")
+            .select("id, product_id, stock_quantity, stock")
             .eq("id", product_option_id)
             .limit(1)
             .execute()
@@ -504,7 +665,7 @@ def add_to_cart():
             }), 404
 
         option_data = opt_res.data[0]
-        current_stock = int(option_data.get("stock_quantity", 0))
+        current_stock = int(option_data.get("stock_quantity") or option_data.get("stock") or 0)
         product_id = option_data.get("product_id")
 
     except Exception as e:
@@ -515,10 +676,16 @@ def add_to_cart():
         }), 500
 
     # 4. 요청 수량이 현재 재고를 초과하는지 확인
+    if current_stock <= 0:
+        return jsonify({
+            "success": False,
+            "message": "선택하신 옵션은 품절되었습니다."
+        }), 400
+
     if quantity > current_stock:
         return jsonify({
             "success": False,
-            "message": f"재고가 부족합니다(현재 {current_stock}개)"
+            "message": f"재고가 부족합니다 (현재 재고: {current_stock}개)"
         }), 400
 
     # 5. carts 테이블에서 기존 수량 조회
@@ -567,7 +734,8 @@ def add_to_cart():
     # 7. 성공 응답
     return jsonify({
         "success": True,
-        "message": "장바구니에 담겼습니다"
+        "message": "장바구니에 담겼습니다",
+        "cart": get_cart_summary()
     }), 200
 
 
@@ -620,7 +788,7 @@ def patch_cart_item(cart_id):
             "message": "수량은 1 이상이어야 합니다."
         }), 400
 
-    supabase = get_supabase_client()
+    supabase = get_supabase_admin_client() or get_supabase_client()
     if not supabase:
         return jsonify({
             "success": False,
@@ -786,7 +954,7 @@ def delete_cart_item(cart_id):
             "message": "사용자 정보를 찾을 수 없습니다.",
         }), 400
 
-    supabase = get_supabase_client()
+    supabase = get_supabase_admin_client() or get_supabase_client()
     if not supabase:
         return jsonify({
             "success": False,
@@ -843,22 +1011,55 @@ def delete_cart_item(cart_id):
 @main_bp.route("/cart/update", methods=["POST"])
 def update_cart():
     """
-    장바구니 수량 증가/감소/삭제 핸들러
+    장바구니 수량 증가/감소/삭제 핸들러 (오프캔버스 및 공통)
     """
     data = request.get_json(silent=True) or request.form
-    product_id = str(data.get("product_id", "")).strip()
+    item_id_str = str(data.get("product_id", "")).strip()
     action = data.get("action", "").strip()  # 'increase', 'decrease', 'delete'
 
+    user_id = session.get("user", {}).get("id") if "user" in session else None
+    supabase = get_supabase_admin_client() or get_supabase_client()
+
+    # DB 장바구니 사용자인 경우
+    if user_id and supabase:
+        try:
+            target_cart = None
+            if item_id_str.isdigit():
+                cart_res = supabase.table("carts").select("id, quantity, user_id").eq("id", int(item_id_str)).eq("user_id", user_id).limit(1).execute()
+                if cart_res.data and len(cart_res.data) > 0:
+                    target_cart = cart_res.data[0]
+
+            if not target_cart and item_id_str.isdigit():
+                cart_res = supabase.table("carts").select("id, quantity, user_id").eq("product_id", int(item_id_str)).eq("user_id", user_id).limit(1).execute()
+                if cart_res.data and len(cart_res.data) > 0:
+                    target_cart = cart_res.data[0]
+
+            if target_cart:
+                cid = target_cart["id"]
+                current_qty = target_cart["quantity"]
+                if action == "increase":
+                    supabase.table("carts").update({"quantity": current_qty + 1, "updated_at": datetime.utcnow().isoformat()}).eq("id", cid).execute()
+                elif action == "decrease":
+                    if current_qty > 1:
+                        supabase.table("carts").update({"quantity": current_qty - 1, "updated_at": datetime.utcnow().isoformat()}).eq("id", cid).execute()
+                    else:
+                        supabase.table("carts").delete().eq("id", cid).execute()
+                elif action == "delete":
+                    supabase.table("carts").delete().eq("id", cid).execute()
+        except Exception as e:
+            print(f"[오류] DB 장바구니 업데이트: {e}")
+
+    # 세션 장바구니도 업데이트
     cart = get_cart()
-    if product_id in cart:
+    if item_id_str in cart:
         if action == "increase":
-            cart[product_id]["quantity"] += 1
+            cart[item_id_str]["quantity"] += 1
         elif action == "decrease":
-            cart[product_id]["quantity"] -= 1
-            if cart[product_id]["quantity"] <= 0:
-                del cart[product_id]
+            cart[item_id_str]["quantity"] -= 1
+            if cart[item_id_str]["quantity"] <= 0:
+                del cart[item_id_str]
         elif action == "delete":
-            del cart[product_id]
+            del cart[item_id_str]
 
         session.modified = True
 
@@ -873,6 +1074,14 @@ def update_cart():
 @main_bp.route("/cart/clear", methods=["POST"])
 def clear_cart():
     """장바구니 전체 비우기"""
+    user_id = session.get("user", {}).get("id") if "user" in session else None
+    supabase = get_supabase_admin_client() or get_supabase_client()
+    if user_id and supabase:
+        try:
+            supabase.table("carts").delete().eq("user_id", user_id).execute()
+        except Exception as e:
+            print(f"[오류] DB 장바구니 전체 비우기: {e}")
+
     session["cart"] = {}
     session.modified = True
     return jsonify({
@@ -905,7 +1114,7 @@ def view_cart():
         flash("사용자 정보를 찾을 수 없습니다.", "danger")
         return redirect(url_for("auth.login_page"))
 
-    supabase = get_supabase_client()
+    supabase = get_supabase_admin_client() or get_supabase_client()
     if not supabase:
         flash("데이터베이스 연결을 할 수 없습니다.", "danger")
         return redirect(url_for("main.index"))

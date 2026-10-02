@@ -1,0 +1,435 @@
+{% extends "base.html" %}
+
+{% block title %}재고 관리 | VIBE-FASHION 관리자 콘솔{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-lg-5 py-4 py-md-5">
+
+    <!-- 상단 헤더 및 네비게이션 -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center pb-3 mb-4 border-bottom gap-3">
+        <div>
+            <div class="d-flex align-items-center gap-2">
+                <span class="badge bg-warning text-dark rounded-pill px-3 py-2 fs-6 shadow-sm">
+                    <i class="bi bi-box-seam-fill me-1"></i> INVENTORY CONTROL
+                </span>
+                <span class="text-muted small">실시간 상품 및 옵션별 재고 입출고 관리</span>
+            </div>
+            <h2 class="fw-bold text-dark mt-2 mb-0">
+                📦 상품 재고 현황 &amp; 수량 관리
+            </h2>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+            <a href="{{ url_for('admin.dashboard') }}" class="btn btn-outline-danger btn-sm rounded-pill px-3 fw-bold">
+                <i class="bi bi-speedometer2 me-1"></i> 관리자 대시보드
+            </a>
+            <a href="{{ url_for('main.index') }}" class="btn btn-outline-secondary btn-sm rounded-pill px-3 fw-bold">
+                <i class="bi bi-shop me-1"></i> 쇼핑몰 바로가기
+            </a>
+        </div>
+    </div>
+
+    <!-- 1. 재고 현황 KPI 통계 카드 섹션 -->
+    <div class="row g-3 mb-4">
+        <!-- 전체 관리 옵션(SKU) 수 -->
+        <div class="col-6 col-md-4 col-xl-2">
+            <div class="card border-0 rounded-4 shadow-sm p-3 h-100 bg-white border-start border-4 border-primary">
+                <div class="text-muted small fw-bold mb-1">총 관리 품목(SKU)</div>
+                <h4 class="fw-black text-primary mb-0">{{ kpi.total_skus }}개</h4>
+                <small class="text-muted">옵션별 고유 품목</small>
+            </div>
+        </div>
+
+        <!-- 총 보유 재고 수량 -->
+        <div class="col-6 col-md-4 col-xl-2">
+            <div class="card border-0 rounded-4 shadow-sm p-3 h-100 bg-white border-start border-4 border-info">
+                <div class="text-muted small fw-bold mb-1">총 보유 재고량</div>
+                <h4 class="fw-black text-info mb-0">{{ "{:,}".format(kpi.total_units) }}개</h4>
+                <small class="text-muted">전체 창고 실재고 합계</small>
+            </div>
+        </div>
+
+        <!-- 정상 재고 품목 -->
+        <div class="col-6 col-md-4 col-xl-2">
+            <div class="card border-0 rounded-4 shadow-sm p-3 h-100 bg-white border-start border-4 border-success">
+                <div class="text-muted small fw-bold mb-1">정상 재고 품목</div>
+                <h4 class="fw-black text-success mb-0">{{ kpi.in_stock_count }}개</h4>
+                <small class="text-success"><i class="bi bi-check-circle-fill me-1"></i>재고 6개 이상 여유</small>
+            </div>
+        </div>
+
+        <!-- 품절 임박 품목 -->
+        <div class="col-6 col-md-4 col-xl-2">
+            <div class="card border-0 rounded-4 shadow-sm p-3 h-100 bg-white border-start border-4 border-warning">
+                <div class="text-muted small fw-bold mb-1">품절 임박 품목</div>
+                <h4 class="fw-black text-warning mb-0">{{ kpi.low_stock_count }}개</h4>
+                <small class="text-danger"><i class="bi bi-exclamation-triangle-fill me-1"></i>1~5개 남음 (보충 요망)</small>
+            </div>
+        </div>
+
+        <!-- 품절 품목 -->
+        <div class="col-6 col-md-4 col-xl-2">
+            <div class="card border-0 rounded-4 shadow-sm p-3 h-100 bg-white border-start border-4 border-danger">
+                <div class="text-muted small fw-bold mb-1">현재 품절 품목</div>
+                <h4 class="fw-black text-danger mb-0">{{ kpi.out_of_stock_count }}개</h4>
+                <small class="text-danger"><i class="bi bi-x-circle-fill me-1"></i>재고 0개 (주문 차단됨)</small>
+            </div>
+        </div>
+
+        <!-- 총 누적 판매량 -->
+        <div class="col-6 col-md-4 col-xl-2">
+            <div class="card border-0 rounded-4 shadow-sm p-3 h-100 bg-white border-start border-4 border-dark">
+                <div class="text-muted small fw-bold mb-1">총 누적 판매량</div>
+                <h4 class="fw-black text-dark mb-0">{{ "{:,}".format(kpi.total_sold_count) }}개</h4>
+                <small class="text-muted">실제 결제 차감 누계</small>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. 재고 목록 필터 & 검색 툴바 -->
+    <div class="card border-0 rounded-4 shadow-sm bg-white p-3 p-md-4 mb-4">
+        <div class="row g-3 align-items-center justify-content-between">
+            <!-- 상태별 필터 탭/버튼 -->
+            <div class="col-md-7">
+                <div class="d-flex flex-wrap gap-2 align-items-center">
+                    <span class="text-muted small fw-bold me-1"><i class="bi bi-funnel-fill text-danger me-1"></i>상태 필터:</span>
+                    <button type="button" class="btn btn-sm btn-dark rounded-pill px-3 filter-btn active" data-filter="all">
+                        전체 ({{ items|length }})
+                    </button>
+                    <button type="button" class="btn btn-sm btn-outline-success rounded-pill px-3 filter-btn" data-filter="in_stock">
+                        정상 재고 ({{ kpi.in_stock_count }})
+                    </button>
+                    <button type="button" class="btn btn-sm btn-outline-warning text-dark rounded-pill px-3 filter-btn" data-filter="low_stock">
+                        품절 임박 ({{ kpi.low_stock_count }})
+                    </button>
+                    <button type="button" class="btn btn-sm btn-outline-danger rounded-pill px-3 filter-btn" data-filter="out_of_stock">
+                        품절 ({{ kpi.out_of_stock_count }})
+                    </button>
+                </div>
+            </div>
+
+            <!-- 실시간 검색 입력란 -->
+            <div class="col-md-5">
+                <div class="input-group">
+                    <span class="input-group-text bg-light border-end-0 text-muted"><i class="bi bi-search"></i></span>
+                    <input type="text" id="inventorySearchInput" class="form-control border-start-0 ps-1" placeholder="상품명, 색상, 사이즈, 옵션명으로 검색...">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. 재고 관리 테이블 -->
+    <div class="card border-0 rounded-4 shadow-sm bg-white overflow-hidden mb-4">
+        <div class="card-header bg-white border-bottom p-3 p-md-4 d-flex justify-content-between align-items-center">
+            <h5 class="fw-bold mb-0 text-dark d-flex align-items-center gap-2">
+                <i class="bi bi-table text-danger"></i> 상품별 옵션 재고 상세 내역
+            </h5>
+            <span class="text-muted small">
+                <i class="bi bi-info-circle me-1"></i>주문이 완료되면 재고가 실시간으로 자동 차감됩니다.
+            </span>
+        </div>
+
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0" id="inventoryTable">
+                    <thead class="table-light text-muted small text-center">
+                        <tr>
+                            <th class="text-start ps-4" style="min-width: 260px;">상품 정보</th>
+                            <th class="text-start" style="min-width: 170px;">옵션 정보</th>
+                            <th style="width: 110px;">판매가</th>
+                            <th style="width: 110px;">누적 판매량</th>
+                            <th style="width: 130px;">현재 재고</th>
+                            <th style="width: 130px;">재고 상태</th>
+                            <th style="min-width: 230px;">수량 직접 수정</th>
+                            <th style="min-width: 190px;">빠른 입고 / 품절</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in items %}
+                        <tr class="inventory-row" data-type="{{ row.status_type }}" data-search="{{ row.product_name }} {{ row.display_option }} {{ row.color }} {{ row.size }}" id="row-opt-{{ row.option_id }}">
+                            <!-- 상품 정보 -->
+                            <td class="ps-4">
+                                <div class="d-flex align-items-center gap-3">
+                                    <img src="{{ row.image_url }}" alt="{{ row.product_name }}" 
+                                         class="rounded-3 border object-fit-cover shadow-xs" style="width: 50px; height: 50px; flex-shrink: 0;">
+                                    <div>
+                                        <div class="fw-bold text-dark text-break">{{ row.product_name }}</div>
+                                        <small class="text-muted">상품 ID: #{{ row.product_id }}</small>
+                                    </div>
+                                </div>
+                            </td>
+
+                            <!-- 옵션 정보 -->
+                            <td>
+                                <span class="badge bg-light text-dark border px-3 py-2 rounded-pill fw-semibold">
+                                    {{ row.display_option }}
+                                </span>
+                                {% if row.is_real_option %}
+                                <div class="small text-muted mt-1" style="font-size: 0.72rem;">옵션 ID: #{{ row.option_id }}</div>
+                                {% endif %}
+                            </td>
+
+                            <!-- 판매가 -->
+                            <td class="text-center fw-bold text-secondary">
+                                {{ row.product_price_formatted }}
+                            </td>
+
+                            <!-- 누적 판매량 -->
+                            <td class="text-center">
+                                <span class="badge {% if row.sold_qty > 0 %}bg-primary-subtle text-primary border border-primary-subtle{% else %}bg-light text-muted border{% endif %} px-3 py-2 rounded-pill">
+                                    {{ row.sold_qty }}개
+                                </span>
+                            </td>
+
+                            <!-- 현재 재고 -->
+                            <td class="text-center">
+                                <span class="fw-bold fs-6 text-dark stock-display-val" id="stock-val-{{ row.option_id }}">
+                                    {{ row.stock }}
+                                </span>
+                                <span class="text-muted small">개</span>
+                            </td>
+
+                            <!-- 재고 상태 배지 -->
+                            <td class="text-center">
+                                <span class="badge {{ row.badge_class }} rounded-pill px-3 py-2 stock-badge" id="stock-badge-{{ row.option_id }}">
+                                    {{ row.status_label }}
+                                </span>
+                            </td>
+
+                            <!-- 수량 직접 수정 폼 -->
+                            <td>
+                                {% if row.is_real_option %}
+                                <form method="POST" action="{{ url_for('admin.update_option_stock', option_id=row.option_id) }}" 
+                                      class="d-flex align-items-center gap-1 stock-update-form" data-option-id="{{ row.option_id }}">
+                                    <div class="input-group input-group-sm" style="width: 140px;">
+                                        <input type="number" name="stock" class="form-control text-center fw-bold stock-input" 
+                                               id="input-stock-{{ row.option_id }}" min="0" value="{{ row.stock }}" required>
+                                        <span class="input-group-text bg-white small text-muted">개</span>
+                                    </div>
+                                    <button type="submit" class="btn btn-sm btn-primary rounded-3 px-3 fw-bold" title="재고 저장">
+                                        <i class="bi bi-save me-1"></i>저장
+                                    </button>
+                                </form>
+                                {% else %}
+                                <span class="text-muted small">단일상품</span>
+                                {% endif %}
+                            </td>
+
+                            <!-- 빠른 입고 / 품절 토글 버튼 -->
+                            <td class="text-center">
+                                {% if row.is_real_option %}
+                                <div class="btn-group btn-group-sm" role="group">
+                                    <!-- +10개 빠른 입고 -->
+                                    <button type="button" class="btn btn-outline-success quick-stock-btn" 
+                                            onclick="quickAddStock({{ row.option_id }}, 10)" title="+10개 입고">
+                                        +10
+                                    </button>
+                                    <!-- +50개 빠른 입고 -->
+                                    <button type="button" class="btn btn-outline-success quick-stock-btn" 
+                                            onclick="quickAddStock({{ row.option_id }}, 50)" title="+50개 대량 입고">
+                                        +50
+                                    </button>
+                                    <!-- 품절 전환 / 입고 토글 -->
+                                    <button type="button" class="btn {% if row.stock > 0 %}btn-outline-danger{% else %}btn-outline-secondary{% endif %} toggle-stock-btn" 
+                                            id="toggle-btn-{{ row.option_id }}" onclick="toggleStock({{ row.option_id }})" 
+                                            title="{% if row.stock > 0 %}즉시 품절(0개) 처리{% else %}기본 재고(20개) 입고{% endif %}">
+                                        {% if row.stock > 0 %}품절처리{% else %}재입고{% endif %}
+                                    </button>
+                                </div>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- 알림 토스트 (Toast) -->
+<div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1090;">
+    <div id="stockToast" class="toast align-items-center text-white bg-dark border-0 rounded-4 shadow-lg" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body d-flex align-items-center gap-2" id="stockToastMsg">
+                <i class="bi bi-check-circle-fill text-success fs-5"></i>
+                <span>재고가 성공적으로 업데이트되었습니다.</span>
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+</div>
+
+<script>
+// 실시간 검색 기능
+document.getElementById('inventorySearchInput')?.addEventListener('input', function(e) {
+    const q = e.target.value.toLowerCase().trim();
+    document.querySelectorAll('.inventory-row').forEach(row => {
+        const text = (row.getAttribute('data-search') || '').toLowerCase();
+        const matchesSearch = text.includes(q);
+        const currentFilter = document.querySelector('.filter-btn.active')?.getAttribute('data-filter') || 'all';
+        const matchesFilter = currentFilter === 'all' || row.getAttribute('data-type') === currentFilter;
+        row.style.display = (matchesSearch && matchesFilter) ? '' : 'none';
+    });
+});
+
+// 상태별 필터 탭 버튼 기능
+document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        document.querySelectorAll('.filter-btn').forEach(b => {
+            b.classList.remove('active', 'btn-dark');
+            if (b.getAttribute('data-filter') === 'in_stock') b.classList.add('btn-outline-success');
+            else if (b.getAttribute('data-filter') === 'low_stock') b.classList.add('btn-outline-warning');
+            else if (b.getAttribute('data-filter') === 'out_of_stock') b.classList.add('btn-outline-danger');
+            else b.classList.add('btn-outline-secondary');
+        });
+
+        this.classList.add('active', 'btn-dark');
+        const filter = this.getAttribute('data-filter');
+        const q = (document.getElementById('inventorySearchInput')?.value || '').toLowerCase().trim();
+
+        document.querySelectorAll('.inventory-row').forEach(row => {
+            const matchesFilter = filter === 'all' || row.getAttribute('data-type') === filter;
+            const text = (row.getAttribute('data-search') || '').toLowerCase();
+            const matchesSearch = text.includes(q);
+            row.style.display = (matchesFilter && matchesSearch) ? '' : 'none';
+        });
+    });
+});
+
+// 토스트 메시지 띄우기 함수
+function showStockToast(msg, isSuccess = true) {
+    const toastEl = document.getElementById('stockToast');
+    const toastMsg = document.getElementById('stockToastMsg');
+    if (toastEl && toastMsg) {
+        toastMsg.innerHTML = isSuccess 
+            ? `<i class="bi bi-check-circle-fill text-success fs-5"></i> <span>${msg}</span>`
+            : `<i class="bi bi-exclamation-triangle-fill text-warning fs-5"></i> <span>${msg}</span>`;
+        const toast = new bootstrap.Toast(toastEl, { delay: 3000 });
+        toast.show();
+    }
+}
+
+// UI 재고 요소 동적 갱신
+function updateStockUI(optionId, newStock) {
+    const stockDisplay = document.getElementById(`stock-val-${optionId}`);
+    const stockInput = document.getElementById(`input-stock-${optionId}`);
+    const badge = document.getElementById(`stock-badge-${optionId}`);
+    const row = document.getElementById(`row-opt-${optionId}`);
+    const toggleBtn = document.getElementById(`toggle-btn-${optionId}`);
+
+    if (stockDisplay) stockDisplay.textContent = newStock;
+    if (stockInput) stockInput.value = newStock;
+
+    let badgeClass = '';
+    let badgeText = '';
+    let type = '';
+
+    if (newStock <= 0) {
+        type = 'out_of_stock';
+        badgeClass = 'badge bg-danger text-white rounded-pill px-3 py-2';
+        badgeText = '품절';
+        if (toggleBtn) {
+            toggleBtn.className = 'btn btn-outline-secondary toggle-stock-btn';
+            toggleBtn.textContent = '재입고';
+            toggleBtn.title = '기본 재고(20개) 입고';
+        }
+    } else if (newStock <= 5) {
+        type = 'low_stock';
+        badgeClass = 'badge bg-warning text-dark rounded-pill px-3 py-2';
+        badgeText = `품절임박 (${newStock}개)`;
+        if (toggleBtn) {
+            toggleBtn.className = 'btn btn-outline-danger toggle-stock-btn';
+            toggleBtn.textContent = '품절처리';
+            toggleBtn.title = '즉시 품절(0개) 처리';
+        }
+    } else {
+        type = 'in_stock';
+        badgeClass = 'badge bg-success-subtle text-success border border-success-subtle rounded-pill px-3 py-2';
+        badgeText = `정상 재고 (${newStock}개)`;
+        if (toggleBtn) {
+            toggleBtn.className = 'btn btn-outline-danger toggle-stock-btn';
+            toggleBtn.textContent = '품절처리';
+            toggleBtn.title = '즉시 품절(0개) 처리';
+        }
+    }
+
+    if (badge) {
+        badge.className = badgeClass;
+        badge.textContent = badgeText;
+    }
+    if (row) {
+        row.setAttribute('data-type', type);
+    }
+}
+
+// 폼 직접 제출 AJAX 처리
+document.querySelectorAll('.stock-update-form').forEach(form => {
+    form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const optionId = this.getAttribute('data-option-id');
+        const input = document.getElementById(`input-stock-${optionId}`);
+        const stockVal = parseInt(input.value || '0', 10);
+
+        try {
+            const res = await fetch(`/admin/inventory/options/${optionId}/stock`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ stock: stockVal })
+            });
+            const data = await res.json();
+            if (data.success) {
+                updateStockUI(optionId, data.new_stock);
+                showStockToast(data.message || `옵션 #${optionId} 재고가 ${data.new_stock}개로 수정되었습니다.`);
+            } else {
+                alert(data.message || '재고 수정에 실패했습니다.');
+            }
+        } catch (err) {
+            console.error('재고 업데이트 오류:', err);
+            alert('재고 수정 중 오류가 발생했습니다.');
+        }
+    });
+});
+
+// 빠른 입고 (+10, +50)
+async function quickAddStock(optionId, delta) {
+    try {
+        const res = await fetch(`/admin/inventory/options/${optionId}/stock`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ delta: delta })
+        });
+        const data = await res.json();
+        if (data.success) {
+            updateStockUI(optionId, data.new_stock);
+            showStockToast(`+${delta}개 입고 완료! 현재 재고: ${data.new_stock}개`);
+        } else {
+            alert(data.message || '입고 처리에 실패했습니다.');
+        }
+    } catch (err) {
+        console.error('빠른 입고 오류:', err);
+        alert('입고 처리 중 오류가 발생했습니다.');
+    }
+}
+
+// 품절 / 재입고 토글
+async function toggleStock(optionId) {
+    try {
+        const res = await fetch(`/admin/inventory/options/${optionId}/toggle`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' }
+        });
+        const data = await res.json();
+        if (data.success) {
+            updateStockUI(optionId, data.new_stock);
+            showStockToast(data.message);
+        } else {
+            alert(data.message || '품절 전환 처리에 실패했습니다.');
+        }
+    } catch (err) {
+        console.error('품절 토글 오류:', err);
+        alert('상태 전환 중 오류가 발생했습니다.');
+    }
+}
+</script>
+{% endblock %}

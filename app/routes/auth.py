@@ -12,7 +12,7 @@ import re
 from urllib.parse import urlencode
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session, current_app, jsonify
 import httpx
-from app.supabase_client import get_supabase_client
+from app.supabase_client import get_supabase_client, get_supabase_admin_client
 
 # 인증 기능을 담당할 블루프린트 생성
 auth_bp = Blueprint("auth", __name__, url_prefix="/auth")
@@ -171,9 +171,63 @@ def kakao_callback():
     )
     email = kakao_account.get("email") or f"kakao_{kakao_id}@vibe-fashion.com"
 
-    # 5. Flask 세션에 사용자 정보 저장 (신규 가입 및 로그인 완료)
+    # 5. Supabase auth.users 및 profiles 테이블에 회원 정보 동기화 및 UUID 확보
+    admin_supabase = get_supabase_admin_client() or get_supabase_client()
+    user_uuid = None
+
+    if admin_supabase:
+        try:
+            # 먼저 profiles 테이블에서 해당 이메일로 기존 UUID가 있는지 조회
+            p_res = admin_supabase.table("profiles").select("id").eq("email", email).limit(1).execute()
+            if p_res.data and len(p_res.data) > 0:
+                user_uuid = p_res.data[0]["id"]
+            else:
+                # 없으면 Supabase auth.admin.create_user를 통해 UUID 생성
+                if hasattr(admin_supabase, "auth") and hasattr(admin_supabase.auth, "admin"):
+                    try:
+                        created = admin_supabase.auth.admin.create_user({
+                            "email": email,
+                            "email_confirm": True,
+                            "user_metadata": {
+                                "full_name": nickname,
+                                "avatar_url": profile_image,
+                                "provider": "kakao",
+                                "provider_id": str(kakao_id)
+                            }
+                        })
+                        if created and created.user:
+                            user_uuid = created.user.id
+                    except Exception as ce:
+                        print(f"[안내] auth create_user 확인 중: {ce}")
+                        # 이미 존재하는 auth 유저인 경우 프로필 재조회 시도
+                        p_res2 = admin_supabase.table("profiles").select("id").eq("email", email).limit(1).execute()
+                        if p_res2.data and len(p_res2.data) > 0:
+                            user_uuid = p_res2.data[0]["id"]
+
+            # 프로필 정보 업데이트 (이름, 프로필 이미지 등)
+            if user_uuid:
+                profile_payload = {
+                    "id": user_uuid,
+                    "email": email,
+                    "full_name": nickname,
+                    "avatar_url": profile_image,
+                    "role": "customer",
+                    "grade": "BRONZE",
+                }
+                admin_supabase.table("profiles").upsert(profile_payload).execute()
+                print(f"[안내] Supabase 카카오 회원 프로필 동기화 완료: {email} (UUID: {user_uuid})")
+        except Exception as e:
+            print(f"[안내] Supabase 카카오 회원 연동 예외: {e}")
+
+    # UUID가 생성되지 못한 경우 fallback으로 고유 UUID 형식 생성
+    if not user_uuid:
+        import uuid
+        NAMESPACE_KAKAO = uuid.UUID('12345678-1234-5678-1234-567812345678')
+        user_uuid = str(uuid.uuid5(NAMESPACE_KAKAO, str(kakao_id)))
+
+    # 6. Flask 세션에 사용자 정보 저장 (id를 유효한 UUID로 저장)
     session_user = {
-        "id": f"kakao_{kakao_id}",
+        "id": user_uuid,
         "provider": "kakao",
         "provider_id": str(kakao_id),
         "name": nickname,
@@ -183,25 +237,6 @@ def kakao_callback():
     }
     session["user"] = session_user
     session.modified = True
-
-    # 6. Supabase 데이터베이스에 회원 정보 동기화 (연결된 경우)
-    supabase = get_supabase_client()
-    if supabase:
-        try:
-            # profiles 테이블에 회원 정보 저장 시도
-            profile_payload = {
-                "email": email,
-                "full_name": nickname,
-                "avatar_url": profile_image,
-                "role": "customer",
-                "grade": "BRONZE",
-            }
-            # supabase-py 쿼리 빌더를 사용하여 저장
-            supabase.table("profiles").upsert(profile_payload, on_conflict="email").execute()
-            print(f"[안내] Supabase 회원 프로필 동기화 완료: {email}")
-        except Exception as e:
-            # auth.users 외래 키 제약 조건 등으로 인한 에러 시에도 로그만 기록하고 로그인은 유지
-            print(f"[안내] Supabase 프로필 동기화 시도 (계속 진행): {e}")
 
     flash(f"🍓 '{nickname}'님 환영합니다! 카카오 계정으로 간편 가입 및 로그인이 완료되었습니다.", "success")
     return redirect(url_for("main.index"))
@@ -213,12 +248,58 @@ def mock_login():
     개발 환경용 카카오 간편 로그인/회원가입 시뮬레이터
     - API 키가 아직 없더라도 즉시 UI와 가입 기능을 테스트해볼 수 있도록 지원합니다.
     """
+    admin_supabase = get_supabase_admin_client() or get_supabase_client()
+    mock_email = "chimutan_berry@kakao.com"
+    user_uuid = None
+
+    if admin_supabase:
+        try:
+            p_res = admin_supabase.table("profiles").select("id").eq("email", mock_email).limit(1).execute()
+            if p_res.data and len(p_res.data) > 0:
+                user_uuid = p_res.data[0]["id"]
+            else:
+                if hasattr(admin_supabase, "auth") and hasattr(admin_supabase.auth, "admin"):
+                    try:
+                        created = admin_supabase.auth.admin.create_user({
+                            "email": mock_email,
+                            "email_confirm": True,
+                            "user_metadata": {
+                                "full_name": "치무탄 딸기요정",
+                                "avatar_url": "/static/images/strawberry_icon.svg",
+                                "provider": "kakao",
+                                "provider_id": "777888"
+                            }
+                        })
+                        if created and created.user:
+                            user_uuid = created.user.id
+                    except Exception:
+                        p_res2 = admin_supabase.table("profiles").select("id").eq("email", mock_email).limit(1).execute()
+                        if p_res2.data and len(p_res2.data) > 0:
+                            user_uuid = p_res2.data[0]["id"]
+
+            if user_uuid:
+                admin_supabase.table("profiles").upsert({
+                    "id": user_uuid,
+                    "email": mock_email,
+                    "full_name": "치무탄 딸기요정",
+                    "avatar_url": "/static/images/strawberry_icon.svg",
+                    "role": "customer",
+                    "grade": "VIP",
+                }).execute()
+        except Exception as e:
+            print(f"[안내] mock_login Supabase 동기화: {e}")
+
+    if not user_uuid:
+        import uuid
+        NAMESPACE_KAKAO = uuid.UUID('12345678-1234-5678-1234-567812345678')
+        user_uuid = str(uuid.uuid5(NAMESPACE_KAKAO, "777888"))
+
     mock_user = {
-        "id": "kakao_demo_777",
+        "id": user_uuid,
         "provider": "kakao",
         "provider_id": "777888",
         "name": "치무탄 딸기요정",
-        "email": "chimutan_berry@kakao.com",
+        "email": mock_email,
         "avatar_url": url_for("static", filename="images/strawberry_icon.svg"),
         "grade": "VIP",
     }

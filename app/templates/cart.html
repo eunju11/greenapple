@@ -124,16 +124,16 @@
                             <span class="fw-bold text-primary">{{ "{:,}".format(final_total|int) }}원</span>
                         </div>
 
-                        <!-- 주문 버튼 -->
-                        <form action="{{ url_for('main.checkout') }}" method="post" class="mb-2">
-                            <button 
-                                class="btn btn-primary w-100 py-3 fw-bold" 
-                                type="submit"
-                                {% if has_out_of_stock %}disabled title="품절된 상품을 제거한 후 주문하세요"{% endif %}
-                            >
-                                <i class="bi bi-cart-check"></i> 주문하기
-                            </button>
-                        </form>
+                        <!-- 주문서 작성 페이지로 이동 버튼 -->
+                        {% if has_out_of_stock %}
+                        <button class="btn btn-primary w-100 py-3 fw-bold mb-2" disabled title="품절된 상품이 있어 주문할 수 없습니다">
+                            <i class="bi bi-cart-check"></i> 주문하기
+                        </button>
+                        {% else %}
+                        <a href="{{ url_for('order.checkout') }}" class="btn btn-primary w-100 py-3 fw-bold mb-2">
+                            <i class="bi bi-cart-check"></i> 주문하기
+                        </a>
+                        {% endif %}
 
                         <!-- 계속 쇼핑 버튼 -->
                         <a href="{{ url_for('main.index') }}" class="btn btn-outline-secondary w-100 py-2">

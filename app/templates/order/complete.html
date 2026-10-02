@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+
+{% block title %}주문 완료 | VIBE-FASHION x CHIMUTAN{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+
+            <!-- 완료 축하 배너 카드 -->
+            <div class="card border-0 rounded-4 shadow-sm text-center p-4 p-md-5 mb-4 bg-white">
+                <div class="mb-3">
+                    <span class="rounded-circle bg-success-subtle text-success p-3 d-inline-flex align-items-center justify-content-center" style="width: 72px; height: 72px;">
+                        <i class="bi bi-check-lg display-5 fw-bold"></i>
+                    </span>
+                </div>
+                <h2 class="fw-bold text-dark mb-2">주문이 성공적으로 완료되었습니다! 🍓</h2>
+                <p class="text-muted mb-3">소중한 주문 감사합니다. 안전하고 빠르게 배송해 드릴게요.</p>
+                <div class="d-inline-block bg-light rounded-pill px-4 py-2 border">
+                    <span class="text-secondary small me-2">주문번호</span>
+                    <span class="fw-bold text-danger font-monospace fs-6">{{ order.order_number }}</span>
+                </div>
+            </div>
+
+            <!-- 결제 및 배송지 정보 요약 카드 -->
+            <div class="card border-0 rounded-4 shadow-sm mb-4 bg-white overflow-hidden">
+                <div class="card-header bg-white border-bottom p-3 p-md-4">
+                    <h5 class="fw-bold mb-0 text-dark d-flex align-items-center gap-2">
+                        <i class="bi bi-info-circle text-danger"></i>
+                        <span>주문 및 배송 정보</span>
+                    </h5>
+                </div>
+                <div class="card-body p-4">
+                    <div class="row g-3">
+                        <div class="col-sm-6">
+                            <div class="text-muted small mb-1">받는 사람</div>
+                            <div class="fw-bold text-dark">{{ order.recipient_name }}</div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="text-muted small mb-1">연락처</div>
+                            <div class="fw-bold text-dark">{{ order.recipient_phone }}</div>
+                        </div>
+                        <div class="col-12">
+                            <div class="text-muted small mb-1">배송 주소</div>
+                            <div class="fw-bold text-dark">
+                                {% if order.postal_code %}<span class="badge bg-light text-secondary border me-1">우: {{ order.postal_code }}</span>{% endif %}
+                                {{ order.shipping_address }} {{ order.shipping_detail_address or '' }}
+                            </div>
+                        </div>
+                        {% if order.shipping_memo %}
+                        <div class="col-12">
+                            <div class="text-muted small mb-1">배송 메모</div>
+                            <div class="text-dark bg-light rounded-3 p-2 small">{{ order.shipping_memo }}</div>
+                        </div>
+                        {% endif %}
+                        <div class="col-sm-6">
+                            <div class="text-muted small mb-1">결제 수단</div>
+                            <div class="fw-bold text-dark">
+                                {% if order.payment_method == 'kakaopay' %}카카오페이 (테스트){% else %}신용/체크카드 (더미 결제){% endif %}
+                                <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill ms-1">결제 완료</span>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="text-muted small mb-1">최종 결제 금액</div>
+                            <div class="fw-bold text-danger fs-5">{{ "{:,}".format(order.final_amount|int) }}원</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 주문 상품 내역 카드 -->
+            {% if items %}
+            <div class="card border-0 rounded-4 shadow-sm mb-4 bg-white overflow-hidden">
+                <div class="card-header bg-white border-bottom p-3 p-md-4">
+                    <h5 class="fw-bold mb-0 text-dark d-flex align-items-center gap-2">
+                        <i class="bi bi-box-seam text-danger"></i>
+                        <span>주문 상품 (총 {{ items|length }}개)</span>
+                    </h5>
+                </div>
+                <div class="card-body p-0">
+                    <ul class="list-group list-group-flush">
+                        {% for item in items %}
+                        <li class="list-group-item p-3 px-md-4 d-flex justify-content-between align-items-center">
+                            <div>
+                                <div class="fw-bold text-dark">{{ item.product_name }}</div>
+                                <div class="small text-muted">
+                                    {{ item.option_description }} | {{ item.quantity }}개
+                                </div>
+                            </div>
+                            <div class="fw-bold text-dark text-end">
+                                {{ "{:,}".format(item.total_price|int) }}원
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- 이동 버튼들 (마이페이지로, 쇼핑 계속하기) -->
+            <div class="d-flex flex-column flex-sm-row justify-content-center gap-3 mt-4">
+                <a href="{{ url_for('main.mypage') }}" class="btn btn-danger rounded-pill px-4 py-3 fw-bold shadow-sm d-flex align-items-center justify-content-center gap-2">
+                    <i class="bi bi-person-fill fs-5"></i>
+                    <span>마이페이지로</span>
+                </a>
+                <a href="{{ url_for('main.index') }}" class="btn btn-outline-secondary rounded-pill px-4 py-3 fw-bold d-flex align-items-center justify-content-center gap-2">
+                    <i class="bi bi-shop fs-5"></i>
+                    <span>쇼핑 계속하기</span>
+                </a>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

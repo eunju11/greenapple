@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}관리자 권한 필요 | VIBE-FASHION{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-7 col-lg-6">
+            <div class="card border-0 rounded-4 shadow-sm text-center p-4 p-md-5 bg-white">
+                <div class="mb-4">
+                    <span class="rounded-circle bg-warning-subtle text-warning p-3 d-inline-flex align-items-center justify-content-center" style="width: 72px; height: 72px;">
+                        <i class="bi bi-shield-exclamation display-5 text-warning"></i>
+                    </span>
+                </div>
+                <h3 class="fw-bold text-dark mb-2">관리자 권한이 필요합니다</h3>
+                <p class="text-muted mb-4">
+                    현재 로그인된 계정은 일반 고객(customer) 권한입니다.<br>
+                    쇼핑몰 관리자 페이지에 접근하시려면 관리자 권한이 필요합니다.
+                </p>
+
+                {% if session.get('user') %}
+                <!-- 테스트/개발 환경용 관리자 승격 버튼 -->
+                <div class="p-3 bg-light rounded-4 mb-4 border border-warning-subtle">
+                    <div class="small fw-bold text-dark mb-2">
+                        <i class="bi bi-tools text-danger me-1"></i> 개발 및 평가용 원클릭 관리자 승격
+                    </div>
+                    <p class="small text-muted mb-3">현재 계정('{{ session['user'].get('name') }}')에 즉시 관리자(admin) 역할을 부여하고 대시보드로 이동합니다.</p>
+                    <form method="POST" action="{{ url_for('admin.promote_me') }}">
+                        <button type="submit" class="btn btn-danger rounded-pill px-4 py-2 fw-bold shadow-sm">
+                            <i class="bi bi-person-check-fill me-1"></i> 현재 계정을 관리자로 전환하기
+                        </button>
+                    </form>
+                </div>
+                {% endif %}
+
+                <div class="d-flex justify-content-center gap-2">
+                    <a href="{{ url_for('main.index') }}" class="btn btn-outline-secondary rounded-pill px-4 py-2 fw-bold">
+                        <i class="bi bi-house-door me-1"></i> 메인 홈으로 이동
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

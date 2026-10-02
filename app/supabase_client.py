@@ -40,10 +40,17 @@ def get_supabase_admin_client() -> Optional[Client]:
     supabase_url: Optional[str] = os.getenv("SUPABASE_URL")
     service_key: Optional[str] = (
         os.getenv("SUPABASE_SERVICE_ROLE_KEY") or
-        os.getenv("SUPABASE_SERVICE_KEY") or
-        os.getenv("SUPABASE_KEY") or
-        os.getenv("SUPABASE_ANON_KEY")
+        os.getenv("SUPABASE_SERVICE_KEY")
     )
+
+    # 만약 지정된 서비스 키가 없거나 publishable 키인 경우 SECRET_KEY에 설정된 sb_secret 확인
+    if not service_key or service_key.startswith("sb_publishable_"):
+        sec_candidate = os.getenv("SECRET_KEY", "")
+        if sec_candidate.startswith("sb_secret_") or "service_role" in sec_candidate:
+            service_key = sec_candidate
+
+    if not service_key:
+        service_key = os.getenv("SUPABASE_KEY") or os.getenv("SUPABASE_ANON_KEY")
 
     if not supabase_url or not service_key:
         return None
