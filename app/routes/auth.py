@@ -10,9 +10,35 @@ import os
 import secrets
 import re
 from urllib.parse import urlencode
-from flask import Blueprint, render_template, request, redirect, url_for, flash, session, current_app, jsonify
+from flask import Blueprint, render_template, request, redirect, url_for, flash, session, current_app, jsonify, Response
 import httpx
 from app.supabase_client import get_supabase_client, get_supabase_admin_client
+from app.webauthn_store import (
+    save_credential,
+    get_credential,
+    get_user_credentials,
+    get_credentials_by_email,
+    update_sign_count,
+    delete_credential,
+)
+from webauthn import (
+    generate_registration_options,
+    verify_registration_response,
+    generate_authentication_options,
+    verify_authentication_response,
+)
+from webauthn.helpers import (
+    options_to_json,
+    bytes_to_base64url,
+    base64url_to_bytes,
+)
+from webauthn.helpers.structs import (
+    AuthenticatorSelectionCriteria,
+    UserVerificationRequirement,
+    ResidentKeyRequirement,
+    COSEAlgorithmIdentifier,
+    PublicKeyCredentialDescriptor,
+)
 
 # 인증 기능을 담당할 블루프린트 생성
 auth_bp = Blueprint("auth", __name__, url_prefix="/auth")
@@ -530,3 +556,298 @@ def logout():
 
     flash(f"'{user_name}'님 안전하게 로그아웃되었습니다. 다음에 또 만나요! 🍓", "info")
     return redirect(url_for("main.index"))
+
+
+# ==============================================================================
+# 생체인증 (WebAuthn / Passkey / 지문 / Face ID / Windows Hello) 라우트
+# ==============================================================================
+
+def get_rp_and_origins():
+    """WebAuthn용 Relying Party ID 및 허용 Origin 목록 반환"""
+    host = request.host.split(":")[0]  # 포트 번호 제외한 도메인/IP
+    rp_id = host
+    req_origin = f"{request.scheme}://{request.host}"
+    allowed_origins = [
+        req_origin,
+        "http://localhost:5000",
+        "http://127.0.0.1:5000",
+        "https://localhost:5000",
+        "https://127.0.0.1:5000",
+    ]
+    return rp_id, allowed_origins
+
+
+@auth_bp.route("/webauthn/register-options", methods=["POST"])
+def webauthn_register_options():
+    """
+    생체인증 등록 옵션 생성 (POST /auth/webauthn/register-options)
+    - 로그인된 사용자의 생체인증(지문/Face ID/Windows Hello) 등록을 위한 챌린지 생성
+    """
+    if "user" not in session or not session.get("user", {}).get("id"):
+        return jsonify({"success": False, "message": "로그인이 필요합니다."}), 401
+
+    user = session["user"]
+    user_id = str(user.get("id"))
+    email = user.get("email") or f"{user_id}@vibe-fashion.com"
+    name = user.get("name") or "회원"
+
+    rp_id, _ = get_rp_and_origins()
+
+    try:
+        options = generate_registration_options(
+            rp_id=rp_id,
+            rp_name="VIBE-FASHION x CHIMUTAN",
+            user_id=user_id.encode("utf-8"),
+            user_name=email,
+            user_display_name=name,
+            authenticator_selection=AuthenticatorSelectionCriteria(
+                user_verification=UserVerificationRequirement.PREFERRED,
+                resident_key=ResidentKeyRequirement.PREFERRED,
+            ),
+            supported_pub_key_algs=[
+                COSEAlgorithmIdentifier.ECDSA_SHA_256,
+                COSEAlgorithmIdentifier.RSASSA_PKCS1_v1_5_SHA_256,
+                COSEAlgorithmIdentifier.EDDSA,
+            ],
+        )
+
+        session["webauthn_reg_challenge"] = bytes_to_base64url(options.challenge)
+        session.modified = True
+
+        return Response(options_to_json(options), mimetype="application/json")
+    except Exception as e:
+        print(f"[오류] 생체인증 등록 옵션 생성 실패: {e}")
+        return jsonify({"success": False, "message": f"생체인증 옵션 생성 실패: {e}"}), 500
+
+
+@auth_bp.route("/webauthn/register-verify", methods=["POST"])
+def webauthn_register_verify():
+    """
+    생체인증 등록 검증 및 저장 (POST /auth/webauthn/register-verify)
+    - 브라우저 생체인증 서명 검증 후 자격증명 키를 저장
+    """
+    if "user" not in session or not session.get("user", {}).get("id"):
+        return jsonify({"success": False, "message": "로그인이 필요합니다."}), 401
+
+    reg_challenge_b64 = session.pop("webauthn_reg_challenge", None)
+    if not reg_challenge_b64:
+        return jsonify({"success": False, "message": "인증 세션이 만료되었습니다. 다시 시도해주세요."}), 400
+
+    user = session["user"]
+    user_id = str(user.get("id"))
+    email = user.get("email") or f"{user_id}@vibe-fashion.com"
+
+    rp_id, allowed_origins = get_rp_and_origins()
+    credential_json = request.get_data(as_text=True)
+
+    try:
+        verification = verify_registration_response(
+            credential=credential_json,
+            expected_challenge=base64url_to_bytes(reg_challenge_b64),
+            expected_rp_id=rp_id,
+            expected_origin=allowed_origins,
+            require_user_verification=False,
+        )
+
+        cred_id_b64 = bytes_to_base64url(verification.credential_id)
+        pub_key_b64 = bytes_to_base64url(verification.credential_public_key)
+
+        # 디바이스 이름 자동 추정
+        ua = request.headers.get("User-Agent", "")
+        if "Windows" in ua:
+            device_name = "Windows Hello 생체인증"
+        elif "Macintosh" in ua or "Mac OS" in ua:
+            device_name = "Touch ID / Mac 생체인증"
+        elif "iPhone" in ua or "iPad" in ua:
+            device_name = "Apple Face ID / Touch ID"
+        elif "Android" in ua:
+            device_name = "Android 생체인증"
+        else:
+            device_name = "생체인증 디바이스 (Passkey)"
+
+        # DB 및 Supabase 동기화 저장
+        saved = save_credential(
+            credential_id=cred_id_b64,
+            user_id=user_id,
+            email=email,
+            public_key=pub_key_b64,
+            sign_count=verification.sign_count,
+            device_name=device_name,
+        )
+
+        if not saved:
+            return jsonify({"success": False, "message": "자격증명 저장에 실패했습니다."}), 500
+
+        return jsonify({
+            "success": True,
+            "message": "생체인증(지문/Face ID)이 성공적으로 등록되었습니다! 🍓",
+            "device_name": device_name
+        }), 200
+
+    except Exception as e:
+        print(f"[오류] 생체인증 등록 검증 실패: {e}")
+        return jsonify({"success": False, "message": f"생체인증 등록 검증 실패: {e}"}), 400
+
+
+@auth_bp.route("/webauthn/login-options", methods=["POST"])
+def webauthn_login_options():
+    """
+    생체인증 로그인 옵션 생성 (POST /auth/webauthn/login-options)
+    - 이메일 기반 또는 1클릭 패스키(Resident Key) 인증 챌린지 생성
+    """
+    data = request.get_json(silent=True) or {}
+    email = data.get("email", "").strip()
+
+    rp_id, _ = get_rp_and_origins()
+
+    allow_credentials = None
+    if email:
+        user_creds = get_credentials_by_email(email)
+        if user_creds:
+            allow_credentials = [
+                PublicKeyCredentialDescriptor(id=base64url_to_bytes(c["credential_id"]))
+                for c in user_creds
+            ]
+        else:
+            return jsonify({
+                "success": False,
+                "message": f"'{email}' 계정으로 등록된 생체인증 기기가 없습니다. 먼저 로그인 후 생체인증을 등록해주세요."
+            }), 404
+
+    try:
+        options = generate_authentication_options(
+            rp_id=rp_id,
+            user_verification=UserVerificationRequirement.PREFERRED,
+            allow_credentials=allow_credentials,
+        )
+
+        session["webauthn_auth_challenge"] = bytes_to_base64url(options.challenge)
+        session.modified = True
+
+        return Response(options_to_json(options), mimetype="application/json")
+    except Exception as e:
+        print(f"[오류] 생체인증 로그인 옵션 생성 실패: {e}")
+        return jsonify({"success": False, "message": f"로그인 옵션 생성 실패: {e}"}), 500
+
+
+@auth_bp.route("/webauthn/login-verify", methods=["POST"])
+def webauthn_login_verify():
+    """
+    생체인증 로그인 검증 및 세션 처리 (POST /auth/webauthn/login-verify)
+    - 브라우저 생체인증 서명 검증 후 즉시 로그인 세션 발급
+    """
+    auth_challenge_b64 = session.pop("webauthn_auth_challenge", None)
+    if not auth_challenge_b64:
+        return jsonify({"success": False, "message": "인증 세션이 만료되었습니다. 다시 시도해주세요."}), 400
+
+    rp_id, allowed_origins = get_rp_and_origins()
+    credential_data = request.get_json(silent=True) or {}
+    cred_id_b64 = credential_data.get("id")
+    if not cred_id_b64:
+        return jsonify({"success": False, "message": "유효하지 않은 생체인증 응답입니다."}), 400
+
+    saved_cred = get_credential(cred_id_b64)
+    if not saved_cred:
+        return jsonify({
+            "success": False,
+            "message": "등록되지 않은 생체인증 정보입니다. 먼저 로그인 후 마이페이지에서 생체인증을 등록해주세요."
+        }), 404
+
+    try:
+        credential_json = request.get_data(as_text=True)
+        verification = verify_authentication_response(
+            credential=credential_json,
+            expected_challenge=base64url_to_bytes(auth_challenge_b64),
+            expected_rp_id=rp_id,
+            expected_origin=allowed_origins,
+            credential_public_key=base64url_to_bytes(saved_cred["public_key"]),
+            credential_current_sign_count=saved_cred["sign_count"],
+            require_user_verification=False,
+        )
+
+        # 서명 카운트 갱신 (리플레이 공격 방지)
+        update_sign_count(cred_id_b64, verification.new_sign_count)
+
+        user_id = saved_cred["user_id"]
+        email = saved_cred["email"]
+
+        # Supabase profiles 조회하여 최신 사용자 정보 획득
+        supabase = get_supabase_admin_client() or get_supabase_client()
+        user_name = email.split("@")[0]
+        avatar_url = "/static/images/strawberry_icon.svg"
+        grade = "BRONZE"
+        role = "customer"
+
+        if supabase:
+            try:
+                prof_res = supabase.table("profiles").select("*").eq("id", user_id).limit(1).execute()
+                if not prof_res.data:
+                    prof_res = supabase.table("profiles").select("*").eq("email", email).limit(1).execute()
+                if prof_res.data and len(prof_res.data) > 0:
+                    p = prof_res.data[0]
+                    user_name = p.get("full_name") or user_name
+                    avatar_url = p.get("avatar_url") or avatar_url
+                    grade = p.get("grade") or grade
+                    role = p.get("role") or role
+            except Exception as pe:
+                print(f"[안내] WebAuthn 로그인 프로필 조회: {pe}")
+
+        # Flask 세션 로그인 완료
+        session["user"] = {
+            "id": user_id,
+            "provider": "passkey",
+            "provider_id": cred_id_b64,
+            "name": user_name,
+            "email": email,
+            "avatar_url": avatar_url,
+            "grade": grade,
+            "role": role,
+        }
+        session.modified = True
+
+        flash(f"🍓 '{user_name}'님 생체인증(지문/Face ID)으로 안전하게 로그인되었습니다!", "success")
+        return jsonify({
+            "success": True,
+            "message": f"'{user_name}'님 생체인증으로 로그인되었습니다.",
+            "redirect": url_for("main.index")
+        }), 200
+
+    except Exception as e:
+        print(f"[오류] 생체인증 로그인 검증 실패: {e}")
+        return jsonify({"success": False, "message": f"생체인증 확인에 실패했습니다: {e}"}), 400
+
+
+@auth_bp.route("/webauthn/credentials", methods=["GET"])
+def webauthn_list_credentials():
+    """현재 로그인된 사용자의 생체인증 등록 기기 목록 반환"""
+    if "user" not in session or not session.get("user", {}).get("id"):
+        return jsonify({"success": False, "credentials": []}), 401
+    user_id = str(session["user"]["id"])
+    creds = get_user_credentials(user_id)
+    safe_creds = [
+        {
+            "credential_id": c["credential_id"],
+            "device_name": c["device_name"],
+            "created_at": c["created_at"],
+            "sign_count": c["sign_count"]
+        }
+        for c in creds
+    ]
+    return jsonify({"success": True, "credentials": safe_creds})
+
+
+@auth_bp.route("/webauthn/delete", methods=["POST"])
+def webauthn_delete_credential():
+    """생체인증 기기 삭제 (POST /auth/webauthn/delete)"""
+    if "user" not in session or not session.get("user", {}).get("id"):
+        return jsonify({"success": False, "message": "로그인이 필요합니다."}), 401
+    data = request.get_json(silent=True) or request.form
+    cred_id = data.get("credential_id")
+    if not cred_id:
+        return jsonify({"success": False, "message": "자격증명 ID가 필요합니다."}), 400
+    user_id = str(session["user"]["id"])
+    success = delete_credential(cred_id, user_id)
+    if success:
+        return jsonify({"success": True, "message": "생체인증 기기 등록이 해제되었습니다."}), 200
+    return jsonify({"success": False, "message": "생체인증 기기 삭제에 실패했습니다."}), 400
+

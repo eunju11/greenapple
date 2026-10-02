@@ -16,16 +16,28 @@
                 </div>
 
                 <div class="card-body p-4 p-md-5">
-                    <!-- 1. 카카오 3초 간편 시작 섹션 -->
+                    <!-- 1. 간편 로그인 섹션 (생체인증 & 카카오) -->
                     <div class="mb-4 text-center">
                         <span class="badge bg-danger-subtle text-danger px-3 py-1 rounded-pill fw-bold small mb-2">
-                            ✨ 3초 만에 빠른 시작
+                            ✨ 비밀번호 없는 1초 간편 로그인
                         </span>
-                        <h4 class="fw-bold text-dark mb-2">소셜 계정으로 시작하기</h4>
+                        <h4 class="fw-bold text-dark mb-2">간편 인증으로 시작하기</h4>
                         <p class="text-muted small mb-3">
-                            복잡한 절차 없이 카카오톡으로 즉시 가입 및 로그인이 가능합니다.
+                            기기에 등록된 지문/Face ID 생체인증 또는 카카오톡으로 즉시 로그인하세요.
                         </p>
 
+                        <!-- 생체인증(Passkey / Windows Hello / Touch ID / Face ID) 1초 로그인 -->
+                        <div class="mb-3">
+                            <button type="button" class="btn btn-dark btn-lg rounded-pill fw-bold py-3 shadow-sm d-flex align-items-center justify-content-center gap-2 w-100 border border-secondary" onclick="loginWithBiometrics();">
+                                <i class="bi bi-fingerprint fs-3 text-warning"></i>
+                                <span>지문 / Face ID로 1초 로그인 (생체인증)</span>
+                            </button>
+                            <small class="text-muted d-block mt-1" style="font-size: 0.78rem;">
+                                <i class="bi bi-shield-check text-success me-1"></i>기기에 등록된 Windows Hello, Touch ID, Face ID로 비밀번호 없이 안전하게 로그인
+                            </small>
+                        </div>
+
+                        <!-- 카카오톡 로그인 -->
                         <a href="{{ url_for('auth.kakao_login') }}" class="btn btn-kakao btn-lg rounded-pill fw-bold py-3 shadow-sm d-flex align-items-center justify-content-center gap-2 text-decoration-none w-100">
                             <svg width="22" height="22" viewBox="0 0 24 24" fill="#191919">
                                 <path d="M12 3C6.477 3 2 6.477 2 10.772c0 2.768 1.87 5.187 4.673 6.551-.157.574-.567 2.073-.65 2.399-.101.401.147.395.31.286.128-.086 2.036-1.385 2.868-1.949.574.08 1.164.123 1.799.123 5.523 0 10-3.477 10-7.772S17.523 3 12 3z"/>
@@ -109,9 +121,13 @@
                                     <label class="form-label small fw-bold text-secondary">비밀번호</label>
                                     <input type="password" name="password" class="form-control rounded-3" placeholder="비밀번호를 입력하세요" required autocomplete="current-password">
                                 </div>
-                                <div class="d-grid">
+                                <div class="d-grid gap-2">
                                     <button type="submit" class="btn btn-danger btn-lg rounded-pill fw-bold py-3 shadow-sm">
-                                        <i class="bi bi-box-arrow-in-right me-1"></i> 로그인
+                                        <i class="bi bi-box-arrow-in-right me-1"></i> 비밀번호로 로그인
+                                    </button>
+                                    <button type="button" class="btn btn-outline-dark rounded-pill fw-bold py-2 shadow-xs d-flex align-items-center justify-content-center gap-2" onclick="loginWithBiometrics(document.querySelector('#pane-signin input[name=email]').value);">
+                                        <i class="bi bi-fingerprint text-danger fs-5"></i>
+                                        <span>이 계정으로 생체인증(지문/Face ID) 로그인</span>
                                     </button>
                                 </div>
                             </form>

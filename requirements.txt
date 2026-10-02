@@ -3,3 +3,4 @@ python-dotenv>=1.0.1
 supabase>=2.13.0
 httpx>=0.28.0
 gunicorn>=23.0.0
+webauthn>=3.0.1

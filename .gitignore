@@ -26,6 +26,11 @@ wheels/
 # 환경 변수 파일 (보안을 위해 깃에 올리지 않음)
 .env
 
+# Flask instance 디렉토리 및 SQLite DB 파일
+instance/
+*.sqlite3
+*.db
+
 # VS Code 설정
 .vscode/
 

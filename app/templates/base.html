@@ -258,8 +258,14 @@
                         원하시는 가입 방식을 선택해 3초 만에 시작하세요!
                     </p>
 
-                    <!-- 카카오 로그인 / 가입 버튼 -->
+                    <!-- 카카오 로그인 / 가입 버튼 및 생체인증 로그인 -->
                     <div class="d-grid gap-2 mb-3">
+                        <!-- 생체인증(지문 / Face ID) 1초 로그인 -->
+                        <button type="button" class="btn btn-dark btn-lg rounded-pill fw-bold py-3 shadow-sm d-flex align-items-center justify-content-center gap-2 text-decoration-none" onclick="loginWithBiometrics();">
+                            <i class="bi bi-fingerprint fs-4 text-warning"></i>
+                            <span>지문 / Face ID로 1초 로그인</span>
+                        </button>
+
                         <a href="{{ url_for('auth.kakao_login') }}" class="btn btn-kakao btn-lg rounded-pill fw-bold py-3 shadow-sm d-flex align-items-center justify-content-center gap-2 text-decoration-none">
                             <svg width="22" height="22" viewBox="0 0 24 24" fill="#191919">
                                 <path d="M12 3C6.477 3 2 6.477 2 10.772c0 2.768 1.87 5.187 4.673 6.551-.157.574-.567 2.073-.65 2.399-.101.401.147.395.31.286.128-.086 2.036-1.385 2.868-1.949.574.08 1.164.123 1.799.123 5.523 0 10-3.477 10-7.772S17.523 3 12 3z"/>
@@ -330,6 +336,8 @@
 
     <!-- Bootstrap 5.3 CDN (JavaScript 번들) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- WebAuthn 생체인증(지문/Face ID/Windows Hello) 스크립트 -->
+    <script src="{{ url_for('static', filename='js/webauthn.js') }}"></script>
 
     <!-- 실시간 장바구니 스크립트 -->
     <script>

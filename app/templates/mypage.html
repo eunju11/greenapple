@@ -119,6 +119,40 @@
                                         </div>
                                     </form>
 
+                                    <hr class="my-5 text-secondary opacity-25">
+
+                                    <!-- 생체인증(Passkey / 지문 / Face ID / Windows Hello) 관리 섹션 -->
+                                    <div class="card border-0 rounded-4 p-4 shadow-sm mb-4" style="background-color: #f8f9fa; border: 1px solid #e9ecef !important;">
+                                        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+                                            <div class="d-flex align-items-center gap-2">
+                                                <div class="p-2 rounded-3 bg-dark text-warning">
+                                                    <i class="bi bi-fingerprint fs-4"></i>
+                                                </div>
+                                                <div>
+                                                    <h5 class="fw-bold text-dark mb-0">생체인증 (Passkey / 지문 / Face ID) 관리</h5>
+                                                    <p class="small text-muted mb-0">비밀번호 없이 기기 생체인증으로 1초 만에 안전하게 로그인할 수 있습니다.</p>
+                                                </div>
+                                            </div>
+                                            <button type="button" class="btn btn-dark rounded-pill px-3 py-2 fw-bold shadow-sm d-flex align-items-center gap-1" onclick="registerBiometrics(loadBiometricCredentials);">
+                                                <i class="bi bi-plus-circle-fill text-warning"></i>
+                                                <span>이 기기의 생체인증 등록</span>
+                                            </button>
+                                        </div>
+
+                                        <!-- 등록된 생체인증 기기 목록 영역 -->
+                                        <div id="biometricDeviceList" class="mt-2">
+                                            <div class="text-center py-3 text-muted small" id="biometricLoading">
+                                                <div class="spinner-border spinner-border-sm text-secondary me-1" role="status"></div>
+                                                생체인증 등록 기기를 확인하는 중...
+                                            </div>
+                                            <div id="biometricEmptyNotice" class="d-none p-3 bg-white rounded-3 border text-center text-muted small">
+                                                <i class="bi bi-shield-slash text-secondary fs-4 d-block mb-1"></i>
+                                                아직 등록된 생체인증 기기가 없습니다. 위의 버튼을 눌러 현재 기기(지문/Face ID/Windows Hello)를 등록해보세요!
+                                            </div>
+                                            <div id="biometricItemsContainer" class="d-none d-flex flex-column gap-2"></div>
+                                        </div>
+                                    </div>
+
                                     {% if profile.provider == 'email' %}
                                     <hr class="my-5 text-secondary opacity-25">
 
@@ -202,4 +236,90 @@
         </div>
     </div>
 </div>
+
+<script>
+// 등록된 생체인증 기기 목록 불러오기 함수
+async function loadBiometricCredentials() {
+    const loading = document.getElementById('biometricLoading');
+    const emptyNotice = document.getElementById('biometricEmptyNotice');
+    const container = document.getElementById('biometricItemsContainer');
+
+    if (!container) return;
+
+    try {
+        const res = await fetch('/auth/webauthn/credentials');
+        const data = await res.json();
+
+        if (loading) loading.classList.add('d-none');
+
+        if (data.success && data.credentials && data.credentials.length > 0) {
+            if (emptyNotice) emptyNotice.classList.add('d-none');
+            container.classList.remove('d-none');
+
+            let html = '';
+            data.credentials.forEach(cred => {
+                html += `
+                    <div class="p-3 bg-white rounded-3 border d-flex justify-content-between align-items-center shadow-xs">
+                        <div class="d-flex align-items-center gap-3">
+                            <span class="p-2 rounded-circle bg-light text-dark border d-inline-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                <i class="bi bi-laptop fs-5 text-dark"></i>
+                            </span>
+                            <div>
+                                <div class="fw-bold text-dark d-flex align-items-center gap-2">
+                                    <span>${cred.device_name || '등록된 생체인증 기기'}</span>
+                                    <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill" style="font-size: 0.68rem;">활성 (Passkey)</span>
+                                </div>
+                                <small class="text-muted d-block" style="font-size: 0.78rem;">
+                                    등록일: ${cred.created_at || '-'}
+                                </small>
+                            </div>
+                        </div>
+                        <div>
+                            <button type="button" class="btn btn-sm btn-outline-danger rounded-pill px-3 fw-bold" onclick="removeBiometricCredential('${cred.credential_id}');">
+                                <i class="bi bi-trash3 me-1"></i>삭제
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        } else {
+            if (container) container.classList.add('d-none');
+            if (emptyNotice) emptyNotice.classList.remove('d-none');
+        }
+    } catch (err) {
+        console.error('생체인증 기기 조회 오류:', err);
+        if (loading) loading.textContent = '생체인증 목록을 불러오지 못했습니다.';
+    }
+}
+
+// 생체인증 기기 삭제
+async function removeBiometricCredential(credId) {
+    if (!confirm("이 기기의 생체인증 등록을 해제하시겠습니까? 해제 후에는 비밀번호 또는 소셜 로그인으로 다시 로그인해야 합니다.")) {
+        return;
+    }
+
+    try {
+        const res = await fetch('/auth/webauthn/delete', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ credential_id: credId })
+        });
+        const data = await res.json();
+        if (data.success) {
+            alert(data.message || '삭제되었습니다.');
+            loadBiometricCredentials();
+        } else {
+            alert(data.message || '삭제에 실패했습니다.');
+        }
+    } catch (err) {
+        console.error('삭제 오류:', err);
+        alert('생체인증 삭제 중 오류가 발생했습니다.');
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    loadBiometricCredentials();
+});
+</script>
 {% endblock %}
