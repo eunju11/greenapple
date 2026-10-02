@@ -141,30 +141,36 @@ def index():
     supabase = get_supabase_client()
     if supabase:
         try:
-            # supabase-py 쿼리 빌더 인터페이스 사용
-            response = supabase.table("products").select("*, product_images(image_url)").limit(8).execute()
+            # 치무탄 & 몬치치 컬렉션 상품 우선 조회 (또는 전체 상품 조회)
+            response = supabase.table("products").select("*, product_images(image_url)").order("id").execute()
             if response.data and len(response.data) > 0:
-                has_monchhichi = any("몬치치" in str(item.get("name", "")) for item in response.data)
-                if has_monchhichi:
-                    display_products = []
-                    for idx, row in enumerate(response.data):
-                        img_url = None
-                        if row.get("product_images") and len(row["product_images"]) > 0:
-                            img_url = row["product_images"][0].get("image_url")
-                        if not img_url:
-                            img_url = PRODUCTS[idx % len(PRODUCTS)]["image"]
+                # 치무탄 또는 몬치치 상품 필터링 (컬렉션 상품)
+                collection_items = [
+                    item for item in response.data 
+                    if ("치무탄" in str(item.get("name", "")) or "몬치치" in str(item.get("name", "")))
+                ]
+                # 컬렉션 상품이 있으면 컬렉션 상품을 우선 표시하고, 없으면 전체 상품 표시
+                target_rows = collection_items if collection_items else response.data
 
-                        display_products.append({
-                            "id": row.get("id", idx + 1),
-                            "name": row.get("name", PRODUCTS[idx % len(PRODUCTS)]["name"]),
-                            "category": "MONCHHICHI",
-                            "price": f"{int(row.get('sale_price') or row.get('original_price', 30000)):,}",
-                            "original_price": f"{int(row.get('original_price', 40000)):,}",
-                            "badge": "BEST" if idx == 0 else "NEW",
-                            "badge_color": "danger" if idx == 0 else "success",
-                            "image": img_url,
-                            "description": row.get("summary") or row.get("description") or PRODUCTS[idx % len(PRODUCTS)]["description"],
-                        })
+                display_products = []
+                for idx, row in enumerate(target_rows):
+                    img_url = None
+                    if row.get("product_images") and len(row["product_images"]) > 0:
+                        img_url = row["product_images"][0].get("image_url")
+                    if not img_url:
+                        img_url = PRODUCTS[idx % len(PRODUCTS)]["image"]
+
+                    display_products.append({
+                        "id": row.get("id"),
+                        "name": row.get("name"),
+                        "category": "MONCHHICHI & CHIMUTAN",
+                        "price": f"{int(row.get('sale_price') or row.get('original_price', 30000)):,}",
+                        "original_price": f"{int(row.get('original_price', 40000)):,}",
+                        "badge": "BEST" if idx == 0 else "NEW",
+                        "badge_color": "danger" if idx == 0 else "success",
+                        "image": img_url,
+                        "description": row.get("summary") or row.get("description") or PRODUCTS[idx % len(PRODUCTS)]["description"],
+                    })
         except Exception as e:
             print(f"[안내] Supabase 'products' 테이블 조회 처리: {e}")
 
